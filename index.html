@@ -1,63 +1,46 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>AtacaControl</title>
-
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
 
-<div class="container">
+<div class="card">
+    <div class="logo">🛒</div>
+    <h1>AtacaControl</h1>
+    <p class="subtitle">Controle inteligente de compras em atacado</p>
 
-<h1>AtacaControl</h1>
+    <div id="loginArea">
+        <h2>Entrar</h2>
+        <input type="email" id="email" placeholder="Seu e-mail">
+        <input type="password" id="password" placeholder="Sua senha">
+        <button class="btn-primary" onclick="login()">Entrar</button>
 
-<h2>Login</h2>
+        <button class="btn-link" onclick="toggleRegister()">
+            Criar nova conta
+        </button>
+    </div>
 
-<input
-type="email"
-id="email"
-placeholder="Seu e-mail">
+    <div id="registerArea" class="hidden">
+        <h2>Criar Conta</h2>
+        <input type="email" id="newEmail" placeholder="Seu e-mail">
+        <input type="password" id="newPassword" placeholder="Sua senha">
+        <button class="btn-success" onclick="register()">Cadastrar</button>
 
-<input
-type="password"
-id="password"
-placeholder="Sua senha">
+        <button class="btn-link" onclick="toggleRegister()">
+            Já possuo conta
+        </button>
+    </div>
 
-<button onclick="login()">
-Entrar
-</button>
-
-<hr>
-
-<h2>Criar Conta</h2>
-
-<input
-type="email"
-id="newEmail"
-placeholder="Novo e-mail">
-
-<input
-type="password"
-id="newPassword"
-placeholder="Nova senha">
-
-<button onclick="register()">
-Cadastrar
-</button>
-
-<p id="msg"></p>
-
+    <div id="msg"></div>
 </div>
 
 <script src="config.js"></script>
 <script src="app.js"></script>
-
 </body>
 </html>
