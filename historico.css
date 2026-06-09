@@ -1,0 +1,556 @@
+/* ========================================
+   RESET
+======================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    background:#f4f7fb;
+
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
+
+    color:#1e293b;
+}
+
+/* ========================================
+   APP
+======================================== */
+
+.app{
+
+    width:100%;
+
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:16px;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.header{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+
+    margin-bottom:20px;
+}
+
+.header-info h1{
+
+    font-size:1.8rem;
+
+    font-weight:700;
+
+    margin-bottom:6px;
+}
+
+.header-info p{
+
+    color:#64748b;
+
+    font-size:.95rem;
+}
+
+/* ========================================
+   BOTÕES
+======================================== */
+
+.btn-voltar{
+
+    border:none;
+
+    background:#0f172a;
+
+    color:white;
+
+    border-radius:14px;
+
+    min-height:48px;
+
+    padding:12px 20px;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.btn-voltar:hover{
+
+    transform:translateY(-1px);
+}
+
+.btn-filtrar{
+
+    width:100%;
+
+    min-height:52px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.btn-filtrar:hover{
+
+    transform:translateY(-1px);
+}
+
+.btn-detalhes{
+
+    width:100%;
+
+    min-height:48px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-weight:600;
+
+    cursor:pointer;
+}
+
+.btn-excluir{
+
+    width:100%;
+
+    min-height:48px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#dc2626;
+
+    color:white;
+
+    font-weight:600;
+
+    cursor:pointer;
+}
+
+/* ========================================
+   CARDS
+======================================== */
+
+.card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:20px;
+
+    margin-bottom:16px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15,23,42,.08);
+}
+
+.card h2{
+
+    margin-bottom:16px;
+}
+
+/* ========================================
+   FORM
+======================================== */
+
+label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:600;
+}
+
+input{
+
+    width:100%;
+
+    min-height:52px;
+
+    border:1px solid #dbe3ee;
+
+    border-radius:14px;
+
+    padding:12px 14px;
+
+    font-size:16px;
+
+    margin-bottom:16px;
+
+    background:white;
+
+    outline:none;
+}
+
+input:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,.12);
+}
+
+/* ========================================
+   FILTROS
+======================================== */
+
+.filtros-grid{
+
+    display:grid;
+
+    gap:12px;
+}
+
+/* ========================================
+   RESUMO
+======================================== */
+
+.resumo-topo{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:16px;
+}
+
+.resumo-topo small{
+
+    display:block;
+
+    color:#64748b;
+
+    margin-bottom:4px;
+}
+
+.resumo-topo strong{
+
+    font-size:1.1rem;
+}
+
+/* ========================================
+   LISTA DE COMPRAS
+======================================== */
+
+.lista-compras{
+
+    display:grid;
+
+    gap:16px;
+}
+
+/* ========================================
+   CARD COMPRA
+======================================== */
+
+.compra-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:20px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15,23,42,.08);
+
+    transition:.25s;
+}
+
+.compra-card:hover{
+
+    transform:translateY(-2px);
+}
+
+.compra-data{
+
+    font-size:1rem;
+
+    font-weight:700;
+
+    margin-bottom:12px;
+}
+
+.compra-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    margin-bottom:16px;
+}
+
+.compra-info div{
+
+    color:#334155;
+}
+
+.compra-total{
+
+    font-size:1.25rem;
+
+    font-weight:700;
+
+    color:#2563eb;
+
+    margin-bottom:16px;
+}
+
+.compra-acoes{
+
+    display:grid;
+
+    gap:10px;
+}
+
+/* ========================================
+   MODAL
+======================================== */
+
+.modal{
+
+    display:none;
+
+    position:fixed;
+
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+
+    background:
+        rgba(15,23,42,.70);
+
+    padding:20px;
+
+    z-index:9999;
+}
+
+.modal.ativo{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+}
+
+.modal-content{
+
+    width:100%;
+
+    max-width:700px;
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:24px;
+
+    max-height:85vh;
+
+    overflow:auto;
+}
+
+.modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.btn-fechar{
+
+    border:none;
+
+    background:#e2e8f0;
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    font-size:18px;
+}
+
+/* ========================================
+   DETALHES DA COMPRA
+======================================== */
+
+.item-detalhe{
+
+    border-bottom:
+        1px solid #e2e8f0;
+
+    padding:12px 0;
+}
+
+.item-detalhe:last-child{
+
+    border-bottom:none;
+}
+
+.item-nome{
+
+    font-weight:600;
+
+    margin-bottom:6px;
+}
+
+.item-info{
+
+    color:#64748b;
+
+    font-size:.95rem;
+}
+
+.total-modal{
+
+    margin-top:20px;
+
+    padding-top:20px;
+
+    border-top:
+        2px solid #e2e8f0;
+
+    font-size:1.2rem;
+
+    font-weight:700;
+
+    color:#2563eb;
+}
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media(min-width:768px){
+
+    .app{
+
+        padding:24px;
+    }
+
+    .header{
+
+        flex-direction:row;
+
+        justify-content:space-between;
+
+        align-items:center;
+    }
+
+    .filtros-grid{
+
+        grid-template-columns:
+            1fr
+            1fr
+            1fr;
+    }
+
+    .lista-compras{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .compra-acoes{
+
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+}
+
+/* ========================================
+   DESKTOP
+======================================== */
+
+@media(min-width:1200px){
+
+    .app{
+
+        padding:30px;
+    }
+
+    .header-info h1{
+
+        font-size:2rem;
+    }
+
+    .lista-compras{
+
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+}
+
+/* ========================================
+   DESKTOP GRANDE
+======================================== */
+
+@media(min-width:1600px){
+
+    .lista-compras{
+
+        grid-template-columns:
+            repeat(4,1fr);
+    }
+}

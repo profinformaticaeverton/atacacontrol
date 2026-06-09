@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Histórico | AtacaControl</title>
+
+    <link
+        rel="stylesheet"
+        href="historico.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- ========================= -->
+        <!-- CABEÇALHO -->
+        <!-- ========================= -->
+
+        <header class="header">
+
+            <button
+                class="btn-voltar"
+                onclick="window.location.href='dashboard.html'">
+
+                ← Dashboard
+
+            </button>
+
+            <div class="header-info">
+
+                <h1>
+                    Histórico de Compras
+                </h1>
+
+                <p>
+                    Consulte compras anteriores
+                </p>
+
+            </div>
+
+        </header>
+
+        <!-- ========================= -->
+        <!-- FILTROS -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <h2>Filtros</h2>
+
+            <div class="filtros-grid">
+
+                <div>
+
+                    <label>
+                        Buscar Mercado
+                    </label>
+
+                    <input
+                        type="text"
+                        id="buscaMercado"
+                        placeholder="Digite o nome do mercado">
+
+                </div>
+
+                <div>
+
+                    <label>
+                        Data Inicial
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dataInicial">
+
+                </div>
+
+                <div>
+
+                    <label>
+                        Data Final
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dataFinal">
+
+                </div>
+
+            </div>
+
+            <button
+                class="btn-filtrar"
+                onclick="filtrarCompras()">
+
+                🔎 Filtrar
+
+            </button>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- RESUMO -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <div class="resumo-topo">
+
+                <div>
+
+                    <small>
+                        Compras Encontradas
+                    </small>
+
+                    <strong id="totalCompras">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <small>
+                        Valor Total
+                    </small>
+
+                    <strong id="valorCompras">
+
+                        R$ 0,00
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- LISTA -->
+        <!-- ========================= -->
+
+        <section
+            id="listaCompras"
+            class="lista-compras">
+
+        </section>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- MODAL DETALHES -->
+    <!-- ========================= -->
+
+    <div
+        id="modalDetalhes"
+        class="modal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2>
+                    Detalhes da Compra
+                </h2>
+
+                <button
+                    class="btn-fechar"
+                    onclick="fecharModal()">
+
+                    ✕
+                </button>
+
+            </div>
+
+            <div
+                id="detalhesCompra">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="config.js"></script>
+    <script src="historico.js"></script>
+
+</body>
+
+</html>
