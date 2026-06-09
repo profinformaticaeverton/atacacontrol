@@ -1,3 +1,5 @@
+alert("NOVA-COMPRA.JS VERSÃO 2 CARREGADA");
+
 // ========================================
 // ATACACONTROL - NOVA COMPRA
 // ========================================
