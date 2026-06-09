@@ -1,46 +1,108 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>AtacaControl</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<link rel="icon" href="favicon.svg">
+
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
 
-<div class="card">
-    <div class="logo">🛒</div>
-    <h1>AtacaControl</h1>
-    <p class="subtitle">Controle inteligente de compras em atacado</p>
+<div class="container">
 
-    <div id="loginArea">
-        <h2>Entrar</h2>
-        <input type="email" id="email" placeholder="Seu e-mail">
-        <input type="password" id="password" placeholder="Sua senha">
-        <button class="btn-primary" onclick="login()">Entrar</button>
+    <div class="logo">
 
-        <button class="btn-link" onclick="toggleRegister()">
-            Criar nova conta
-        </button>
+        <div class="icon">🛒</div>
+
+        <h1>AtacaControl</h1>
+
+        <p>
+            Controle inteligente de compras
+        </p>
+
     </div>
 
-    <div id="registerArea" class="hidden">
-        <h2>Criar Conta</h2>
-        <input type="email" id="newEmail" placeholder="Seu e-mail">
-        <input type="password" id="newPassword" placeholder="Sua senha">
-        <button class="btn-success" onclick="register()">Cadastrar</button>
+    <div class="tabs">
 
-        <button class="btn-link" onclick="toggleRegister()">
-            Já possuo conta
+        <button
+            id="btnLogin"
+            class="active"
+            onclick="mostrarLogin()">
+
+            Entrar
+
         </button>
+
+        <button
+            id="btnCadastro"
+            onclick="mostrarCadastro()">
+
+            Criar Conta
+
+        </button>
+
+    </div>
+
+    <div id="loginBox">
+
+        <input
+            type="email"
+            id="email"
+            placeholder="E-mail">
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Senha">
+
+        <button
+            class="btn-primary"
+            onclick="login()">
+
+            Entrar
+
+        </button>
+
+    </div>
+
+    <div
+        id="cadastroBox"
+        style="display:none">
+
+        <input
+            type="email"
+            id="newEmail"
+            placeholder="E-mail">
+
+        <input
+            type="password"
+            id="newPassword"
+            placeholder="Senha">
+
+        <button
+            class="btn-success"
+            onclick="register()">
+
+            Criar Conta
+
+        </button>
+
     </div>
 
     <div id="msg"></div>
+
 </div>
 
 <script src="config.js"></script>
 <script src="app.js"></script>
+
 </body>
 </html>

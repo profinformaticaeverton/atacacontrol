@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nova Compra</title>
+
+<link rel="stylesheet" href="nova-compra.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="topo">
+
+        <h1>🛍️ Nova Compra</h1>
+
+        <button
+            class="btn-voltar"
+            onclick="window.location.href='dashboard.html'">
+
+            Dashboard
+
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <label>Data da Compra</label>
+
+        <input
+            type="date"
+            id="dataCompra">
+
+        <label>Mercado</label>
+
+        <select id="marketSelect"></select>
+
+        <label>Observações</label>
+
+        <textarea
+            id="observacoes"></textarea>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Produtos</h2>
+
+        <div id="listaProdutos"></div>
+
+    </div>
+
+    <div class="card resumo">
+
+        <h2>Resumo</h2>
+
+        <p>
+            Quantidade Total:
+            <span id="qtdTotal">0</span>
+        </p>
+
+        <p>
+            Valor Total:
+            <span id="valorTotal">
+                R$ 0,00
+            </span>
+        </p>
+
+        <button
+            class="btn-salvar"
+            onclick="salvarCompra()">
+
+            Salvar Compra
+
+        </button>
+
+    </div>
+
+</div>
+
+<script src="config.js"></script>
+<script src="nova-compra.js"></script>
+
+</body>
+</html>
