@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const msg =
     document.getElementById("msg");
 
