@@ -2,57 +2,82 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
     <title>AtacaControl - Dashboard</title>
 
-    <link rel="icon" href="favicon.svg">
+    <link
+        rel="icon"
+        href="favicon.svg">
 
-    <link rel="stylesheet" href="dashboard.css">
+    <link
+        rel="stylesheet"
+        href="dashboard.css">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 
 <body>
 
     <div class="layout">
 
-        <!-- MENU -->
-
         <aside class="sidebar">
 
             <div class="logo">
 
-                <div class="logo-icon">🛒</div>
+                <div class="logo-icon">
+                    🛒
+                </div>
 
-                <h2>AtacaControl</h2>
+                <h2>
+                    AtacaControl
+                </h2>
 
             </div>
 
             <nav>
 
-                <button class="menu-btn active">
+                <button
+                    class="menu-btn active">
+
                     📊 Dashboard
+
                 </button>
 
                 <button
-                class="menu-btn"
-                onclick="window.location.href='nova-compra.html'">
+                    class="menu-btn"
+                    onclick="window.location.href='nova-compra.html'">
 
                     🛍️ Nova Compra
 
                 </button>
 
-                <button class="menu-btn">
+                <button
+                    class="menu-btn"
+                    onclick="window.location.href='historico.html'">
+
                     📜 Histórico
+
                 </button>
 
-                <button class="menu-btn">
+                <button
+                    class="menu-btn">
+
                     📈 Relatórios
+
                 </button>
 
-                <button class="menu-btn">
+                <button
+                    class="menu-btn">
+
                     👤 Perfil
+
                 </button>
 
             </nav>
@@ -67,55 +92,85 @@
 
         </aside>
 
-        <!-- CONTEÚDO -->
-
         <main class="content">
 
             <header>
 
-                <h1>
-                    Dashboard
-                </h1>
+                <div>
+
+                    <h1>
+                        Dashboard
+                    </h1>
+
+                    <p>
+                        Visão geral das suas compras
+                    </p>
+
+                </div>
 
                 <span id="userEmail"></span>
 
             </header>
 
-            <!-- CARDS -->
-
             <section class="cards">
 
                 <div class="card">
-                    <h3>Total do Mês</h3>
+
+                    <h3>
+                        💰 Total do Mês
+                    </h3>
+
                     <span id="totalMes">
+
                         R$ 0,00
+
                     </span>
+
                 </div>
 
                 <div class="card">
-                    <h3>Compras</h3>
+
+                    <h3>
+                        🛒 Compras
+                    </h3>
+
                     <span id="qtdCompras">
+
                         0
+
                     </span>
+
                 </div>
 
                 <div class="card">
-                    <h3>Produtos Comprados</h3>
+
+                    <h3>
+                        📦 Produtos Comprados
+                    </h3>
+
                     <span id="qtdProdutos">
+
                         0
+
                     </span>
+
                 </div>
 
                 <div class="card">
-                    <h3>Maior Compra</h3>
+
+                    <h3>
+                        🏆 Maior Compra
+                    </h3>
+
                     <span id="maiorCompra">
+
                         R$ 0,00
+
                     </span>
+
                 </div>
 
             </section>
-
-            <!-- ÚLTIMAS COMPRAS -->
 
             <section class="panel">
 
@@ -163,3 +218,5 @@
     <script src="dashboard.js"></script>
 
 </body>
+
+</html>
