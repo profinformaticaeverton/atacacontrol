@@ -1,54 +1,166 @@
-async function register() {
+const msg =
+    document.getElementById("msg");
 
-const email =
-document.getElementById("newEmail").value;
+// ====================================
+// ALTERNAR TELAS
+// ====================================
 
-const password =
-document.getElementById("newPassword").value;
+function mostrarLogin() {
 
-const { data, error } =
-await supabaseClient.auth.signUp({
-email,
-password
-});
+    document.getElementById(
+        "loginBox"
+    ).style.display = "block";
 
-if(error){
+    document.getElementById(
+        "cadastroBox"
+    ).style.display = "none";
 
-document.getElementById("msg").innerText =
-error.message;
-
-return;
+    btnLogin.classList.add("active");
+    btnCadastro.classList.remove("active");
 }
 
-document.getElementById("msg").innerText =
-"Conta criada com sucesso!";
+function mostrarCadastro() {
+
+    document.getElementById(
+        "loginBox"
+    ).style.display = "none";
+
+    document.getElementById(
+        "cadastroBox"
+    ).style.display = "block";
+
+    btnCadastro.classList.add("active");
+    btnLogin.classList.remove("active");
 }
+
+// ====================================
+// LOGIN
+// ====================================
 
 async function login() {
 
-const email =
-document.getElementById("email").value;
+    try {
 
-const password =
-document.getElementById("password").value;
+        msg.innerText =
+            "Entrando...";
 
-const { data, error } =
-await supabaseClient.auth.signInWithPassword({
-email,
-password
-});
+        const email =
+            document
+            .getElementById("email")
+            .value
+            .trim();
 
-if(error){
+        const password =
+            document
+            .getElementById("password")
+            .value;
 
-document.getElementById("msg").innerText =
-error.message;
+        const {
+            data,
+            error
+        } =
+        await supabaseClient.auth
+        .signInWithPassword({
 
-return;
+            email,
+            password
+
+        });
+
+        if (error) {
+
+            msg.innerText =
+                error.message;
+
+            return;
+        }
+
+        msg.innerText =
+            "Login realizado!";
+
+        window.location.href =
+            "dashboard.html";
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        msg.innerText =
+            "Erro inesperado.";
+    }
 }
 
-document.getElementById("msg").innerText =
-"Login realizado com sucesso!";
+// ====================================
+// CADASTRO
+// ====================================
 
-window.location.href =
-"dashboard.html";
+async function register() {
+
+    try {
+
+        msg.innerText =
+            "Criando conta...";
+
+        const email =
+            document
+            .getElementById("newEmail")
+            .value
+            .trim();
+
+        const password =
+            document
+            .getElementById("newPassword")
+            .value;
+
+        const {
+            data,
+            error
+        } =
+        await supabaseClient.auth
+        .signUp({
+
+            email,
+            password
+
+        });
+
+        if (error) {
+
+            msg.innerText =
+                error.message;
+
+            return;
+        }
+
+        msg.innerText =
+            "Conta criada! Verifique seu e-mail para confirmar o cadastro.";
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        msg.innerText =
+            "Erro inesperado.";
+    }
 }
+
+// ====================================
+// SESSÃO EXISTENTE
+// ====================================
+
+async function verificarSessao() {
+
+    const {
+        data: { session }
+    } =
+    await supabaseClient.auth
+    .getSession();
+
+    if (session) {
+
+        window.location.href =
+            "dashboard.html";
+    }
+}
+
+verificarSessao();
