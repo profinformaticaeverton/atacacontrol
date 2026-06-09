@@ -1,12 +1,14 @@
 // ========================================
-// ATACACONTROL - NOVA COMPRA
+// ATACACONTROL
+// NOVA COMPRA V2.0
 // ========================================
 
 let produtos = [];
+let produtosFiltrados = [];
 let usuarioAtual = null;
 
 // ========================================
-// INICIAR PÁGINA
+// INICIAR
 // ========================================
 
 async function iniciar() {
@@ -30,6 +32,8 @@ async function iniciar() {
             .getElementById("dataCompra")
             .valueAsDate = new Date();
 
+        configurarBusca();
+
         await carregarMercados();
 
         await carregarProdutos();
@@ -37,18 +41,50 @@ async function iniciar() {
     } catch (erro) {
 
         console.error(
-            "Erro ao iniciar página:",
+            "Erro ao iniciar:",
             erro
         );
 
         alert(
-            "Erro ao carregar a página."
+            "Erro ao carregar página."
         );
     }
 }
 
 // ========================================
-// CARREGAR MERCADOS
+// BUSCA
+// ========================================
+
+function configurarBusca() {
+
+    const campoBusca =
+        document.getElementById(
+            "buscaProduto"
+        );
+
+    campoBusca.addEventListener(
+        "input",
+        () => {
+
+            const termo =
+                campoBusca.value
+                .toLowerCase()
+                .trim();
+
+            produtosFiltrados =
+                produtos.filter(produto =>
+                    produto.nome
+                    .toLowerCase()
+                    .includes(termo)
+                );
+
+            renderizarProdutos();
+        }
+    );
+}
+
+// ========================================
+// MERCADOS
 // ========================================
 
 async function carregarMercados() {
@@ -81,17 +117,6 @@ async function carregarMercados() {
 
         select.innerHTML = "";
 
-        if (!data || data.length === 0) {
-
-            select.innerHTML = `
-                <option value="">
-                    Nenhum mercado cadastrado
-                </option>
-            `;
-
-            return;
-        }
-
         data.forEach(market => {
 
             select.innerHTML += `
@@ -104,14 +129,13 @@ async function carregarMercados() {
     } catch (erro) {
 
         console.error(
-            "Erro mercados:",
             erro
         );
     }
 }
 
 // ========================================
-// CARREGAR PRODUTOS
+// PRODUTOS
 // ========================================
 
 async function carregarProdutos() {
@@ -140,166 +164,269 @@ async function carregarProdutos() {
 
         produtos = data || [];
 
-        console.log(
-            "Produtos carregados:",
-            produtos
-        );
+        produtosFiltrados =
+            [...produtos];
 
-        const lista =
-            document.getElementById(
-                "listaProdutos"
-            );
+        atualizarContador();
 
-        lista.innerHTML = "";
-
-        if (produtos.length === 0) {
-
-            lista.innerHTML = `
-                <p>
-                    Nenhum produto cadastrado.
-                </p>
-            `;
-
-            return;
-        }
-
-        produtos.forEach(produto => {
-
-            lista.innerHTML += `
-
-            <div class="produto">
-
-                <label>
-
-                    <input
-                        type="checkbox"
-                        class="checkProduto"
-                        data-id="${produto.id}">
-
-                    ${produto.nome}
-
-                </label>
-
-                <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="Qtd"
-                    class="qtd">
-
-                <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="Valor Unit.">
-
-                <input
-                    type="number"
-                    readonly
-                    placeholder="Subtotal">
-
-            </div>
-
-            `;
-        });
-
-        adicionarEventos();
+        renderizarProdutos();
 
     } catch (erro) {
 
         console.error(
-            "Erro produtos:",
             erro
         );
     }
 }
 
 // ========================================
+// CONTADOR
+// ========================================
+
+function atualizarContador() {
+
+    document
+        .getElementById(
+            "contadorProdutos"
+        )
+        .innerText =
+        `${produtosFiltrados.length} produtos`;
+}
+
+// ========================================
+// RENDERIZAR PRODUTOS
+// ========================================
+
+function renderizarProdutos() {
+
+    atualizarContador();
+
+    const lista =
+        document.getElementById(
+            "listaProdutos"
+        );
+
+    lista.innerHTML = "";
+
+    if (
+        produtosFiltrados.length === 0
+    ) {
+
+        lista.innerHTML = `
+            <p>
+                Nenhum produto encontrado.
+            </p>
+        `;
+
+        return;
+    }
+
+    produtosFiltrados.forEach(produto => {
+
+        lista.innerHTML += `
+
+        <div
+            class="produto"
+            data-id="${produto.id}">
+
+            <div class="produto-topo">
+
+                <input
+                    type="checkbox"
+                    class="produto-check"
+                    data-id="${produto.id}">
+
+                <div class="produto-nome">
+
+                    ${produto.nome}
+
+                </div>
+
+            </div>
+
+            <div class="produto-campos">
+
+                <div>
+
+                    <label>
+                        Quantidade
+                    </label>
+
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        class="qtd">
+
+                </div>
+
+                <div>
+
+                    <label>
+                        Valor Unitário
+                    </label>
+
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        class="valor">
+
+                </div>
+
+            </div>
+
+            <div class="produto-subtotal">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong class="subtotal">
+
+                    R$ 0,00
+
+                </strong>
+
+            </div>
+
+        </div>
+
+        `;
+    });
+
+    configurarEventosProdutos();
+}
+
+// ========================================
 // EVENTOS DOS PRODUTOS
 // ========================================
 
-function adicionarEventos() {
+function configurarEventosProdutos() {
 
     document
         .querySelectorAll(".produto")
-        .forEach(produto => {
+        .forEach(card => {
+
+            const checkbox =
+                card.querySelector(
+                    ".produto-check"
+                );
 
             const qtd =
-                produto.querySelectorAll("input")[1];
+                card.querySelector(
+                    ".qtd"
+                );
 
             const valor =
-                produto.querySelectorAll("input")[2];
+                card.querySelector(
+                    ".valor"
+                );
 
-            const subtotal =
-                produto.querySelectorAll("input")[3];
+            checkbox.addEventListener(
+                "change",
+                () => {
+
+                    if (
+                        checkbox.checked
+                    ) {
+
+                        card.classList.add(
+                            "selecionado"
+                        );
+
+                    } else {
+
+                        card.classList.remove(
+                            "selecionado"
+                        );
+                    }
+
+                    atualizarResumo();
+                }
+            );
 
             qtd.addEventListener(
                 "input",
-                atualizarLinha
+                atualizarResumo
             );
 
             valor.addEventListener(
                 "input",
-                atualizarLinha
+                atualizarResumo
             );
-
-            function atualizarLinha() {
-
-                const quantidade =
-                    Number(qtd.value || 0);
-
-                const valorUnitario =
-                    Number(valor.value || 0);
-
-                const total =
-                    quantidade * valorUnitario;
-
-                subtotal.value =
-                    total.toFixed(2);
-
-                atualizarResumo();
-            }
         });
 }
 
 // ========================================
-// RESUMO DA COMPRA
+// RESUMO
 // ========================================
 
 function atualizarResumo() {
 
-    let qtdTotal = 0;
+    let quantidadeTotal = 0;
     let valorTotal = 0;
 
     document
         .querySelectorAll(".produto")
-        .forEach(produto => {
+        .forEach(card => {
+
+            const checkbox =
+                card.querySelector(
+                    ".produto-check"
+                );
 
             const qtd =
                 Number(
-                    produto
-                    .querySelectorAll("input")[1]
+                    card
+                    .querySelector(".qtd")
+                    .value || 0
+                );
+
+            const valor =
+                Number(
+                    card
+                    .querySelector(".valor")
                     .value || 0
                 );
 
             const subtotal =
-                Number(
-                    produto
-                    .querySelectorAll("input")[3]
-                    .value || 0
+                qtd * valor;
+
+            card
+                .querySelector(
+                    ".subtotal"
+                )
+                .innerText =
+                subtotal.toLocaleString(
+                    "pt-BR",
+                    {
+                        style: "currency",
+                        currency: "BRL"
+                    }
                 );
 
-            qtdTotal += qtd;
-            valorTotal += subtotal;
+            if (
+                checkbox.checked
+            ) {
+
+                quantidadeTotal += qtd;
+
+                valorTotal += subtotal;
+            }
         });
 
     document
-        .getElementById("qtdTotal")
+        .getElementById(
+            "qtdTotal"
+        )
         .innerText =
-        qtdTotal;
+        quantidadeTotal;
 
     document
-        .getElementById("valorTotal")
+        .getElementById(
+            "valorTotal"
+        )
         .innerText =
         valorTotal.toLocaleString(
             "pt-BR",
@@ -319,19 +446,25 @@ async function salvarCompra() {
     try {
 
         const marketId =
-            document.getElementById(
+            document
+            .getElementById(
                 "marketSelect"
-            ).value;
+            )
+            .value;
 
         const dataCompra =
-            document.getElementById(
+            document
+            .getElementById(
                 "dataCompra"
-            ).value;
+            )
+            .value;
 
         const observacoes =
-            document.getElementById(
+            document
+            .getElementById(
                 "observacoes"
-            ).value;
+            )
+            .value;
 
         const itensSelecionados = [];
 
@@ -340,69 +473,79 @@ async function salvarCompra() {
 
         document
             .querySelectorAll(".produto")
-            .forEach(produto => {
+            .forEach(card => {
 
                 const checkbox =
-                    produto.querySelectorAll("input")[0];
+                    card.querySelector(
+                        ".produto-check"
+                    );
+
+                if (
+                    !checkbox.checked
+                ) {
+                    return;
+                }
 
                 const qtd =
                     Number(
-                        produto
-                        .querySelectorAll("input")[1]
+                        card
+                        .querySelector(".qtd")
                         .value || 0
                     );
 
                 const valor =
                     Number(
-                        produto
-                        .querySelectorAll("input")[2]
+                        card
+                        .querySelector(".valor")
                         .value || 0
                     );
+
+                if (
+                    qtd <= 0 ||
+                    valor <= 0
+                ) {
+                    return;
+                }
 
                 const subtotal =
                     qtd * valor;
 
-                if (
-                    checkbox.checked &&
-                    qtd > 0 &&
-                    valor > 0
-                ) {
+                itensSelecionados.push({
 
-                    itensSelecionados.push({
+                    product_id:
+                        Number(
+                            checkbox.dataset.id
+                        ),
 
-                        product_id:
-                            Number(
-                                checkbox.dataset.id
-                            ),
+                    quantidade:
+                        qtd,
 
-                        quantidade:
-                            qtd,
+                    valor_unitario:
+                        valor,
 
-                        valor_unitario:
-                            valor,
+                    subtotal:
+                        subtotal
 
-                        subtotal:
-                            subtotal
+                });
 
-                    });
-
-                    quantidadeTotal += qtd;
-                    valorTotal += subtotal;
-                }
+                quantidadeTotal += qtd;
+                valorTotal += subtotal;
             });
 
-        if (itensSelecionados.length === 0) {
+        if (
+            itensSelecionados.length === 0
+        ) {
 
             alert(
-                "Selecione ao menos um produto."
+                "Selecione ao menos um produto válido."
             );
 
             return;
         }
 
-        // ==========================
-        // INSERE COMPRA
-        // ==========================
+        // =====================
+        // PURCHASE
+        // =====================
 
         const {
             data: compra,
@@ -446,12 +589,13 @@ async function salvarCompra() {
             return;
         }
 
-        // ==========================
-        // INSERE ITENS
-        // ==========================
+        // =====================
+        // PURCHASE ITEMS
+        // =====================
 
         const itensBanco =
-            itensSelecionados.map(item => ({
+            itensSelecionados.map(
+                item => ({
 
                 purchase_id:
                     compra.id,
@@ -483,14 +627,14 @@ async function salvarCompra() {
             );
 
             alert(
-                "Compra salva, mas houve erro ao gravar os itens."
+                "Compra salva, mas houve erro ao gravar itens."
             );
 
             return;
         }
 
         alert(
-            "Compra registrada com sucesso!"
+            "Compra cadastrada com sucesso!"
         );
 
         window.location.href =
@@ -499,7 +643,6 @@ async function salvarCompra() {
     } catch (erro) {
 
         console.error(
-            "Erro inesperado:",
             erro
         );
 
@@ -510,7 +653,7 @@ async function salvarCompra() {
 }
 
 // ========================================
-// INICIAR SISTEMA
+// START
 // ========================================
 
 iniciar();

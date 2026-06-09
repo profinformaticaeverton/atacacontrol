@@ -1,133 +1,448 @@
-body{
+/* ========================================
+   RESET
+======================================== */
+
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
     background:#f4f7fb;
-    font-family:Segoe UI,sans-serif;
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
+
+    color:#1e293b;
+
+    padding-bottom:140px;
 }
 
-.container{
-    max-width:1200px;
+/* ========================================
+   APP
+======================================== */
+
+.app{
+    width:100%;
+    max-width:1400px;
     margin:auto;
-    padding:30px;
+    padding:16px;
 }
 
-.topo{
+/* ========================================
+   HEADER
+======================================== */
+
+.header{
+
     display:flex;
-    justify-content:space-between;
-    align-items:center;
+    flex-direction:column;
+    gap:16px;
+
+    margin-bottom:20px;
 }
+
+.header-info h1{
+
+    font-size:1.8rem;
+    font-weight:700;
+
+    margin-bottom:6px;
+}
+
+.header-info p{
+
+    color:#64748b;
+    font-size:.95rem;
+}
+
+/* ========================================
+   BOTÕES
+======================================== */
+
+.btn-voltar{
+
+    border:none;
+
+    background:#0f172a;
+
+    color:white;
+
+    border-radius:14px;
+
+    min-height:48px;
+
+    padding:12px 20px;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.btn-voltar:hover{
+
+    transform:translateY(-1px);
+}
+
+.btn-salvar{
+
+    width:100%;
+
+    border:none;
+
+    background:#2563eb;
+
+    color:white;
+
+    min-height:56px;
+
+    border-radius:14px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.btn-salvar:hover{
+
+    transform:translateY(-1px);
+}
+
+/* ========================================
+   CARDS
+======================================== */
 
 .card{
+
     background:white;
-    margin-top:20px;
-    padding:25px;
-    border-radius:16px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    margin-bottom:16px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15,23,42,.08);
+}
+
+.card h2{
+
+    margin-bottom:16px;
+
+    font-size:1.15rem;
+}
+
+/* ========================================
+   FORM
+======================================== */
+
+label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:600;
 }
 
 input,
 select,
 textarea{
+
     width:100%;
-    padding:12px;
-    margin-top:8px;
-    margin-bottom:15px;
-    border:1px solid #ddd;
-    border-radius:10px;
+
+    min-height:52px;
+
+    border:1px solid #dbe3ee;
+
+    border-radius:14px;
+
+    padding:12px 14px;
+
+    font-size:16px;
+
+    outline:none;
+
+    transition:.2s;
+
+    margin-bottom:16px;
+
+    background:white;
 }
 
-.produto{
+input:focus,
+select:focus,
+textarea:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,.12);
+}
+
+textarea{
+
+    resize:vertical;
+}
+
+/* ========================================
+   GRID FORM
+======================================== */
+
+.form-grid{
+
     display:grid;
-    grid-template-columns:
-    2fr
-    1fr
-    1fr
-    1fr;
-    gap:10px;
-    margin-bottom:10px;
+    gap:12px;
 }
 
-.btn-salvar{
-    width:100%;
-    padding:15px;
-    border:none;
-    background:#2563eb;
-    color:white;
-    border-radius:12px;
-    cursor:pointer;
+/* ========================================
+   BUSCA
+======================================== */
+
+.busca-container input{
+
+    margin-bottom:0;
 }
 
-.btn-voltar{
-    padding:12px 20px;
-    border:none;
-    background:#0f172a;
-    color:white;
-    border-radius:12px;
-    cursor:pointer;
-=======
-body{
-    margin:0;
-    background:#f4f7fb;
-    font-family:Segoe UI,sans-serif;
-}
+/* ========================================
+   PRODUTOS
+======================================== */
 
-.container{
-    max-width:1200px;
-    margin:auto;
-    padding:30px;
-}
+.titulo-produtos{
 
-.topo{
     display:flex;
     justify-content:space-between;
     align-items:center;
+
+    margin-bottom:16px;
 }
 
-.card{
-    background:white;
-    margin-top:20px;
-    padding:25px;
-    border-radius:16px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+#contadorProdutos{
+
+    font-size:.9rem;
+
+    color:#64748b;
 }
 
-input,
-select,
-textarea{
-    width:100%;
-    padding:12px;
-    margin-top:8px;
-    margin-bottom:15px;
-    border:1px solid #ddd;
-    border-radius:10px;
+.lista-produtos{
+
+    display:flex;
+    flex-direction:column;
+    gap:14px;
 }
+
+/* ========================================
+   CARD PRODUTO
+======================================== */
 
 .produto{
+
+    background:#f8fafc;
+
+    border:2px solid transparent;
+
+    border-radius:18px;
+
+    padding:16px;
+
+    transition:.25s;
+
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.produto:hover{
+
+    border-color:#cbd5e1;
+}
+
+.produto.selecionado{
+
+    border-color:#2563eb;
+
+    background:#eff6ff;
+}
+
+.produto-topo{
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.produto-topo input[type="checkbox"]{
+
+    width:24px;
+    height:24px;
+
+    margin:0;
+
+    cursor:pointer;
+}
+
+.produto-nome{
+
+    font-weight:600;
+
+    font-size:1rem;
+}
+
+.produto-campos{
+
     display:grid;
-    grid-template-columns:
-    2fr
-    1fr
-    1fr
-    1fr;
-    gap:10px;
-    margin-bottom:10px;
+    gap:12px;
 }
 
-.btn-salvar{
-    width:100%;
-    padding:15px;
-    border:none;
-    background:#2563eb;
-    color:white;
+.produto-subtotal{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    background:white;
+
     border-radius:12px;
-    cursor:pointer;
+
+    padding:12px;
 }
 
-.btn-voltar{
-    padding:12px 20px;
-    border:none;
-    background:#0f172a;
-    color:white;
-    border-radius:12px;
-    cursor:pointer;
->>>>>>> 6aed931b81356d28c53d15f61762ae639133ce8b
+.produto-subtotal span{
+
+    color:#64748b;
+}
+
+.produto-subtotal strong{
+
+    font-size:1rem;
+}
+
+/* ========================================
+   RESUMO FIXO
+======================================== */
+
+.resumo-fixo{
+
+    position:fixed;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    background:white;
+
+    border-top:1px solid #e2e8f0;
+
+    padding:14px;
+
+    box-shadow:
+        0 -10px 25px
+        rgba(0,0,0,.08);
+
+    z-index:999;
+}
+
+.resumo-info{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:12px;
+}
+
+.resumo-info small{
+
+    display:block;
+
+    color:#64748b;
+
+    margin-bottom:4px;
+}
+
+.resumo-info strong{
+
+    font-size:1rem;
+}
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media(min-width:768px){
+
+    .app{
+
+        padding:24px;
+    }
+
+    .header{
+
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:center;
+    }
+
+    .form-grid{
+
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+
+    .produto-campos{
+
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+
+    .resumo-fixo{
+
+        max-width:1400px;
+
+        left:50%;
+
+        transform:
+            translateX(-50%);
+    }
+}
+
+/* ========================================
+   DESKTOP
+======================================== */
+
+@media(min-width:1200px){
+
+    .app{
+
+        padding:30px;
+    }
+
+    .header-info h1{
+
+        font-size:2rem;
+    }
+
+    .produto{
+
+        padding:20px;
+    }
 }
