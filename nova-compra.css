@@ -1,0 +1,66 @@
+body{
+    margin:0;
+    background:#f4f7fb;
+    font-family:Segoe UI,sans-serif;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:30px;
+}
+
+.topo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.card{
+    background:white;
+    margin-top:20px;
+    padding:25px;
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+.produto{
+    display:grid;
+    grid-template-columns:
+    2fr
+    1fr
+    1fr
+    1fr;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.btn-salvar{
+    width:100%;
+    padding:15px;
+    border:none;
+    background:#2563eb;
+    color:white;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.btn-voltar{
+    padding:12px 20px;
+    border:none;
+    background:#0f172a;
+    color:white;
+    border-radius:12px;
+    cursor:pointer;
+}
