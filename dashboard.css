@@ -1,138 +1,557 @@
+/* ========================================
+   RESET
+======================================== */
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
 
-body{
-    font-family:Segoe UI, sans-serif;
-    background:#f4f7fb;
+html{
+    scroll-behavior:smooth;
 }
 
+body{
+
+    background:#f4f7fb;
+
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
+
+    color:#1e293b;
+
+    overflow-x:hidden;
+}
+
+/* ========================================
+   MENU MOBILE
+======================================== */
+
+.menu-mobile{
+
+    position:fixed;
+
+    top:15px;
+    left:15px;
+
+    width:50px;
+    height:50px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:24px;
+
+    z-index:2000;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 10px 20px
+        rgba(0,0,0,.15);
+}
+
+/* ========================================
+   OVERLAY
+======================================== */
+
+.overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(0,0,0,.45);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.3s;
+
+    z-index:999;
+}
+
+.overlay.ativo{
+
+    opacity:1;
+
+    visibility:visible;
+}
+
+/* ========================================
+   LAYOUT
+======================================== */
+
 .layout{
+
     display:flex;
+
     min-height:100vh;
 }
 
+/* ========================================
+   SIDEBAR
+======================================== */
+
 .sidebar{
+
+    position:fixed;
+
+    top:0;
+    left:-280px;
+
     width:260px;
-    background:#0f172a;
-    color:white;
-    padding:25px;
+
+    height:100vh;
+
+    background:white;
+
     display:flex;
+
     flex-direction:column;
+
     justify-content:space-between;
+
+    padding:24px;
+
+    box-shadow:
+        0 0 30px
+        rgba(0,0,0,.10);
+
+    transition:.3s;
+
+    z-index:1000;
 }
+
+.sidebar.aberto{
+
+    left:0;
+}
+
+/* ========================================
+   LOGO
+======================================== */
 
 .logo{
-    text-align:center;
-}
 
-.logo-icon{
-    font-size:55px;
-}
-
-.logo h2{
-    margin-top:10px;
-}
-
-.menu-btn{
-    width:100%;
-    border:none;
-    margin-top:12px;
-    padding:14px;
-    border-radius:12px;
-    cursor:pointer;
-    text-align:left;
-    font-size:15px;
-}
-
-.menu-btn.active{
-    background:#2563eb;
-    color:white;
-}
-
-.logout-btn{
-    border:none;
-    background:#dc2626;
-    color:white;
-    padding:14px;
-    border-radius:12px;
-    cursor:pointer;
-}
-
-.content{
-    flex:1;
-    padding:35px;
-}
-
-header{
     display:flex;
-    justify-content:space-between;
+
     align-items:center;
+
+    gap:12px;
+
     margin-bottom:30px;
 }
 
-header h1{
-    color:#1e293b;
+.logo-icon{
+
+    width:50px;
+    height:50px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border-radius:14px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:24px;
 }
 
+.logo h2{
+
+    font-size:1.3rem;
+}
+
+/* ========================================
+   MENU
+======================================== */
+
+nav{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.menu-btn{
+
+    width:100%;
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    background:#f8fafc;
+
+    cursor:pointer;
+
+    text-align:left;
+
+    font-size:15px;
+
+    transition:.25s;
+}
+
+.menu-btn:hover{
+
+    background:#e2e8f0;
+}
+
+.menu-btn.active{
+
+    background:#2563eb;
+
+    color:white;
+}
+
+/* ========================================
+   LOGOUT
+======================================== */
+
+.logout-btn{
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    background:#dc2626;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:15px;
+}
+
+/* ========================================
+   CONTENT
+======================================== */
+
+.content{
+
+    width:100%;
+
+    padding:
+
+        80px
+        16px
+        30px
+        16px;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.header{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    margin-bottom:24px;
+}
+
+.header h1{
+
+    font-size:2rem;
+
+    margin-bottom:5px;
+}
+
+.header p{
+
+    color:#64748b;
+}
+
+.usuario{
+
+    background:white;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    box-shadow:
+        0 5px 15px
+        rgba(0,0,0,.05);
+
+    word-break:break-word;
+}
+
+/* ========================================
+   CARDS DASHBOARD
+======================================== */
+
 .cards{
+
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
+
+    grid-template-columns:1fr;
+
+    gap:16px;
+
+    margin-bottom:24px;
 }
 
 .card{
+
     background:white;
+
     border-radius:18px;
-    padding:25px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    padding:20px;
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,.08);
 }
 
 .card h3{
-    color:#64748b;
+
+    font-size:1rem;
+
     margin-bottom:10px;
+
+    color:#475569;
 }
 
 .card span{
-    font-size:28px;
-    font-weight:bold;
+
+    font-size:1.8rem;
+
+    font-weight:700;
+
     color:#2563eb;
 }
 
+/* ========================================
+   AÇÕES
+======================================== */
+
+.acoes{
+
+    display:grid;
+
+    gap:12px;
+
+    margin-bottom:24px;
+}
+
+.acoes button{
+
+    border:none;
+
+    border-radius:14px;
+
+    padding:16px;
+
+    background:#2563eb;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    font-weight:600;
+}
+
+/* ========================================
+   PANEL
+======================================== */
+
 .panel{
-    margin-top:35px;
+
     background:white;
-    border-radius:18px;
-    padding:25px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,.08);
 }
 
 .panel h2{
+
     margin-bottom:20px;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+/* ========================================
+   COMPRAS GRID
+======================================== */
+
+.compras-grid{
+
+    display:grid;
+
+    gap:16px;
 }
 
-th,td{
-    padding:14px;
-    border-bottom:1px solid #e2e8f0;
+/* ========================================
+   CARD COMPRA
+======================================== */
+
+.compra-card{
+
+    background:#f8fafc;
+
+    border-radius:16px;
+
+    padding:18px;
+
+    border:
+        1px solid #e2e8f0;
 }
 
-th{
-    text-align:left;
+.compra-data{
+
+    font-weight:700;
+
+    margin-bottom:10px;
 }
 
-@media(max-width:900px){
+.compra-mercado{
 
-    .layout{
-        flex-direction:column;
+    margin-bottom:8px;
+}
+
+.compra-itens{
+
+    margin-bottom:8px;
+
+    color:#475569;
+}
+
+.compra-total{
+
+    font-size:1.2rem;
+
+    font-weight:700;
+
+    color:#2563eb;
+}
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media(min-width:768px){
+
+    .content{
+
+        padding:
+            30px;
+    }
+
+    .cards{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .acoes{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .compras-grid{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+}
+
+/* ========================================
+   DESKTOP
+======================================== */
+
+@media(min-width:1024px){
+
+    .menu-mobile{
+
+        display:none;
+    }
+
+    .overlay{
+
+        display:none;
     }
 
     .sidebar{
-        width:100%;
+
+        position:relative;
+
+        left:0;
+
+        width:280px;
     }
+
+    .content{
+
+        padding:30px;
+    }
+
+    .header{
+
+        flex-direction:row;
+
+        justify-content:space-between;
+
+        align-items:center;
+    }
+
+    .cards{
+
+        grid-template-columns:
+            repeat(4,1fr);
+    }
+
+    .compras-grid{
+
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+}
+
+/* ========================================
+   MONITORES GRANDES
+======================================== */
+
+@media(min-width:1600px){
+
+    .compras-grid{
+
+        grid-template-columns:
+            repeat(4,1fr);
+    }
+}

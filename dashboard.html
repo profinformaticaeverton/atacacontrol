@@ -25,9 +25,21 @@
 
 <body>
 
+    <button
+        class="menu-mobile"
+        id="menuMobile">
+
+        ☰
+
+    </button>
+
+    <div class="overlay" id="overlay"></div>
+
     <div class="layout">
 
-        <aside class="sidebar">
+        <!-- MENU -->
+
+        <aside class="sidebar" id="sidebar">
 
             <div class="logo">
 
@@ -43,8 +55,7 @@
 
             <nav>
 
-                <button
-                    class="menu-btn active">
+                <button class="menu-btn active">
 
                     📊 Dashboard
 
@@ -66,15 +77,13 @@
 
                 </button>
 
-                <button
-                    class="menu-btn">
+                <button class="menu-btn">
 
                     📈 Relatórios
 
                 </button>
 
-                <button
-                    class="menu-btn">
+                <button class="menu-btn">
 
                     👤 Perfil
 
@@ -92,9 +101,11 @@
 
         </aside>
 
+        <!-- CONTEÚDO -->
+
         <main class="content">
 
-            <header>
+            <header class="header">
 
                 <div>
 
@@ -103,14 +114,20 @@
                     </h1>
 
                     <p>
-                        Visão geral das suas compras
+                        Controle inteligente das suas compras
                     </p>
 
                 </div>
 
-                <span id="userEmail"></span>
+                <div
+                    class="usuario"
+                    id="userEmail">
+
+                </div>
 
             </header>
+
+            <!-- INDICADORES -->
 
             <section class="cards">
 
@@ -121,9 +138,7 @@
                     </h3>
 
                     <span id="totalMes">
-
                         R$ 0,00
-
                     </span>
 
                 </div>
@@ -135,9 +150,7 @@
                     </h3>
 
                     <span id="qtdCompras">
-
                         0
-
                     </span>
 
                 </div>
@@ -145,13 +158,11 @@
                 <div class="card">
 
                     <h3>
-                        📦 Produtos Comprados
+                        📦 Produtos
                     </h3>
 
                     <span id="qtdProdutos">
-
                         0
-
                     </span>
 
                 </div>
@@ -163,14 +174,34 @@
                     </h3>
 
                     <span id="maiorCompra">
-
                         R$ 0,00
-
                     </span>
 
                 </div>
 
             </section>
+
+            <!-- AÇÕES -->
+
+            <section class="acoes">
+
+                <button
+                    onclick="window.location.href='nova-compra.html'">
+
+                    ➕ Nova Compra
+
+                </button>
+
+                <button
+                    onclick="window.location.href='historico.html'">
+
+                    📜 Histórico
+
+                </button>
+
+            </section>
+
+            <!-- ÚLTIMAS COMPRAS -->
 
             <section class="panel">
 
@@ -178,35 +209,17 @@
                     Últimas Compras
                 </h2>
 
-                <table>
+                <div
+                    id="ultimasCompras"
+                    class="compras-grid">
 
-                    <thead>
+                    <div class="compra-card">
 
-                        <tr>
+                        Nenhuma compra encontrada
 
-                            <th>Data</th>
-                            <th>Mercado</th>
-                            <th>Total</th>
+                    </div>
 
-                        </tr>
-
-                    </thead>
-
-                    <tbody id="ultimasCompras">
-
-                        <tr>
-
-                            <td colspan="3">
-
-                                Nenhuma compra encontrada
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
+                </div>
 
             </section>
 

@@ -1,5 +1,5 @@
 // ========================================
-// ATACACONTROL DASHBOARD
+// ATACACONTROL - DASHBOARD 2.0
 // ========================================
 
 async function verificarSessao() {
@@ -34,9 +34,12 @@ async function verificarSessao() {
 
         await carregarDashboard(user);
 
+        iniciarMenuMobile();
+
     } catch (erro) {
 
         console.error(
+            "Erro ao verificar sessão:",
             erro
         );
 
@@ -50,30 +53,49 @@ async function verificarSessao() {
 
 async function verificarPerfil(user) {
 
-    const {
-        data: profile
-    } = await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
+    try {
 
-    if (!profile) {
-
-        await supabaseClient
+        const {
+            data: profile
+        } = await supabaseClient
             .from("profiles")
-            .insert({
+            .select("*")
+            .eq("id", user.id)
+            .maybeSingle();
 
-                id: user.id,
-                email: user.email,
-                role: "user"
+        if (!profile) {
 
-            });
+            const {
+                error
+            } = await supabaseClient
+                .from("profiles")
+                .insert({
+
+                    id: user.id,
+                    email: user.email,
+                    role: "user"
+
+                });
+
+            if (error) {
+
+                console.error(
+                    "Erro ao criar perfil:",
+                    error
+                );
+            }
+        }
+
+    } catch (erro) {
+
+        console.error(
+            erro
+        );
     }
 }
 
 // ========================================
-// DASHBOARD
+// CARREGAR DASHBOARD
 // ========================================
 
 async function carregarDashboard(user) {
@@ -101,7 +123,9 @@ async function carregarDashboard(user) {
             .from("purchases")
             .select(`
                 *,
-                markets(nome)
+                markets (
+                    nome
+                )
             `)
             .eq(
                 "user_id",
@@ -116,10 +140,16 @@ async function carregarDashboard(user) {
 
         if (error) {
 
-            console.error(error);
+            console.error(
+                error
+            );
 
             return;
         }
+
+        // ==========================
+        // TOTAL DO MÊS
+        // ==========================
 
         const comprasMes =
             compras.filter(
@@ -138,8 +168,16 @@ async function carregarDashboard(user) {
                 0
             );
 
+        // ==========================
+        // TOTAL DE COMPRAS
+        // ==========================
+
         const qtdCompras =
             compras.length;
+
+        // ==========================
+        // MAIOR COMPRA
+        // ==========================
 
         let maiorCompra = 0;
 
@@ -150,24 +188,42 @@ async function carregarDashboard(user) {
                     compra.valor_total || 0
                 );
 
-            if (valor > maiorCompra) {
+            if (
+                valor > maiorCompra
+            ) {
 
-                maiorCompra = valor;
+                maiorCompra =
+                    valor;
             }
+
         });
 
+        // ==========================
+        // PRODUTOS COMPRADOS
+        // ==========================
+
         const {
-            data: itens
+            data: itens,
+            error: itensError
         } = await supabaseClient
             .from("purchase_items")
             .select(`
                 quantidade,
-                purchases!inner(user_id)
+                purchases!inner (
+                    user_id
+                )
             `)
             .eq(
                 "purchases.user_id",
                 user.id
             );
+
+        if (itensError) {
+
+            console.error(
+                itensError
+            );
+        }
 
         const qtdProdutos =
             itens
@@ -181,9 +237,15 @@ async function carregarDashboard(user) {
                 )
                 : 0;
 
+        // ==========================
+        // CARDS
+        // ==========================
+
         atualizarCard(
             "totalMes",
-            formatarMoeda(totalMes)
+            formatarMoeda(
+                totalMes
+            )
         );
 
         atualizarCard(
@@ -198,8 +260,14 @@ async function carregarDashboard(user) {
 
         atualizarCard(
             "maiorCompra",
-            formatarMoeda(maiorCompra)
+            formatarMoeda(
+                maiorCompra
+            )
         );
+
+        // ==========================
+        // ÚLTIMAS COMPRAS
+        // ==========================
 
         renderizarUltimasCompras(
             compras.slice(0, 10)
@@ -208,65 +276,139 @@ async function carregarDashboard(user) {
     } catch (erro) {
 
         console.error(
+            "Erro Dashboard:",
             erro
         );
     }
 }
 
 // ========================================
-// TABELA
+// ÚLTIMAS COMPRAS
 // ========================================
 
 function renderizarUltimasCompras(compras) {
 
-    const tbody =
+    const container =
         document.getElementById(
             "ultimasCompras"
         );
 
-    if (!tbody) return;
+    if (!container) return;
 
     if (!compras.length) {
 
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="3">
-                    Nenhuma compra encontrada
-                </td>
-            </tr>
+        container.innerHTML = `
+
+            <div class="compra-card">
+
+                Nenhuma compra encontrada
+
+            </div>
+
         `;
 
         return;
     }
 
-    tbody.innerHTML = "";
+    container.innerHTML = "";
 
     compras.forEach(compra => {
 
-        tbody.innerHTML += `
+        container.innerHTML += `
 
-        <tr>
+        <div class="compra-card">
 
-            <td>
-                ${formatarData(
+            <div class="compra-data">
+
+                📅 ${formatarData(
                     compra.data_compra
                 )}
-            </td>
 
-            <td>
-                ${compra.markets?.nome || "-"}
-            </td>
+            </div>
 
-            <td>
+            <div class="compra-mercado">
+
+                🏪 ${compra.markets?.nome || "-"}
+
+            </div>
+
+            <div class="compra-itens">
+
+                🛒 ${compra.quantidade_total || 0} itens
+
+            </div>
+
+            <div class="compra-total">
+
                 ${formatarMoeda(
-                    compra.valor_total
+                    compra.valor_total || 0
                 )}
-            </td>
 
-        </tr>
+            </div>
+
+        </div>
 
         `;
     });
+}
+
+// ========================================
+// MENU MOBILE
+// ========================================
+
+function iniciarMenuMobile() {
+
+    const menu =
+        document.getElementById(
+            "menuMobile"
+        );
+
+    const sidebar =
+        document.getElementById(
+            "sidebar"
+        );
+
+    const overlay =
+        document.getElementById(
+            "overlay"
+        );
+
+    if (
+        !menu ||
+        !sidebar ||
+        !overlay
+    ) {
+
+        return;
+    }
+
+    menu.addEventListener(
+        "click",
+        () => {
+
+            sidebar.classList.toggle(
+                "aberto"
+            );
+
+            overlay.classList.toggle(
+                "ativo"
+            );
+        }
+    );
+
+    overlay.addEventListener(
+        "click",
+        () => {
+
+            sidebar.classList.remove(
+                "aberto"
+            );
+
+            overlay.classList.remove(
+                "ativo"
+            );
+        }
+    );
 }
 
 // ========================================
@@ -311,7 +453,9 @@ function formatarData(data) {
 
 async function logout() {
 
-    await supabaseClient.auth.signOut();
+    await supabaseClient
+        .auth
+        .signOut();
 
     window.location.href = "/";
 }
