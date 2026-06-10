@@ -149,7 +149,7 @@ body{
 }
 
 /* ========================================
-   FORM
+   FORMULÁRIOS
 ======================================== */
 
 label{
@@ -222,7 +222,7 @@ textarea{
 }
 
 /* ========================================
-   PRODUTOS
+   TÍTULO PRODUTOS
 ======================================== */
 
 .titulo-produtos{
@@ -240,6 +240,10 @@ textarea{
 
     color:#64748b;
 }
+
+/* ========================================
+   LISTA PRODUTOS
+======================================== */
 
 .lista-produtos{
 
@@ -266,7 +270,7 @@ textarea{
 
     display:flex;
     flex-direction:column;
-    gap:12px;
+    gap:14px;
 }
 
 .produto:hover{
@@ -280,6 +284,10 @@ textarea{
 
     background:#eff6ff;
 }
+
+/* ========================================
+   TOPO PRODUTO
+======================================== */
 
 .produto-topo{
 
@@ -300,16 +308,92 @@ textarea{
 
 .produto-nome{
 
-    font-weight:600;
-
     font-size:1rem;
+    font-weight:600;
 }
+
+/* ========================================
+   CAMPOS PRODUTO
+======================================== */
 
 .produto-campos{
 
     display:grid;
     gap:12px;
 }
+
+/* ========================================
+   COMPARADOR INTELIGENTE
+======================================== */
+
+.comparador-preco{
+
+    background:white;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:14px;
+
+    padding:14px;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.linha-preco{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.label-preco{
+
+    font-size:.85rem;
+
+    color:#64748b;
+}
+
+.ultimo-preco,
+.preco-atual{
+
+    font-size:.95rem;
+    font-weight:700;
+}
+
+.variacao-preco{
+
+    border-top:1px solid #e2e8f0;
+
+    padding-top:10px;
+
+    font-size:.95rem;
+    font-weight:700;
+}
+
+/* ========================================
+   VARIAÇÕES
+======================================== */
+
+.variacao-alta{
+
+    color:#dc2626;
+}
+
+.variacao-baixa{
+
+    color:#16a34a;
+}
+
+.variacao-igual{
+
+    color:#64748b;
+}
+
+/* ========================================
+   SUBTOTAL
+======================================== */
 
 .produto-subtotal{
 
@@ -332,6 +416,7 @@ textarea{
 .produto-subtotal strong{
 
     font-size:1rem;
+    font-weight:700;
 }
 
 /* ========================================
@@ -444,5 +529,10 @@ textarea{
     .produto{
 
         padding:20px;
+    }
+
+    .comparador-preco{
+
+        padding:16px;
     }
 }
