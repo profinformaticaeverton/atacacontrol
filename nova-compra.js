@@ -1,7 +1,7 @@
 // ========================================
 // ATACACONTROL
-// NOVA COMPRA V3.0
-// COMPARADOR INTELIGENTE DE PREÇOS
+// NOVA COMPRA V4.0 FULL EXPANDED
+// COMPARADOR INTELIGENTE + CACHE + SUPABASE
 // ========================================
 
 let produtos = [];
@@ -9,28 +9,27 @@ let produtosFiltrados = [];
 let usuarioAtual = null;
 
 // ========================================
-// COMPARADOR INTELIGENTE
+// CACHE INTELIGENTE DE PREÇOS
 // ========================================
 
-// Estrutura esperada (Supabase):
-// product_prices: id, product_id, market_id, price
-
-let historicoPrecos = [];
-
-// cache de mercados para comparação
+let cachePrecos = [];
+let cacheRankingProdutos = {};
+let cacheMedias = {};
 let mercadosCache = [];
 
+// controle de performance
+let ultimaAtualizacaoCache = null;
+
 // ========================================
-// INICIAR
+// INICIALIZAÇÃO
 // ========================================
 
 async function iniciar() {
 
     try {
 
-        const {
-            data: { session }
-        } = await supabaseClient.auth.getSession();
+        const { data: { session } } =
+            await supabaseClient.auth.getSession();
 
         if (!session) {
             window.location.href = "/";
@@ -39,42 +38,48 @@ async function iniciar() {
 
         usuarioAtual = session.user;
 
-        document
-            .getElementById("dataCompra")
-            .valueAsDate = new Date();
+        document.getElementById("dataCompra").valueAsDate = new Date();
 
         configurarBusca();
 
         await carregarMercados();
-        await carregarHistoricoPrecos(); // NOVO
+        await carregarCachePrecos();
         await carregarProdutos();
+
+        console.log("Sistema V4.0 inicializado com sucesso");
 
     } catch (erro) {
 
-        console.error("Erro ao iniciar:", erro);
-
+        console.error("Erro ao iniciar sistema:", erro);
         alert("Erro ao carregar página.");
     }
 }
 
 // ========================================
-// BUSCA
+// BUSCA OTIMIZADA (DEBOUNCE)
 // ========================================
 
 function configurarBusca() {
 
-    const campoBusca =
-        document.getElementById("buscaProduto");
+    const campo = document.getElementById("buscaProduto");
 
-    campoBusca.addEventListener("input", () => {
+    let timeout = null;
 
-        const termo = campoBusca.value.toLowerCase().trim();
+    campo.addEventListener("input", () => {
 
-        produtosFiltrados = produtos.filter(produto =>
-            produto.nome.toLowerCase().includes(termo)
-        );
+        clearTimeout(timeout);
 
-        renderizarProdutos();
+        timeout = setTimeout(() => {
+
+            const termo = campo.value.toLowerCase().trim();
+
+            produtosFiltrados = produtos.filter(p =>
+                p.nome.toLowerCase().includes(termo)
+            );
+
+            renderizarProdutos();
+
+        }, 250);
     });
 }
 
@@ -84,61 +89,84 @@ function configurarBusca() {
 
 async function carregarMercados() {
 
-    try {
+    const { data, error } = await supabaseClient
+        .from("markets")
+        .select("*")
+        .order("nome");
 
-        const { data, error } = await supabaseClient
-            .from("markets")
-            .select("*")
-            .order("nome");
-
-        if (error) {
-            console.error(error);
-            alert("Erro ao carregar mercados.");
-            return;
-        }
-
-        mercadosCache = data || [];
-
-        const select = document.getElementById("marketSelect");
-
-        select.innerHTML = "";
-
-        data.forEach(market => {
-
-            select.innerHTML += `
-                <option value="${market.id}">
-                    ${market.nome}
-                </option>
-            `;
-        });
-
-    } catch (erro) {
-        console.error(erro);
+    if (error) {
+        console.error("Erro mercados:", error);
+        return;
     }
+
+    mercadosCache = data || [];
+
+    const select = document.getElementById("marketSelect");
+    select.innerHTML = "";
+
+    mercadosCache.forEach(m => {
+        select.innerHTML += `
+            <option value="${m.id}">${m.nome}</option>
+        `;
+    });
 }
 
 // ========================================
-// HISTÓRICO DE PREÇOS (NOVO)
+// CACHE DE PREÇOS (CORE DO SISTEMA)
 // ========================================
 
-async function carregarHistoricoPrecos() {
+async function carregarCachePrecos(force = false) {
 
-    try {
+    const agora = Date.now();
 
-        const { data, error } = await supabaseClient
-            .from("product_prices")
-            .select("*");
+    // cache válido por 5 minutos
+    if (!force && ultimaAtualizacaoCache &&
+        agora - ultimaAtualizacaoCache < 300000) {
+        return;
+    }
 
-        if (error) {
-            console.error("Erro preços:", error);
-            return;
+    const { data, error } = await supabaseClient
+        .from("product_prices")
+        .select("*");
+
+    if (error) {
+        console.error("Erro cache preços:", error);
+        return;
+    }
+
+    cachePrecos = data || [];
+    ultimaAtualizacaoCache = agora;
+
+    construirCacheInteligente();
+}
+
+// ========================================
+// CACHE DERIVADO (MÉDIA + RANKING)
+// ========================================
+
+function construirCacheInteligente() {
+
+    cacheRankingProdutos = {};
+    cacheMedias = {};
+
+    cachePrecos.forEach(p => {
+
+        if (!cacheRankingProdutos[p.product_id]) {
+            cacheRankingProdutos[p.product_id] = [];
         }
 
-        historicoPrecos = data || [];
+        cacheRankingProdutos[p.product_id].push(p.price);
+    });
 
-    } catch (erro) {
-        console.error("Erro histórico preços:", erro);
-    }
+    Object.keys(cacheRankingProdutos).forEach(id => {
+
+        const valores = cacheRankingProdutos[id];
+
+        const media =
+            valores.reduce((a, b) => a + b, 0) / valores.length;
+
+        cacheMedias[id] = media;
+    });
 }
 
 // ========================================
@@ -147,38 +175,33 @@ async function carregarHistoricoPrecos() {
 
 async function carregarProdutos() {
 
-    try {
+    const { data, error } = await supabaseClient
+        .from("products")
+        .select("*")
+        .eq("ativo", true)
+        .order("nome");
 
-        const { data, error } = await supabaseClient
-            .from("products")
-            .select("*")
-            .eq("ativo", true)
-            .order("nome");
-
-        if (error) {
-            console.error(error);
-            alert("Erro ao carregar produtos.");
-            return;
-        }
-
-        produtos = data || [];
-        produtosFiltrados = [...produtos];
-
-        atualizarContador();
-        renderizarProdutos();
-
-    } catch (erro) {
-        console.error(erro);
+    if (error) {
+        console.error(error);
+        return;
     }
+
+    produtos = data || [];
+    produtosFiltrados = [...produtos];
+
+    atualizarContador();
+    renderizarProdutos();
 }
 
 // ========================================
-// COMPARADOR INTELIGENTE
+// COMPARADOR INTELIGENTE V4
 // ========================================
 
 function obterMelhorPreco(product_id) {
 
-    const precos = historicoPrecos.filter(p => p.product_id === product_id);
+    const precos = cachePrecos.filter(p =>
+        p.product_id === product_id
+    );
 
     if (!precos.length) return null;
 
@@ -190,58 +213,44 @@ function obterMelhorPreco(product_id) {
         }
     }
 
-    const market = mercadosCache.find(m => m.id === melhor.market_id);
+    const market = mercadosCache.find(m =>
+        m.id === melhor.market_id
+    );
+
+    const media = cacheMedias[product_id] || 0;
 
     return {
         price: melhor.price,
         market_id: melhor.market_id,
-        market_name: market ? market.nome : "Desconhecido"
+        market_name: market ? market.nome : "Desconhecido",
+        media: media.toFixed(2),
+        diferencaMedia: (media - melhor.price).toFixed(2)
     };
 }
 
-function compararPrecos(product_id) {
+function rankingMercados(product_id) {
 
-    const produto = produtos.find(p => p.id === product_id);
+    const precos = cachePrecos.filter(p =>
+        p.product_id === product_id
+    );
 
-    const precos = historicoPrecos.filter(p => p.product_id === product_id);
+    return precos
+        .sort((a, b) => a.price - b.price)
+        .map(p => {
 
-    if (!produto || !precos.length) return null;
+            const market = mercadosCache.find(m =>
+                m.id === p.market_id
+            );
 
-    return precos.map(p => {
-        const market = mercadosCache.find(m => m.id === p.market_id);
-
-        return {
-            mercado: market ? market.nome : "N/A",
-            preco: p.price
-        };
-    });
-}
-
-// Sugestão de economia no carrinho
-function sugerirEconomia(item) {
-
-    const melhor = obterMelhorPreco(item.produto.id);
-
-    if (!melhor) return 0;
-
-    const atual = item.quantidade * item.valor;
-    const ideal = item.quantidade * melhor.price;
-
-    return atual - ideal;
+            return {
+                market: market ? market.nome : "N/A",
+                price: p.price
+            };
+        });
 }
 
 // ========================================
-// CONTADOR
-// ========================================
-
-function atualizarContador() {
-
-    document.getElementById("contadorProdutos")
-        .innerText = `${produtosFiltrados.length} produtos`;
-}
-
-// ========================================
-// RENDERIZAR PRODUTOS
+// RENDERIZAÇÃO
 // ========================================
 
 function renderizarProdutos() {
@@ -253,13 +262,15 @@ function renderizarProdutos() {
     lista.innerHTML = "";
 
     if (!produtosFiltrados.length) {
-        lista.innerHTML = `<p>Nenhum produto encontrado.</p>`;
+        lista.innerHTML = "<p>Nenhum produto encontrado.</p>";
         return;
     }
 
     produtosFiltrados.forEach(produto => {
 
         const melhor = obterMelhorPreco(produto.id);
+
+        const ranking = rankingMercados(produto.id);
 
         lista.innerHTML += `
         <div class="produto" data-id="${produto.id}">
@@ -276,13 +287,22 @@ function renderizarProdutos() {
 
             </div>
 
-            ${
-                melhor ? `
-                <div class="melhor-preco">
-                    💡 Melhor preço: R$ ${melhor.price.toFixed(2)} em ${melhor.market_name}
+            ${melhor ? `
+                <div class="info-preco">
+                    💡 Melhor: R$ ${melhor.price.toFixed(2)} (${melhor.market_name})<br>
+                    📊 Média: R$ ${melhor.media}<br>
+                    📉 Economia: R$ ${melhor.diferencaMedia}
                 </div>
-                ` : ""
-            }
+            ` : ""}
+
+            <details>
+                <summary>Comparar mercados</summary>
+                <ul>
+                    ${ranking.map(r =>
+                        `<li>${r.market}: R$ ${r.price.toFixed(2)}</li>`
+                    ).join("")}
+                </ul>
+            </details>
 
             <div class="produto-campos">
 
@@ -323,7 +343,6 @@ function configurarEventosProdutos() {
         const valor = card.querySelector(".valor");
 
         checkbox.addEventListener("change", () => {
-
             card.classList.toggle("selecionado", checkbox.checked);
             atualizarResumo();
         });
@@ -334,12 +353,12 @@ function configurarEventosProdutos() {
 }
 
 // ========================================
-// RESUMO
+// RESUMO INTELIGENTE
 // ========================================
 
 function atualizarResumo() {
 
-    let quantidadeTotal = 0;
+    let qtdTotal = 0;
     let valorTotal = 0;
     let economiaTotal = 0;
 
@@ -360,24 +379,21 @@ function atualizarResumo() {
 
         if (checkbox.checked) {
 
-            quantidadeTotal += qtd;
+            qtdTotal += qtd;
             valorTotal += subtotal;
 
-            const produtoId = Number(checkbox.dataset.id);
-            const produto = produtos.find(p => p.id === produtoId);
+            const id = Number(checkbox.dataset.id);
 
-            if (produto) {
+            const melhor = obterMelhorPreco(id);
 
-                economiaTotal += sugerirEconomia({
-                    produto,
-                    quantidade: qtd,
-                    valor
-                });
+            if (melhor) {
+                const ideal = qtd * melhor.price;
+                economiaTotal += (subtotal - ideal);
             }
         }
     });
 
-    document.getElementById("qtdTotal").innerText = quantidadeTotal;
+    document.getElementById("qtdTotal").innerText = qtdTotal;
 
     document.getElementById("valorTotal").innerText =
         valorTotal.toLocaleString("pt-BR", {
@@ -385,11 +401,10 @@ function atualizarResumo() {
             currency: "BRL"
         });
 
-    // opcional: mostrar economia se existir elemento
-    const economiaEl = document.getElementById("economiaTotal");
+    const econEl = document.getElementById("economiaTotal");
 
-    if (economiaEl) {
-        economiaEl.innerText =
+    if (econEl) {
+        econEl.innerText =
             economiaTotal.toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL"
@@ -398,7 +413,7 @@ function atualizarResumo() {
 }
 
 // ========================================
-// SALVAR COMPRA (INALTERADO LOGICAMENTE)
+// SALVAR COMPRA
 // ========================================
 
 async function salvarCompra() {
@@ -409,9 +424,9 @@ async function salvarCompra() {
         const dataCompra = document.getElementById("dataCompra").value;
         const observacoes = document.getElementById("observacoes").value;
 
-        const itensSelecionados = [];
+        const itens = [];
 
-        let quantidadeTotal = 0;
+        let qtdTotal = 0;
         let valorTotal = 0;
 
         document.querySelectorAll(".produto").forEach(card => {
@@ -427,23 +442,23 @@ async function salvarCompra() {
 
             const subtotal = qtd * valor;
 
-            itensSelecionados.push({
+            itens.push({
                 product_id: Number(checkbox.dataset.id),
                 quantidade: qtd,
                 valor_unitario: valor,
                 subtotal
             });
 
-            quantidadeTotal += qtd;
+            qtdTotal += qtd;
             valorTotal += subtotal;
         });
 
-        if (!itensSelecionados.length) {
-            alert("Selecione ao menos um produto válido.");
+        if (!itens.length) {
+            alert("Selecione produtos válidos.");
             return;
         }
 
-        const { data: compra, error: compraError } = await supabaseClient
+        const { data: compra, error } = await supabaseClient
             .from("purchases")
             .insert({
                 user_id: usuarioAtual.id,
@@ -451,41 +466,41 @@ async function salvarCompra() {
                 data_compra: dataCompra,
                 observacoes,
                 valor_total: valorTotal,
-                quantidade_total: quantidadeTotal
+                quantidade_total: qtdTotal
             })
             .select()
             .single();
 
-        if (compraError) {
-            console.error(compraError);
+        if (error) {
+            console.error(error);
             alert("Erro ao salvar compra.");
             return;
         }
 
-        const itensBanco = itensSelecionados.map(item => ({
+        const itensInsert = itens.map(i => ({
             purchase_id: compra.id,
-            product_id: item.product_id,
-            quantidade: item.quantidade,
-            valor_unitario: item.valor_unitario,
-            subtotal: item.subtotal
+            product_id: i.product_id,
+            quantidade: i.quantidade,
+            valor_unitario: i.valor_unitario,
+            subtotal: i.subtotal
         }));
 
-        const { error: itensError } = await supabaseClient
+        const { error: errItens } = await supabaseClient
             .from("purchase_items")
-            .insert(itensBanco);
+            .insert(itensInsert);
 
-        if (itensError) {
-            console.error(itensError);
-            alert("Compra salva, mas houve erro ao gravar itens.");
+        if (errItens) {
+            console.error(errItens);
+            alert("Compra salva, mas erro nos itens.");
             return;
         }
 
-        alert("Compra cadastrada com sucesso!");
+        alert("Compra registrada com sucesso!");
         window.location.href = "dashboard.html";
 
     } catch (erro) {
         console.error(erro);
-        alert("Erro inesperado ao salvar compra.");
+        alert("Erro inesperado.");
     }
 }
 
