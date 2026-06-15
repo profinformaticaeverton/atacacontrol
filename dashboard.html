@@ -9,7 +9,13 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>AtacaControl - Dashboard</title>
+    <meta
+        name="description"
+        content="Dashboard Minha Dispensa: acompanhe gastos, estoque, lista de compras e planejamento da feira do mês.">
+
+    <title>
+        Minha Dispensa | Dashboard
+    </title>
 
     <link
         rel="icon"
@@ -27,94 +33,133 @@
 
     <button
         class="menu-mobile"
-        id="menuMobile">
+        id="menuMobile"
+        aria-label="Abrir menu">
 
         ☰
 
     </button>
 
-    <div class="overlay" id="overlay"></div>
+    <div
+        class="overlay"
+        id="overlay">
+
+    </div>
 
     <div class="layout">
 
-        <!-- MENU -->
+        <aside
+            class="sidebar"
+            id="sidebar">
 
-        <aside class="sidebar" id="sidebar">
+            <div>
 
-            <div class="logo">
+                <div class="logo">
 
-                <div class="logo-icon">
-                    🛒
+                    <div class="logo-icon">
+                        🫙
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Minha Dispensa
+                        </h2>
+
+                        <p>
+                            a feira do mês controlada
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <h2>
-                    AtacaControl
-                </h2>
+                <nav>
+
+                    <button class="menu-btn active">
+
+                        <span>📊</span>
+                        Dashboard
+
+                    </button>
+
+                    <button
+                        class="menu-btn"
+                        onclick="window.location.href='nova-compra.html'">
+
+                        <span>🛒</span>
+                        Nova Compra
+
+                    </button>
+
+                    <button
+                        class="menu-btn"
+                        onclick="window.location.href='historico.html'">
+
+                        <span>🧾</span>
+                        Histórico
+
+                    </button>
+
+                    <button
+                        class="menu-btn"
+                        onclick="window.location.href='dispensa.html'">
+
+                        <span>🫙</span>
+                        Minha Dispensa
+
+                    </button>
+
+                    <button
+                        class="menu-btn"
+                        onclick="window.location.href='lista-compras.html'">
+
+                        <span>📝</span>
+                        Lista de Compras
+
+                    </button>
+
+                    <button
+                        class="menu-btn"
+                        onclick="window.location.href='planejamento-feira.html'">
+
+                        <span>🎯</span>
+                        Planejamento
+
+                    </button>
+
+                </nav>
 
             </div>
-
-            <nav>
-
-                <button class="menu-btn active">
-
-                    📊 Dashboard
-
-                </button>
-
-                <button
-                    class="menu-btn"
-                    onclick="window.location.href='nova-compra.html'">
-
-                    🛍️ Nova Compra
-
-                </button>
-
-                <button
-                    class="menu-btn"
-                    onclick="window.location.href='historico.html'">
-
-                    📜 Histórico
-
-                </button>
-
-                <button class="menu-btn">
-
-                    📈 Relatórios
-
-                </button>
-
-                <button class="menu-btn">
-
-                    👤 Perfil
-
-                </button>
-
-            </nav>
 
             <button
                 class="logout-btn"
                 onclick="logout()">
 
-                🚪 Sair
+                <span>🚪</span>
+                Sair
 
             </button>
 
         </aside>
 
-        <!-- CONTEÚDO -->
-
         <main class="content">
 
             <header class="header">
 
-                <div>
+                <div class="header-text">
+
+                    <span class="page-label">
+                        Centro de controle
+                    </span>
 
                     <h1>
                         Dashboard
                     </h1>
 
                     <p>
-                        Controle inteligente das suas compras
+                        Acompanhe sua feira do mês, seus gastos, o estoque da
+                        dispensa, a lista inteligente e o planejamento mensal.
                     </p>
 
                 </div>
@@ -127,96 +172,438 @@
 
             </header>
 
-            <!-- INDICADORES -->
+            <section class="summary-banner">
 
-            <section class="cards">
+                <div>
 
-                <div class="card">
-
-                    <h3>
-                        💰 Total do Mês
-                    </h3>
-
-                    <span id="totalMes">
-                        R$ 0,00
+                    <span>
+                        Resumo da feira
                     </span>
+
+                    <h2>
+                        Sua feira do mês controlada
+                    </h2>
+
+                    <p>
+                        Registre compras, acompanhe a dispensa e planeje seus
+                        gastos com mais clareza.
+                    </p>
 
                 </div>
 
-                <div class="card">
+                <button
+                    onclick="window.location.href='nova-compra.html'">
 
-                    <h3>
-                        🛒 Compras
-                    </h3>
+                    ➕ Adicionar compra
 
-                    <span id="qtdCompras">
-                        0
-                    </span>
-
-                </div>
-
-                <div class="card">
-
-                    <h3>
-                        📦 Produtos
-                    </h3>
-
-                    <span id="qtdProdutos">
-                        0
-                    </span>
-
-                </div>
-
-                <div class="card">
-
-                    <h3>
-                        🏆 Maior Compra
-                    </h3>
-
-                    <span id="maiorCompra">
-                        R$ 0,00
-                    </span>
-
-                </div>
+                </button>
 
             </section>
 
-            <!-- AÇÕES -->
+            <section class="cards">
+
+                <article class="card">
+
+                    <div class="card-icon card-money">
+                        💰
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Total do Mês
+                        </h3>
+
+                        <span id="totalMes">
+                            R$ 0,00
+                        </span>
+
+                    </div>
+
+                </article>
+
+                <article class="card">
+
+                    <div class="card-icon card-cart">
+                        🛒
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Compras
+                        </h3>
+
+                        <span id="qtdCompras">
+                            0
+                        </span>
+
+                    </div>
+
+                </article>
+
+                <article class="card">
+
+                    <div class="card-icon card-products">
+                        📦
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Produtos Comprados
+                        </h3>
+
+                        <span id="qtdProdutos">
+                            0
+                        </span>
+
+                    </div>
+
+                </article>
+
+                <article class="card">
+
+                    <div class="card-icon card-alert">
+                        🏆
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Maior Compra
+                        </h3>
+
+                        <span id="maiorCompra">
+                            R$ 0,00
+                        </span>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+            <section class="cards">
+
+                <article class="card">
+
+                    <div class="card-icon card-money">
+                        🎯
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Orçamento do Mês
+                        </h3>
+
+                        <span id="orcamentoDashboard">
+                            R$ 0,00
+                        </span>
+
+                    </div>
+
+                </article>
+
+                <article class="card">
+
+                    <div class="card-icon card-warning">
+                        💸
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Gasto Atual
+                        </h3>
+
+                        <span id="gastoDashboard">
+                            R$ 0,00
+                        </span>
+
+                    </div>
+
+                </article>
+
+                <article class="card">
+
+                    <div class="card-icon card-products">
+                        💰
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Saldo Disponível
+                        </h3>
+
+                        <span id="saldoDashboard">
+                            R$ 0,00
+                        </span>
+
+                    </div>
+
+                </article>
+
+                <article class="card">
+
+                    <div class="card-icon card-danger">
+                        ⚠️
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Situação
+                        </h3>
+
+                        <span id="statusDashboard">
+                            Sem meta
+                        </span>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+            <section class="cards pantry-cards">
+
+                <article class="card">
+
+                    <div class="card-icon card-products">
+                        🫙
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Itens na Dispensa
+                        </h3>
+
+                        <span id="itensDispensa">
+                            0
+                        </span>
+
+                    </div>
+
+                </article>
+
+                <article class="card">
+
+                    <div class="card-icon card-warning">
+                        ⚠️
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Itens para Repor
+                        </h3>
+
+                        <span id="itensRepor">
+                            0
+                        </span>
+
+                    </div>
+
+                </article>
+
+                <article class="card">
+
+                    <div class="card-icon card-danger">
+                        🚫
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Sem Estoque
+                        </h3>
+
+                        <span id="itensSemEstoque">
+                            0
+                        </span>
+
+                    </div>
+
+                </article>
+
+                <article class="card">
+
+                    <div class="card-icon card-money">
+                        ✅
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Estoque OK
+                        </h3>
+
+                        <span id="itensEstoqueOk">
+                            0
+                        </span>
+
+                    </div>
+
+                </article>
+
+            </section>
 
             <section class="acoes">
 
                 <button
                     onclick="window.location.href='nova-compra.html'">
 
-                    ➕ Nova Compra
+                    <span>➕</span>
+                    Nova Compra
 
                 </button>
 
                 <button
-                    onclick="window.location.href='historico.html'">
+                    onclick="window.location.href='lista-compras.html'">
 
-                    📜 Histórico
+                    <span>📝</span>
+                    Lista Inteligente
+
+                </button>
+
+                <button
+                    onclick="window.location.href='dispensa.html'">
+
+                    <span>🫙</span>
+                    Minha Dispensa
+
+                </button>
+
+                <button
+                    onclick="window.location.href='planejamento-feira.html'">
+
+                    <span>🎯</span>
+                    Planejamento
 
                 </button>
 
             </section>
 
-            <!-- ÚLTIMAS COMPRAS -->
+            <section class="panel planejamento-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <span class="page-label">
+                            Planejamento da feira
+                        </span>
+
+                        <h2>
+                            Próxima Feira
+                        </h2>
+
+                    </div>
+
+                    <button
+                        class="panel-link"
+                        onclick="window.location.href='planejamento-feira.html'">
+
+                        Ver planejamento
+
+                    </button>
+
+                </div>
+
+                <div
+                    id="planejamentoResumo"
+                    class="planejamento-resumo">
+
+                    <article class="planejamento-card-resumo">
+
+                        <div class="planejamento-status status-neutro">
+                            🎯 Planejamento não definido
+                        </div>
+
+                        <p>
+                            Cadastre uma meta mensal para acompanhar melhor sua feira.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+            <section class="panel pantry-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <span class="page-label">
+                            Estoque atual
+                        </span>
+
+                        <h2>
+                            Minha Dispensa
+                        </h2>
+
+                    </div>
+
+                    <button
+                        class="panel-link"
+                        onclick="window.location.href='dispensa.html'">
+
+                        Ver dispensa
+
+                    </button>
+
+                </div>
+
+                <div
+                    id="listaDispensa"
+                    class="dispensa-grid">
+
+                    <div class="dispensa-card empty-card">
+                        Nenhum item na dispensa ainda.
+                    </div>
+
+                </div>
+
+            </section>
 
             <section class="panel">
 
-                <h2>
-                    Últimas Compras
-                </h2>
+                <div class="panel-header">
+
+                    <div>
+
+                        <span class="page-label">
+                            Movimentação recente
+                        </span>
+
+                        <h2>
+                            Últimas Compras
+                        </h2>
+
+                    </div>
+
+                    <button
+                        class="panel-link"
+                        onclick="window.location.href='historico.html'">
+
+                        Ver todas
+
+                    </button>
+
+                </div>
 
                 <div
                     id="ultimasCompras"
                     class="compras-grid">
 
-                    <div class="compra-card">
-
-                        Nenhuma compra encontrada
-
+                    <div class="compra-card empty-card">
+                        Nenhuma compra encontrada.
                     </div>
 
                 </div>

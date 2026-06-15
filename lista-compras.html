@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Lista de Compras Inteligente do Minha Dispensa: veja itens para repor, produtos sem estoque e organize sua próxima feira.">
+
+    <title>
+        Lista de Compras | Minha Dispensa
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="lista-compras.css">
+
+    <link
+        rel="icon"
+        href="favicon.svg">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header class="header">
+
+            <div class="header-actions">
+
+                <button
+                    class="btn-voltar"
+                    onclick="window.location.href='dashboard.html'">
+
+                    ← Dashboard
+
+                </button>
+
+                <button
+                    class="btn-secundario"
+                    onclick="window.location.href='dispensa.html'">
+
+                    🫙 Minha Dispensa
+
+                </button>
+
+                <button
+                    class="btn-secundario"
+                    onclick="window.location.href='nova-compra.html'">
+
+                    🛒 Nova Compra
+
+                </button>
+
+            </div>
+
+            <div class="header-info">
+
+                <span class="page-label">
+                    Minha Dispensa
+                </span>
+
+                <h1>
+                    Lista de Compras Inteligente
+                </h1>
+
+                <p>
+                    Itens para repor aparecem aqui automaticamente com base
+                    no estoque atual da sua dispensa.
+                </p>
+
+            </div>
+
+        </header>
+
+        <section class="summary-grid">
+
+            <article class="summary-card">
+
+                <div class="summary-icon">
+                    🧾
+                </div>
+
+                <div>
+
+                    <small>
+                        Itens sugeridos
+                    </small>
+
+                    <strong id="totalItensLista">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon warning">
+                    ⚠️
+                </div>
+
+                <div>
+
+                    <small>
+                        Para repor
+                    </small>
+
+                    <strong id="totalRepor">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon danger">
+                    🚫
+                </div>
+
+                <div>
+
+                    <small>
+                        Sem estoque
+                    </small>
+
+                    <strong id="totalSemEstoque">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <section class="card destaque-card">
+
+            <div>
+
+                <span class="page-label">
+                    Próxima feira
+                </span>
+
+                <h2>
+                    Compre somente o que precisa
+                </h2>
+
+                <p>
+                    A lista é gerada a partir dos produtos que estão abaixo
+                    da quantidade mínima ou sem estoque.
+                </p>
+
+            </div>
+
+            <button
+                class="btn-principal"
+                onclick="window.location.href='nova-compra.html'">
+
+                ➕ Registrar compra
+
+            </button>
+
+        </section>
+
+        <section class="card filtros-card">
+
+            <div class="card-title">
+
+                <div class="card-icon">
+                    🔎
+                </div>
+
+                <div>
+
+                    <h2>
+                        Filtrar lista
+                    </h2>
+
+                    <p>
+                        Encontre rapidamente o item que precisa comprar.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="filtros-grid">
+
+                <div>
+
+                    <label for="buscaProduto">
+                        Produto
+                    </label>
+
+                    <input
+                        type="text"
+                        id="buscaProduto"
+                        placeholder="Digite o nome do produto">
+
+                </div>
+
+                <div>
+
+                    <label for="filtroStatus">
+                        Situação
+                    </label>
+
+                    <select id="filtroStatus">
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        <option value="repor">
+                            Para repor
+                        </option>
+
+                        <option value="sem_estoque">
+                            Sem estoque
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="card">
+
+            <div class="lista-header">
+
+                <div>
+
+                    <span class="page-label">
+                        Sugestão automática
+                    </span>
+
+                    <h2>
+                        Itens para próxima compra
+                    </h2>
+
+                </div>
+
+                <button
+                    class="btn-atualizar"
+                    onclick="carregarListaCompras()">
+
+                    Atualizar lista
+
+                </button>
+
+            </div>
+
+            <div
+                id="listaCompras"
+                class="lista-grid">
+
+                <div class="lista-card empty-card">
+
+                    Nenhum item precisa ser reposto no momento.
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="config.js"></script>
+    <script src="lista-compras.js"></script>
+
+</body>
+
+</html>

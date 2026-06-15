@@ -1,8 +1,7 @@
 // ========================================
-// ATACACONTROL
-// NOVA COMPRA V3.0
-// COMPARADOR INTELIGENTE DE PREÇOS
-// PARTE 1/2
+// MINHA DISPENSA
+// NOVA COMPRA
+// REGISTRO DE COMPRA + ATUALIZAÇÃO DE ESTOQUE
 // ========================================
 
 let produtos = [];
@@ -12,9 +11,6 @@ let usuarioAtual = null;
 // ========================================
 // COMPARADOR INTELIGENTE
 // ========================================
-
-// Estrutura esperada no Supabase:
-// product_prices: id, product_id, market_id, price
 
 let historicoPrecos = [];
 let mercadosCache = [];
@@ -32,24 +28,34 @@ async function iniciar() {
         } = await supabaseClient.auth.getSession();
 
         if (!session) {
+
             window.location.href = "/";
+
             return;
         }
 
         usuarioAtual = session.user;
 
-        document.getElementById("dataCompra").valueAsDate = new Date();
+        document
+            .getElementById("dataCompra")
+            .valueAsDate = new Date();
 
         configurarBusca();
 
         await carregarMercados();
-        await carregarHistoricoPrecos(); // NOVO
+        await carregarHistoricoPrecos();
         await carregarProdutos();
 
     } catch (erro) {
 
-        console.error("Erro ao iniciar:", erro);
-        alert("Erro ao carregar página.");
+        console.error(
+            "Erro ao iniciar nova compra:",
+            erro
+        );
+
+        alert(
+            "Erro ao carregar a tela de nova compra."
+        );
     }
 }
 
@@ -59,18 +65,32 @@ async function iniciar() {
 
 function configurarBusca() {
 
-    const campoBusca = document.getElementById("buscaProduto");
-
-    campoBusca.addEventListener("input", () => {
-
-        const termo = campoBusca.value.toLowerCase().trim();
-
-        produtosFiltrados = produtos.filter(produto =>
-            produto.nome.toLowerCase().includes(termo)
+    const campoBusca =
+        document.getElementById(
+            "buscaProduto"
         );
 
-        renderizarProdutos();
-    });
+    campoBusca.addEventListener(
+        "input",
+        () => {
+
+            const termo =
+                campoBusca
+                    .value
+                    .toLowerCase()
+                    .trim();
+
+            produtosFiltrados =
+                produtos.filter(
+                    produto =>
+                        produto.nome
+                            .toLowerCase()
+                            .includes(termo)
+                );
+
+            renderizarProdutos();
+        }
+    );
 }
 
 // ========================================
@@ -81,24 +101,46 @@ async function carregarMercados() {
 
     try {
 
-        const { data, error } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("markets")
             .select("*")
             .order("nome");
 
         if (error) {
+
             console.error(error);
-            alert("Erro ao carregar mercados.");
+
+            alert(
+                "Erro ao carregar mercados."
+            );
+
             return;
         }
 
         mercadosCache = data || [];
 
-        const select = document.getElementById("marketSelect");
+        const select =
+            document.getElementById(
+                "marketSelect"
+            );
 
         select.innerHTML = "";
 
-        data.forEach(market => {
+        if (!mercadosCache.length) {
+
+            select.innerHTML = `
+                <option value="">
+                    Nenhum mercado cadastrado
+                </option>
+            `;
+
+            return;
+        }
+
+        mercadosCache.forEach(market => {
 
             select.innerHTML += `
                 <option value="${market.id}">
@@ -108,31 +150,47 @@ async function carregarMercados() {
         });
 
     } catch (erro) {
-        console.error(erro);
+
+        console.error(
+            "Erro ao carregar mercados:",
+            erro
+        );
     }
 }
 
 // ========================================
-// HISTÓRICO DE PREÇOS (BASE DO COMPARADOR)
+// HISTÓRICO DE PREÇOS
 // ========================================
 
 async function carregarHistoricoPrecos() {
 
     try {
 
-        const { data, error } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("product_prices")
             .select("*");
 
         if (error) {
-            console.error("Erro histórico preços:", error);
+
+            console.error(
+                "Erro ao carregar histórico de preços:",
+                error
+            );
+
             return;
         }
 
         historicoPrecos = data || [];
 
     } catch (erro) {
-        console.error("Erro carregar preços:", erro);
+
+        console.error(
+            "Erro carregar preços:",
+            erro
+        );
     }
 }
 
@@ -144,15 +202,23 @@ async function carregarProdutos() {
 
     try {
 
-        const { data, error } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("products")
             .select("*")
             .eq("ativo", true)
             .order("nome");
 
         if (error) {
+
             console.error(error);
-            alert("Erro ao carregar produtos.");
+
+            alert(
+                "Erro ao carregar produtos."
+            );
+
             return;
         }
 
@@ -163,7 +229,11 @@ async function carregarProdutos() {
         renderizarProdutos();
 
     } catch (erro) {
-        console.error(erro);
+
+        console.error(
+            "Erro ao carregar produtos:",
+            erro
+        );
     }
 }
 
@@ -173,51 +243,41 @@ async function carregarProdutos() {
 
 function obterMelhorPreco(product_id) {
 
-    const precos = historicoPrecos.filter(p =>
-        p.product_id === product_id
-    );
+    const precos =
+        historicoPrecos.filter(
+            p =>
+                Number(p.product_id) ===
+                Number(product_id)
+        );
 
     if (!precos.length) return null;
 
     let melhor = precos[0];
 
     for (let i = 1; i < precos.length; i++) {
-        if (precos[i].price < melhor.price) {
+
+        if (
+            Number(precos[i].price) <
+            Number(melhor.price)
+        ) {
+
             melhor = precos[i];
         }
     }
 
-    const market = mercadosCache.find(m =>
-        m.id === melhor.market_id
-    );
-
-    return {
-        price: melhor.price,
-        market_name: market ? market.nome : "Desconhecido"
-    };
-}
-
-function compararPrecos(product_id) {
-
-    const produto = produtos.find(p => p.id === product_id);
-
-    const precos = historicoPrecos.filter(p =>
-        p.product_id === product_id
-    );
-
-    if (!produto || !precos.length) return null;
-
-    return precos.map(p => {
-
-        const market = mercadosCache.find(m =>
-            m.id === p.market_id
+    const market =
+        mercadosCache.find(
+            m =>
+                Number(m.id) ===
+                Number(melhor.market_id)
         );
 
-        return {
-            mercado: market ? market.nome : "N/A",
-            preco: p.price
-        };
-    });
+    return {
+        price: Number(melhor.price),
+        market_name: market
+            ? market.nome
+            : "mercado não identificado"
+    };
 }
 
 // ========================================
@@ -226,8 +286,16 @@ function compararPrecos(product_id) {
 
 function atualizarContador() {
 
-    document.getElementById("contadorProdutos")
-        .innerText = `${produtosFiltrados.length} produtos`;
+    const contador =
+        document.getElementById(
+            "contadorProdutos"
+        );
+
+    if (contador) {
+
+        contador.innerText =
+            `${produtosFiltrados.length} produtos`;
+    }
 }
 
 // ========================================
@@ -238,25 +306,41 @@ function renderizarProdutos() {
 
     atualizarContador();
 
-    const lista = document.getElementById("listaProdutos");
+    const lista =
+        document.getElementById(
+            "listaProdutos"
+        );
 
     lista.innerHTML = "";
 
     if (!produtosFiltrados.length) {
-        lista.innerHTML = "<p>Nenhum produto encontrado.</p>";
+
+        lista.innerHTML = `
+            <div class="produto">
+                <div class="produto-nome">
+                    Nenhum produto encontrado.
+                </div>
+            </div>
+        `;
+
         return;
     }
 
     produtosFiltrados.forEach(produto => {
 
-        const melhor = obterMelhorPreco(produto.id);
+        const melhor =
+            obterMelhorPreco(
+                produto.id
+            );
 
         lista.innerHTML += `
-        <div class="produto" data-id="${produto.id}">
+
+        <article class="produto" data-id="${produto.id}">
 
             <div class="produto-topo">
 
-                <input type="checkbox"
+                <input
+                    type="checkbox"
                     class="produto-check"
                     data-id="${produto.id}">
 
@@ -266,32 +350,70 @@ function renderizarProdutos() {
 
             </div>
 
-            ${melhor ? `
-                <div class="melhor-preco">
-                    💡 Melhor preço: R$ ${melhor.price.toFixed(2)} em ${melhor.market_name}
-                </div>
-            ` : ""}
+            ${
+                melhor
+                    ? `
+                        <div class="melhor-preco">
+                            💡 Melhor preço já registrado:
+                            ${formatarMoeda(melhor.price)}
+                            em ${melhor.market_name}
+                        </div>
+                    `
+                    : `
+                        <div class="melhor-preco">
+                            💡 Primeiro registro de preço deste produto.
+                        </div>
+                    `
+            }
 
             <div class="produto-campos">
 
                 <div>
-                    <label>Quantidade</label>
-                    <input type="number" min="0" step="0.01" class="qtd">
+
+                    <label>
+                        Quantidade comprada
+                    </label>
+
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        class="qtd"
+                        placeholder="Ex.: 2">
+
                 </div>
 
                 <div>
-                    <label>Valor Unitário</label>
-                    <input type="number" min="0" step="0.01" class="valor">
+
+                    <label>
+                        Valor unitário
+                    </label>
+
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        class="valor"
+                        placeholder="Ex.: 8.99">
+
                 </div>
 
             </div>
 
             <div class="produto-subtotal">
-                <span>Subtotal</span>
-                <strong class="subtotal">R$ 0,00</strong>
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong class="subtotal">
+                    R$ 0,00
+                </strong>
+
             </div>
 
-        </div>
+        </article>
+
         `;
     });
 
@@ -299,25 +421,62 @@ function renderizarProdutos() {
 }
 
 // ========================================
-// EVENTOS
+// EVENTOS DOS PRODUTOS
 // ========================================
 
 function configurarEventosProdutos() {
 
-    document.querySelectorAll(".produto").forEach(card => {
+    document
+        .querySelectorAll(".produto")
+        .forEach(card => {
 
-        const checkbox = card.querySelector(".produto-check");
-        const qtd = card.querySelector(".qtd");
-        const valor = card.querySelector(".valor");
+            const checkbox =
+                card.querySelector(
+                    ".produto-check"
+                );
 
-        checkbox.addEventListener("change", () => {
-            card.classList.toggle("selecionado", checkbox.checked);
-            atualizarResumo();
+            const qtd =
+                card.querySelector(
+                    ".qtd"
+                );
+
+            const valor =
+                card.querySelector(
+                    ".valor"
+                );
+
+            if (
+                !checkbox ||
+                !qtd ||
+                !valor
+            ) {
+
+                return;
+            }
+
+            checkbox.addEventListener(
+                "change",
+                () => {
+
+                    card.classList.toggle(
+                        "selecionado",
+                        checkbox.checked
+                    );
+
+                    atualizarResumo();
+                }
+            );
+
+            qtd.addEventListener(
+                "input",
+                atualizarResumo
+            );
+
+            valor.addEventListener(
+                "input",
+                atualizarResumo
+            );
         });
-
-        qtd.addEventListener("input", atualizarResumo);
-        valor.addEventListener("input", atualizarResumo);
-    });
 }
 
 // ========================================
@@ -329,35 +488,72 @@ function atualizarResumo() {
     let quantidadeTotal = 0;
     let valorTotal = 0;
 
-    document.querySelectorAll(".produto").forEach(card => {
+    document
+        .querySelectorAll(".produto")
+        .forEach(card => {
 
-        const checkbox = card.querySelector(".produto-check");
+            const checkbox =
+                card.querySelector(
+                    ".produto-check"
+                );
 
-        const qtd = Number(card.querySelector(".qtd").value || 0);
-        const valor = Number(card.querySelector(".valor").value || 0);
+            const qtdInput =
+                card.querySelector(
+                    ".qtd"
+                );
 
-        const subtotal = qtd * valor;
+            const valorInput =
+                card.querySelector(
+                    ".valor"
+                );
 
-        card.querySelector(".subtotal").innerText =
-            subtotal.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL"
-            });
+            const subtotalEl =
+                card.querySelector(
+                    ".subtotal"
+                );
 
-        if (checkbox.checked) {
+            if (
+                !checkbox ||
+                !qtdInput ||
+                !valorInput ||
+                !subtotalEl
+            ) {
 
-            quantidadeTotal += qtd;
-            valorTotal += subtotal;
-        }
-    });
+                return;
+            }
 
-    document.getElementById("qtdTotal").innerText = quantidadeTotal;
+            const qtd =
+                Number(
+                    qtdInput.value || 0
+                );
 
-    document.getElementById("valorTotal").innerText =
-        valorTotal.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL"
+            const valor =
+                Number(
+                    valorInput.value || 0
+                );
+
+            const subtotal =
+                qtd * valor;
+
+            subtotalEl.innerText =
+                formatarMoeda(subtotal);
+
+            if (checkbox.checked) {
+
+                quantidadeTotal += qtd;
+                valorTotal += subtotal;
+            }
         });
+
+    document
+        .getElementById("qtdTotal")
+        .innerText =
+        quantidadeTotal;
+
+    document
+        .getElementById("valorTotal")
+        .innerText =
+        formatarMoeda(valorTotal);
 }
 
 // ========================================
@@ -368,88 +564,334 @@ async function salvarCompra() {
 
     try {
 
-        const marketId = document.getElementById("marketSelect").value;
-        const dataCompra = document.getElementById("dataCompra").value;
-        const observacoes = document.getElementById("observacoes").value;
+        const marketId =
+            document
+                .getElementById("marketSelect")
+                .value;
+
+        const dataCompra =
+            document
+                .getElementById("dataCompra")
+                .value;
+
+        const observacoes =
+            document
+                .getElementById("observacoes")
+                .value;
+
+        if (!marketId) {
+
+            alert(
+                "Selecione um mercado antes de salvar."
+            );
+
+            return;
+        }
+
+        if (!dataCompra) {
+
+            alert(
+                "Informe a data da compra."
+            );
+
+            return;
+        }
 
         const itensSelecionados = [];
 
         let quantidadeTotal = 0;
         let valorTotal = 0;
 
-        document.querySelectorAll(".produto").forEach(card => {
+        document
+            .querySelectorAll(".produto")
+            .forEach(card => {
 
-            const checkbox = card.querySelector(".produto-check");
+                const checkbox =
+                    card.querySelector(
+                        ".produto-check"
+                    );
 
-            if (!checkbox.checked) return;
+                if (
+                    !checkbox ||
+                    !checkbox.checked
+                ) {
 
-            const qtd = Number(card.querySelector(".qtd").value || 0);
-            const valor = Number(card.querySelector(".valor").value || 0);
+                    return;
+                }
 
-            if (qtd <= 0 || valor <= 0) return;
+                const qtd =
+                    Number(
+                        card
+                            .querySelector(".qtd")
+                            .value || 0
+                    );
 
-            const subtotal = qtd * valor;
+                const valor =
+                    Number(
+                        card
+                            .querySelector(".valor")
+                            .value || 0
+                    );
 
-            itensSelecionados.push({
-                product_id: Number(checkbox.dataset.id),
-                quantidade: qtd,
-                valor_unitario: valor,
-                subtotal
+                if (
+                    qtd <= 0 ||
+                    valor <= 0
+                ) {
+
+                    return;
+                }
+
+                const subtotal =
+                    qtd * valor;
+
+                itensSelecionados.push({
+
+                    product_id:
+                        Number(
+                            checkbox.dataset.id
+                        ),
+
+                    quantidade:
+                        qtd,
+
+                    valor_unitario:
+                        valor,
+
+                    subtotal:
+                        subtotal
+                });
+
+                quantidadeTotal += qtd;
+                valorTotal += subtotal;
             });
 
-            quantidadeTotal += qtd;
-            valorTotal += subtotal;
-        });
-
         if (!itensSelecionados.length) {
-            alert("Selecione ao menos um produto válido.");
+
+            alert(
+                "Selecione ao menos um produto com quantidade e valor válidos."
+            );
+
             return;
         }
 
-        const { data: compra, error } = await supabaseClient
+        const {
+            data: compra,
+            error
+        } = await supabaseClient
             .from("purchases")
             .insert({
-                user_id: usuarioAtual.id,
-                market_id: Number(marketId),
-                data_compra: dataCompra,
-                observacoes,
-                valor_total: valorTotal,
-                quantidade_total: quantidadeTotal
+
+                user_id:
+                    usuarioAtual.id,
+
+                market_id:
+                    Number(marketId),
+
+                data_compra:
+                    dataCompra,
+
+                observacoes:
+                    observacoes,
+
+                valor_total:
+                    valorTotal,
+
+                quantidade_total:
+                    quantidadeTotal
+
             })
             .select()
             .single();
 
         if (error) {
+
             console.error(error);
-            alert("Erro ao salvar compra.");
+
+            alert(
+                "Erro ao salvar compra."
+            );
+
             return;
         }
 
-        const itensBanco = itensSelecionados.map(i => ({
-            purchase_id: compra.id,
-            product_id: i.product_id,
-            quantidade: i.quantidade,
-            valor_unitario: i.valor_unitario,
-            subtotal: i.subtotal
-        }));
+        const itensBanco =
+            itensSelecionados.map(i => ({
 
-        const { error: errItens } = await supabaseClient
+                purchase_id:
+                    compra.id,
+
+                product_id:
+                    i.product_id,
+
+                quantidade:
+                    i.quantidade,
+
+                valor_unitario:
+                    i.valor_unitario,
+
+                subtotal:
+                    i.subtotal
+            }));
+
+        const {
+            error: errItens
+        } = await supabaseClient
             .from("purchase_items")
             .insert(itensBanco);
 
         if (errItens) {
+
             console.error(errItens);
-            alert("Compra salva, mas erro nos itens.");
+
+            alert(
+                "Compra salva, mas houve erro ao salvar os itens."
+            );
+
             return;
         }
 
-        alert("Compra cadastrada com sucesso!");
-        window.location.href = "dashboard.html";
+        await atualizarHistoricoPrecos(
+            itensSelecionados,
+            Number(marketId)
+        );
+
+        await atualizarEstoqueDispensa(
+            itensSelecionados
+        );
+
+        alert(
+            "Compra salva com sucesso! Sua dispensa foi atualizada."
+        );
+
+        window.location.href =
+            "dashboard.html";
 
     } catch (erro) {
-        console.error(erro);
-        alert("Erro inesperado.");
+
+        console.error(
+            "Erro inesperado ao salvar compra:",
+            erro
+        );
+
+        alert(
+            "Erro inesperado ao salvar a compra."
+        );
     }
+}
+
+// ========================================
+// ATUALIZAR HISTÓRICO DE PREÇOS
+// ========================================
+
+async function atualizarHistoricoPrecos(
+    itensSelecionados,
+    marketId
+) {
+
+    try {
+
+        const precos =
+            itensSelecionados.map(item => ({
+
+                product_id:
+                    item.product_id,
+
+                market_id:
+                    marketId,
+
+                price:
+                    item.valor_unitario
+
+            }));
+
+        if (!precos.length) return;
+
+        const {
+            error
+        } = await supabaseClient
+            .from("product_prices")
+            .insert(precos);
+
+        if (error) {
+
+            console.error(
+                "Erro ao atualizar histórico de preços:",
+                error
+            );
+        }
+
+    } catch (erro) {
+
+        console.error(
+            "Erro inesperado no histórico de preços:",
+            erro
+        );
+    }
+}
+
+// ========================================
+// ATUALIZAR ESTOQUE DA DISPENSA
+// ========================================
+
+async function atualizarEstoqueDispensa(
+    itensSelecionados
+) {
+
+    try {
+
+        for (
+            const item of itensSelecionados
+        ) {
+
+            const {
+                error
+            } = await supabaseClient
+                .rpc(
+                    "add_item_to_pantry_stock",
+                    {
+                        p_user_id:
+                            usuarioAtual.id,
+
+                        p_product_id:
+                            item.product_id,
+
+                        p_quantidade:
+                            item.quantidade
+                    }
+                );
+
+            if (error) {
+
+                console.error(
+                    "Erro ao atualizar estoque:",
+                    error
+                );
+            }
+        }
+
+    } catch (erro) {
+
+        console.error(
+            "Erro inesperado ao atualizar estoque:",
+            erro
+        );
+    }
+}
+
+// ========================================
+// HELPERS
+// ========================================
+
+function formatarMoeda(valor) {
+
+    return Number(valor || 0)
+        .toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
 }
 
 // ========================================

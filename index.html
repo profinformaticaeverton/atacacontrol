@@ -2,107 +2,491 @@
 <html lang="pt-BR">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>AtacaControl</title>
+    <meta charset="UTF-8">
 
-<link rel="icon" href="favicon.svg">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css">
+    <meta
+        name="description"
+        content="Minha Dispensa: controle sua feira do mês, acompanhe gastos, organize compras e mantenha sua dispensa sempre em dia.">
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <title>
+        Minha Dispensa | a feira do mês controlada
+    </title>
+
+    <link
+        rel="icon"
+        href="favicon.svg">
+
+    <link
+        rel="stylesheet"
+        href="style.css">
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
 </head>
 
-<body>
+<body onload="verificarSessao()">
 
-<div class="container">
+    <main class="landing-page">
 
-    <div class="logo">
+        <!-- ========================= -->
+        <!-- HERO / APRESENTAÇÃO -->
+        <!-- ========================= -->
 
-        <div class="icon">🛒</div>
+        <section class="hero-section">
 
-        <h1>AtacaControl</h1>
+            <div class="hero-brand">
 
-        <p>
-            Controle inteligente de compras
-        </p>
+                <div class="hero-icon">
+                    🫙
+                </div>
 
-    </div>
+                <div>
 
-    <div class="tabs">
+                    <h1>
+                        Minha Dispensa
+                    </h1>
 
-        <button
-            id="btnLogin"
-            class="active"
-            onclick="mostrarLogin()">
+                    <p class="slogan">
+                        a feira do mês controlada
+                    </p>
 
-            Entrar
+                </div>
 
-        </button>
+            </div>
 
-        <button
-            id="btnCadastro"
-            onclick="mostrarCadastro()">
+            <div class="hero-content">
 
-            Criar Conta
+                <span class="hero-tag">
+                    Organização • Economia • Controle
+                </span>
 
-        </button>
+                <h2>
+                    Controle sua feira do mês sem complicação
+                </h2>
 
-    </div>
+                <p>
+                    O Minha Dispensa ajuda você a registrar compras,
+                    acompanhar gastos, comparar preços e manter sua
+                    dispensa organizada de forma simples, visual e prática.
+                </p>
 
-    <div id="loginBox">
+                <div class="hero-actions">
 
-        <input
-            type="email"
-            id="email"
-            placeholder="E-mail">
+                    <a
+                        href="#acesso"
+                        class="btn-hero-primary">
 
-        <input
-            type="password"
-            id="password"
-            placeholder="Senha">
+                        Começar agora
 
-        <button
-            class="btn-primary"
-            onclick="login()">
+                    </a>
 
-            Entrar
+                    <a
+                        href="#funcionalidades"
+                        class="btn-hero-secondary">
 
-        </button>
+                        Ver funcionalidades
 
-    </div>
+                    </a>
 
-    <div
-        id="cadastroBox"
-        style="display:none">
+                </div>
 
-        <input
-            type="email"
-            id="newEmail"
-            placeholder="E-mail">
+            </div>
 
-        <input
-            type="password"
-            id="newPassword"
-            placeholder="Senha">
+        </section>
 
-        <button
-            class="btn-success"
-            onclick="register()">
+        <!-- ========================= -->
+        <!-- CARDS DE BENEFÍCIOS -->
+        <!-- ========================= -->
 
-            Criar Conta
+        <section
+            class="benefits-section"
+            id="funcionalidades">
 
-        </button>
+            <div class="section-title">
 
-    </div>
+                <span>
+                    Funcionalidades
+                </span>
 
-    <div id="msg"></div>
+                <h2>
+                    Tudo que você precisa para controlar melhor suas compras
+                </h2>
 
-</div>
+            </div>
 
-<script src="config.js"></script>
-<script src="app.js"></script>
+            <div class="benefits-grid">
+
+                <article class="benefit-card">
+
+                    <div class="benefit-icon">
+                        🛒
+                    </div>
+
+                    <h3>
+                        Registro de compras
+                    </h3>
+
+                    <p>
+                        Cadastre suas compras por mercado, data, produto,
+                        quantidade e valor unitário.
+                    </p>
+
+                </article>
+
+                <article class="benefit-card">
+
+                    <div class="benefit-icon">
+                        💰
+                    </div>
+
+                    <h3>
+                        Controle de gastos
+                    </h3>
+
+                    <p>
+                        Veja o total gasto no mês, acompanhe sua maior compra
+                        e entenda melhor para onde seu dinheiro está indo.
+                    </p>
+
+                </article>
+
+                <article class="benefit-card">
+
+                    <div class="benefit-icon">
+                        📦
+                    </div>
+
+                    <h3>
+                        Produtos organizados
+                    </h3>
+
+                    <p>
+                        Liste os itens da sua feira e mantenha uma visão clara
+                        dos produtos usados no dia a dia.
+                    </p>
+
+                </article>
+
+                <article class="benefit-card">
+
+                    <div class="benefit-icon">
+                        📊
+                    </div>
+
+                    <h3>
+                        Histórico inteligente
+                    </h3>
+
+                    <p>
+                        Consulte compras anteriores, filtre por mercado e
+                        acompanhe sua evolução de consumo.
+                    </p>
+
+                </article>
+
+                <article class="benefit-card">
+
+                    <div class="benefit-icon">
+                        🧾
+                    </div>
+
+                    <h3>
+                        Comparação de preços
+                    </h3>
+
+                    <p>
+                        Compare valores já registrados e identifique onde
+                        determinados produtos saíram mais em conta.
+                    </p>
+
+                </article>
+
+                <article class="benefit-card">
+
+                    <div class="benefit-icon">
+                        ⚠️
+                    </div>
+
+                    <h3>
+                        Compras mais conscientes
+                    </h3>
+
+                    <p>
+                        Evite compras duplicadas, reduza desperdícios e tenha
+                        mais previsibilidade na feira do mês.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- COMO FUNCIONA -->
+        <!-- ========================= -->
+
+        <section class="how-section">
+
+            <div class="section-title">
+
+                <span>
+                    Como funciona
+                </span>
+
+                <h2>
+                    Simples para usar no mercado ou em casa
+                </h2>
+
+            </div>
+
+            <div class="steps-grid">
+
+                <article class="step-card">
+
+                    <strong>
+                        1
+                    </strong>
+
+                    <h3>
+                        Crie sua conta
+                    </h3>
+
+                    <p>
+                        Acesse com e-mail e senha para manter suas compras
+                        vinculadas ao seu usuário.
+                    </p>
+
+                </article>
+
+                <article class="step-card">
+
+                    <strong>
+                        2
+                    </strong>
+
+                    <h3>
+                        Registre a compra
+                    </h3>
+
+                    <p>
+                        Escolha o mercado, selecione os produtos e informe
+                        quantidade e valor.
+                    </p>
+
+                </article>
+
+                <article class="step-card">
+
+                    <strong>
+                        3
+                    </strong>
+
+                    <h3>
+                        Acompanhe o mês
+                    </h3>
+
+                    <p>
+                        Veja os gastos, compras recentes e histórico para
+                        planejar melhor a próxima feira.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- CHAMADA VISUAL -->
+        <!-- ========================= -->
+
+        <section class="preview-section">
+
+            <div class="preview-card">
+
+                <div>
+
+                    <span class="preview-label">
+                        Resumo do mês
+                    </span>
+
+                    <h2>
+                        Sua dispensa mais organizada e seu orçamento mais claro.
+                    </h2>
+
+                    <p>
+                        Ideal para famílias, casais, estudantes e qualquer
+                        pessoa que queira controlar melhor a feira do mês.
+                    </p>
+
+                </div>
+
+                <div class="mock-card">
+
+                    <div class="mock-header">
+
+                        <span>
+                            Maio 2026
+                        </span>
+
+                        <strong>
+                            67%
+                        </strong>
+
+                    </div>
+
+                    <div class="mock-progress">
+
+                        <div></div>
+
+                    </div>
+
+                    <div class="mock-values">
+
+                        <p>
+                            Orçamento
+                            <strong>
+                                R$ 800,00
+                            </strong>
+                        </p>
+
+                        <p>
+                            Gasto atual
+                            <strong>
+                                R$ 536,50
+                            </strong>
+                        </p>
+
+                        <p>
+                            Restante
+                            <strong>
+                                R$ 263,50
+                            </strong>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- ACESSO -->
+        <!-- ========================= -->
+
+        <section
+            class="access-section"
+            id="acesso">
+
+            <div class="access-card">
+
+                <div class="access-header">
+
+                    <div class="icon">
+                        🫙
+                    </div>
+
+                    <h2>
+                        Acesse sua conta
+                    </h2>
+
+                    <p>
+                        Entre ou crie sua conta para começar a controlar sua
+                        feira do mês.
+                    </p>
+
+                </div>
+
+                <div class="tabs">
+
+                    <button
+                        id="btnLogin"
+                        class="active"
+                        onclick="mostrarLogin()">
+
+                        Entrar
+
+                    </button>
+
+                    <button
+                        id="btnCadastro"
+                        onclick="mostrarCadastro()">
+
+                        Criar Conta
+
+                    </button>
+
+                </div>
+
+                <div id="loginBox">
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="E-mail"
+                        autocomplete="email">
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Senha"
+                        autocomplete="current-password">
+
+                    <button
+                        class="btn-primary"
+                        onclick="login()">
+
+                        Entrar
+
+                    </button>
+
+                </div>
+
+                <div
+                    id="cadastroBox"
+                    style="display:none">
+
+                    <input
+                        type="email"
+                        id="newEmail"
+                        placeholder="E-mail"
+                        autocomplete="email">
+
+                    <input
+                        type="password"
+                        id="newPassword"
+                        placeholder="Senha"
+                        autocomplete="new-password">
+
+                    <button
+                        class="btn-success"
+                        onclick="register()">
+
+                        Criar Conta
+
+                    </button>
+
+                </div>
+
+                <div id="msg"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
 
 </body>
+
 </html>

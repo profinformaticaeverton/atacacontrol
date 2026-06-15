@@ -1,6 +1,6 @@
 /* ========================================
    MINHA DISPENSA
-   NOVA COMPRA
+   PLANEJAMENTO DA FEIRA
    MOBILE FIRST
 ======================================== */
 
@@ -23,7 +23,6 @@ body{
         Verdana,
         sans-serif;
     color:#4E342E;
-    padding-bottom:140px;
 }
 
 .app{
@@ -72,14 +71,16 @@ body{
 }
 
 /* ========================================
-   BOTÕES SUPERIORES
+   BOTÕES
 ======================================== */
 
 .btn-voltar,
-.btn-dispensar{
-    min-height:52px;
+.btn-secundario,
+.btn-principal,
+.btn-atualizar{
     border:none;
     border-radius:18px;
+    min-height:52px;
     padding:12px 18px;
     font-size:15px;
     font-weight:800;
@@ -92,28 +93,86 @@ body{
     color:#4E342E;
 }
 
-.btn-dispensar{
+.btn-secundario{
     background:#F1ECE9;
     color:#4E342E;
 }
 
-.btn-lista{
-    background:#F57C00;
+.btn-principal{
+    width:100%;
+    background:#2E7D32;
     color:white;
+    box-shadow:0 12px 24px rgba(46,125,50,.22);
 }
 
-.btn-planejamento{
-    background:#F9A825;
-    color:#4E342E;
+.btn-atualizar{
+    background:#F57C00;
+    color:white;
+    box-shadow:0 12px 24px rgba(245,124,0,.22);
 }
 
 .btn-voltar:hover,
-.btn-dispensar:hover{
+.btn-secundario:hover,
+.btn-principal:hover,
+.btn-atualizar:hover{
     transform:translateY(-2px);
 }
 
 /* ========================================
-   CARDS
+   RESUMO
+======================================== */
+
+.summary-grid{
+    display:grid;
+    gap:14px;
+    margin-bottom:18px;
+}
+
+.summary-card{
+    background:white;
+    border-radius:24px;
+    padding:18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border:1px solid rgba(109,109,109,.12);
+    box-shadow:0 12px 28px rgba(78,52,46,.08);
+}
+
+.summary-icon{
+    width:56px;
+    height:56px;
+    border-radius:18px;
+    background:#FFF8E1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    flex-shrink:0;
+}
+
+.summary-icon.warning{
+    background:#FFF8E1;
+}
+
+.summary-icon.success{
+    background:#E8F5E9;
+}
+
+.summary-card small{
+    display:block;
+    color:#6D6D6D;
+    margin-bottom:4px;
+}
+
+.summary-card strong{
+    font-size:1.35rem;
+    font-weight:900;
+    color:#3E2723;
+}
+
+/* ========================================
+   CARD PADRÃO
 ======================================== */
 
 .card{
@@ -144,14 +203,17 @@ body{
     flex-shrink:0;
 }
 
-.card-title h2{
+.card-title h2,
+.lista-header h2,
+.status-card h2{
     color:#3E2723;
-    margin-bottom:4px;
 }
 
-.card-title p{
+.card-title p,
+.status-card p{
     color:#6D6D6D;
     line-height:1.45;
+    font-size:.95rem;
 }
 
 /* ========================================
@@ -165,33 +227,21 @@ label{
     color:#4E342E;
 }
 
-input,
-select,
-textarea{
+input{
     width:100%;
+    min-height:54px;
     border:1px solid rgba(109,109,109,.20);
     border-radius:16px;
     padding:14px;
+    font-size:16px;
     background:#F8F9FA;
     color:#4E342E;
-    font-size:16px;
     outline:none;
     transition:.25s;
+    margin-bottom:16px;
 }
 
-input,
-select{
-    min-height:54px;
-}
-
-textarea{
-    resize:vertical;
-    min-height:110px;
-}
-
-input:focus,
-select:focus,
-textarea:focus{
+input:focus{
     background:white;
     border-color:#2E7D32;
     box-shadow:0 0 0 4px rgba(46,125,50,.12);
@@ -200,200 +250,91 @@ textarea:focus{
 .form-grid{
     display:grid;
     gap:14px;
-    margin-bottom:16px;
 }
 
 /* ========================================
-   BUSCA
+   STATUS / PROGRESSO
 ======================================== */
 
-.search-card{
-    position:sticky;
-    top:0;
-    z-index:20;
-}
-
-.busca-container{
-    position:relative;
-}
-
-/* ========================================
-   PRODUTOS
-======================================== */
-
-.titulo-produtos{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
-    margin-bottom:18px;
-}
-
-.titulo-produtos h2{
-    color:#3E2723;
-}
-
-#contadorProdutos{
-    color:#6D6D6D;
-    font-size:.85rem;
-    font-weight:700;
-}
-
-.lista-produtos{
+.status-card{
     display:grid;
-    gap:16px;
+    gap:22px;
 }
 
-.produto-card{
-    background:#F8F9FA;
-    border-radius:22px;
-    padding:18px;
-    border:1px solid rgba(109,109,109,.12);
+.progress-area{
+    width:100%;
 }
 
-.produto-topo{
-    margin-bottom:14px;
-}
-
-.produto-nome{
-    font-size:1rem;
-    font-weight:900;
-    color:#3E2723;
-}
-
-.produto-categoria{
-    color:#6D6D6D;
-    font-size:.82rem;
-    margin-top:4px;
-}
-
-.produto-grid{
-    display:grid;
-    gap:12px;
-    margin-bottom:14px;
-}
-
-.produto-grid input{
-    text-align:center;
-}
-
-.subtotal-card{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:white;
-    border-radius:16px;
-    padding:12px;
-    margin-top:10px;
-}
-
-.subtotal-card span{
-    color:#6D6D6D;
-}
-
-.subtotal-card strong{
-    color:#2E7D32;
-    font-size:1.05rem;
-}
-
-/* ========================================
-   COMPARADOR DE PREÇOS
-======================================== */
-
-.comparador-preco{
-    margin-top:14px;
-    background:white;
-    border-radius:18px;
-    padding:14px;
-    border:1px solid rgba(109,109,109,.10);
-}
-
-.linha-preco{
+.progress-label{
     display:flex;
     justify-content:space-between;
     gap:12px;
     margin-bottom:8px;
-}
-
-.label-preco{
     color:#6D6D6D;
-    font-size:.85rem;
+    font-size:.9rem;
 }
 
-.ultimo-preco,
-.preco-atual{
-    font-weight:900;
+.progress-label strong{
     color:#3E2723;
 }
 
-.variacao-preco{
-    margin-top:10px;
-    padding:10px;
-    border-radius:12px;
-    font-size:.85rem;
-    font-weight:700;
+.progress-bar{
+    width:100%;
+    height:14px;
+    background:#E0E0E0;
+    border-radius:999px;
+    overflow:hidden;
 }
 
-.variacao-subiu{
-    background:#FFEBEE;
-    color:#C62828;
+.progress-fill{
+    width:0%;
+    height:100%;
+    border-radius:999px;
+    background:#2E7D32;
+    transition:.35s;
 }
 
-.variacao-caiu{
-    background:#E8F5E9;
-    color:#2E7D32;
+.progress-fill.alerta{
+    background:#F9A825;
 }
 
-.variacao-igual{
-    background:#FFF8E1;
-    color:#7A4A00;
+.progress-fill.estourou{
+    background:#C62828;
 }
 
 /* ========================================
-   RESUMO FIXO
+   INDICADORES
 ======================================== */
 
-.resumo-fixo{
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-    background:white;
-    padding:14px;
-    border-top:1px solid rgba(109,109,109,.12);
-    box-shadow:0 -12px 30px rgba(78,52,46,.08);
-    z-index:100;
-}
-
-.resumo-info{
+.lista-header{
     display:flex;
-    justify-content:space-between;
-    gap:12px;
-    margin-bottom:12px;
+    flex-direction:column;
+    gap:16px;
+    margin-bottom:18px;
 }
 
-.resumo-info small{
+.indicadores-grid{
+    display:grid;
+    gap:14px;
+}
+
+.indicador-card{
+    background:#F8F9FA;
+    border-radius:20px;
+    padding:18px;
+    border:1px solid rgba(109,109,109,.12);
+}
+
+.indicador-card small{
     display:block;
     color:#6D6D6D;
-    margin-bottom:4px;
+    margin-bottom:8px;
 }
 
-.resumo-info strong{
+.indicador-card strong{
+    font-size:1.25rem;
     color:#2E7D32;
-    font-size:1.15rem;
-}
-
-.btn-salvar{
-    width:100%;
-    min-height:56px;
-    border:none;
-    border-radius:18px;
-    background:#2E7D32;
-    color:white;
-    font-size:16px;
     font-weight:900;
-    cursor:pointer;
-    box-shadow:0 12px 24px rgba(46,125,50,.22);
 }
 
 /* ========================================
@@ -406,31 +347,32 @@ textarea:focus{
         padding:24px;
     }
 
-    .header{
-        flex-direction:row;
-        justify-content:space-between;
-        align-items:flex-start;
-    }
-
     .header-actions{
         flex-direction:row;
         flex-wrap:wrap;
     }
 
+    .summary-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+
     .form-grid{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .produto-grid{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .lista-produtos{
         grid-template-columns:repeat(2,1fr);
     }
 
-    .resumo-fixo{
-        padding:18px 24px;
+    .status-card{
+        grid-template-columns:1fr 1fr;
+        align-items:center;
+    }
+
+    .lista-header{
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:center;
+    }
+
+    .indicadores-grid{
+        grid-template-columns:repeat(2,1fr);
     }
 }
 
@@ -444,22 +386,17 @@ textarea:focus{
         padding:30px;
     }
 
+    .header{
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:flex-start;
+    }
+
     .header-info h1{
         font-size:2.4rem;
     }
 
-    .lista-produtos{
-        grid-template-columns:repeat(3,1fr);
-    }
-}
-
-/* ========================================
-   TELAS GRANDES
-======================================== */
-
-@media(min-width:1600px){
-
-    .lista-produtos{
+    .indicadores-grid{
         grid-template-columns:repeat(4,1fr);
     }
 }

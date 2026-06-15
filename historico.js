@@ -1,10 +1,12 @@
 // ========================================
-// ATACACONTROL
-// HISTÓRICO DE COMPRAS
+// MINHA DISPENSA
+// HISTÓRICO INTELIGENTE DE COMPRAS
+// COMPRAS + DETALHES + RECÁLCULO DE ESTOQUE
 // ========================================
 
-let usuarioAtual = null;
 let compras = [];
+let comprasFiltradas = [];
+let usuarioAtual = null;
 
 // ========================================
 // INICIAR
@@ -27,17 +29,59 @@ async function iniciar() {
 
         usuarioAtual = session.user;
 
+        configurarFiltros();
+
         await carregarCompras();
 
     } catch (erro) {
 
         console.error(
-            "Erro ao iniciar:",
+            "Erro ao iniciar histórico:",
             erro
         );
 
         alert(
             "Erro ao carregar histórico."
+        );
+    }
+}
+
+// ========================================
+// FILTROS
+// ========================================
+
+function configurarFiltros() {
+
+    const busca =
+        document.getElementById("buscaMercado");
+
+    const dataInicial =
+        document.getElementById("dataInicial");
+
+    const dataFinal =
+        document.getElementById("dataFinal");
+
+    if (busca) {
+
+        busca.addEventListener(
+            "input",
+            filtrarCompras
+        );
+    }
+
+    if (dataInicial) {
+
+        dataInicial.addEventListener(
+            "change",
+            filtrarCompras
+        );
+    }
+
+    if (dataFinal) {
+
+        dataFinal.addEventListener(
+            "change",
+            filtrarCompras
         );
     }
 }
@@ -58,6 +102,7 @@ async function carregarCompras() {
             .select(`
                 *,
                 markets (
+                    id,
                     nome
                 )
             `)
@@ -84,19 +129,77 @@ async function carregarCompras() {
         }
 
         compras = data || [];
+        comprasFiltradas = [...compras];
 
         atualizarResumo();
-
-        renderizarCompras(
-            compras
-        );
+        renderizarCompras();
 
     } catch (erro) {
 
         console.error(
+            "Erro ao carregar compras:",
             erro
         );
     }
+}
+
+// ========================================
+// FILTRAR COMPRAS
+// ========================================
+
+function filtrarCompras() {
+
+    const mercado =
+        document
+            .getElementById("buscaMercado")
+            .value
+            .toLowerCase()
+            .trim();
+
+    const dataInicial =
+        document
+            .getElementById("dataInicial")
+            .value;
+
+    const dataFinal =
+        document
+            .getElementById("dataFinal")
+            .value;
+
+    comprasFiltradas =
+        compras.filter(compra => {
+
+            const nomeMercado =
+                (
+                    compra.markets?.nome ||
+                    ""
+                ).toLowerCase();
+
+            const filtroMercado =
+                !mercado ||
+                nomeMercado.includes(
+                    mercado
+                );
+
+            const filtroDataInicial =
+                !dataInicial ||
+                compra.data_compra >=
+                dataInicial;
+
+            const filtroDataFinal =
+                !dataFinal ||
+                compra.data_compra <=
+                dataFinal;
+
+            return (
+                filtroMercado &&
+                filtroDataInicial &&
+                filtroDataFinal
+            );
+        });
+
+    atualizarResumo();
+    renderizarCompras();
 }
 
 // ========================================
@@ -106,10 +209,10 @@ async function carregarCompras() {
 function atualizarResumo() {
 
     const totalCompras =
-        compras.length;
+        comprasFiltradas.length;
 
     const valorTotal =
-        compras.reduce(
+        comprasFiltradas.reduce(
             (total, compra) =>
                 total +
                 Number(
@@ -118,200 +221,141 @@ function atualizarResumo() {
             0
         );
 
-    document
-        .getElementById(
-            "totalCompras"
-        )
-        .innerText =
-        totalCompras;
+    atualizarTexto(
+        "totalCompras",
+        totalCompras
+    );
 
-    document
-        .getElementById(
-            "valorCompras"
-        )
-        .innerText =
-        valorTotal.toLocaleString(
-            "pt-BR",
-            {
-                style: "currency",
-                currency: "BRL"
-            }
-        );
+    atualizarTexto(
+        "valorCompras",
+        formatarMoeda(valorTotal)
+    );
 }
 
 // ========================================
 // RENDERIZAR COMPRAS
 // ========================================
 
-function renderizarCompras(lista) {
+function renderizarCompras() {
 
     const container =
         document.getElementById(
             "listaCompras"
         );
 
-    container.innerHTML = "";
+    if (!container) return;
 
-    if (lista.length === 0) {
+    if (!comprasFiltradas.length) {
 
         container.innerHTML = `
-            <div class="card">
-                Nenhuma compra encontrada.
-            </div>
+
+            <article class="compra-card">
+
+                <div class="compra-mercado">
+
+                    Nenhuma compra encontrada.
+
+                </div>
+
+            </article>
+
         `;
 
         return;
     }
 
-    lista.forEach(compra => {
+    container.innerHTML = "";
 
-        const data =
-            new Date(
-                compra.data_compra
-            );
-
-        const dataFormatada =
-            data.toLocaleDateString(
-                "pt-BR"
-            );
-
-        const mercado =
-            compra.markets?.nome
-            || "Mercado";
+    comprasFiltradas.forEach(compra => {
 
         container.innerHTML += `
 
-        <div class="compra-card">
+            <article class="compra-card">
 
-            <div class="compra-data">
+                <div class="compra-topo">
 
-                📅 ${dataFormatada}
+                    <div>
 
-            </div>
+                        <div class="compra-data">
 
-            <div class="compra-info">
+                            📅 ${formatarData(
+                                compra.data_compra
+                            )}
 
-                <div>
+                        </div>
 
-                    🏪 ${mercado}
+                        <div class="compra-mercado">
+
+                            ${compra.markets?.nome || "Mercado não informado"}
+
+                        </div>
+
+                    </div>
+
+                    <div class="compra-total">
+
+                        ${formatarMoeda(
+                            compra.valor_total
+                        )}
+
+                    </div>
 
                 </div>
 
-                <div>
+                <div class="compra-info">
 
-                    🛒 ${compra.quantidade_total} itens
+                    <div class="info-item">
+
+                        <span>
+                            Itens
+                        </span>
+
+                        <strong>
+                            ${formatarQuantidade(
+                                compra.quantidade_total || 0
+                            )}
+                        </strong>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <span>
+                            Média por item
+                        </span>
+
+                        <strong>
+                            ${calcularMediaPorItem(compra)}
+                        </strong>
+
+                    </div>
 
                 </div>
 
-            </div>
+                <div class="compra-acoes">
 
-            <div class="compra-total">
+                    <button
+                        class="btn-detalhes"
+                        onclick="abrirDetalhes(${compra.id})">
 
-                ${Number(
-                    compra.valor_total
-                ).toLocaleString(
-                    "pt-BR",
-                    {
-                        style: "currency",
-                        currency: "BRL"
-                    }
-                )}
+                        Ver detalhes
 
-            </div>
+                    </button>
 
-            <div class="compra-acoes">
+                    <button
+                        class="btn-excluir"
+                        onclick="excluirCompra(${compra.id})">
 
-                <button
-                    class="btn-detalhes"
-                    onclick="abrirDetalhes(${compra.id})">
+                        Excluir
 
-                    Ver Detalhes
+                    </button>
 
-                </button>
+                </div>
 
-                <button
-                    class="btn-excluir"
-                    onclick="excluirCompra(${compra.id})">
-
-                    Excluir
-
-                </button>
-
-            </div>
-
-        </div>
+            </article>
 
         `;
     });
-}
-
-// ========================================
-// FILTRAR
-// ========================================
-
-function filtrarCompras() {
-
-    const mercadoBusca =
-        document
-        .getElementById(
-            "buscaMercado"
-        )
-        .value
-        .toLowerCase();
-
-    const dataInicial =
-        document
-        .getElementById(
-            "dataInicial"
-        )
-        .value;
-
-    const dataFinal =
-        document
-        .getElementById(
-            "dataFinal"
-        )
-        .value;
-
-    let resultado =
-        [...compras];
-
-    if (mercadoBusca) {
-
-        resultado =
-            resultado.filter(
-                compra =>
-                    compra.markets?.nome
-                    ?.toLowerCase()
-                    .includes(
-                        mercadoBusca
-                    )
-            );
-    }
-
-    if (dataInicial) {
-
-        resultado =
-            resultado.filter(
-                compra =>
-                    compra.data_compra >=
-                    dataInicial
-            );
-    }
-
-    if (dataFinal) {
-
-        resultado =
-            resultado.filter(
-                compra =>
-                    compra.data_compra <=
-                    dataFinal
-            );
-    }
-
-    renderizarCompras(
-        resultado
-    );
 }
 
 // ========================================
@@ -323,6 +367,25 @@ async function abrirDetalhes(
 ) {
 
     try {
+
+        const modal =
+            document.getElementById(
+                "modalDetalhes"
+            );
+
+        const container =
+            document.getElementById(
+                "detalhesCompra"
+            );
+
+        if (!modal || !container) return;
+
+        container.innerHTML =
+            "Carregando detalhes...";
+
+        modal.classList.add(
+            "ativo"
+        );
 
         const {
             data,
@@ -342,114 +405,140 @@ async function abrirDetalhes(
 
         if (error) {
 
-            console.error(
-                error
-            );
+            console.error(error);
 
-            alert(
-                "Erro ao carregar detalhes."
-            );
+            container.innerHTML =
+                "Erro ao carregar detalhes da compra.";
 
             return;
         }
+
+        const itens =
+            data || [];
+
+        if (!itens.length) {
+
+            container.innerHTML = `
+
+                <div class="detalhe-card">
+
+                    Nenhum item encontrado nesta compra.
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+        const total =
+            itens.reduce(
+                (soma, item) =>
+                    soma +
+                    Number(item.subtotal || 0),
+                0
+            );
+
+        const quantidade =
+            itens.reduce(
+                (soma, item) =>
+                    soma +
+                    Number(item.quantidade || 0),
+                0
+            );
+
+        container.innerHTML = `
+
+            <div class="detalhes-grid">
+
+                <div class="detalhe-card">
+
+                    <small>
+                        Total da compra
+                    </small>
+
+                    <strong>
+                        ${formatarMoeda(total)}
+                    </strong>
+
+                </div>
+
+                <div class="detalhe-card">
+
+                    <small>
+                        Produtos registrados
+                    </small>
+
+                    <strong>
+                        ${itens.length}
+                    </strong>
+
+                </div>
+
+                <div class="detalhe-card">
+
+                    <small>
+                        Quantidade total
+                    </small>
+
+                    <strong>
+                        ${formatarQuantidade(quantidade)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+            <div class="produtos-lista">
+
+                ${itens.map(item => `
+
+                    <div class="produto-item">
+
+                        <strong>
+                            ${item.products?.nome || "Produto"}
+                        </strong>
+
+                        <br>
+
+                        Quantidade:
+                        ${formatarQuantidade(item.quantidade)}
+
+                        <br>
+
+                        Valor unitário:
+                        ${formatarMoeda(item.valor_unitario)}
+
+                        <br>
+
+                        Subtotal:
+                        ${formatarMoeda(item.subtotal)}
+
+                    </div>
+
+                `).join("")}
+
+            </div>
+
+        `;
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao abrir detalhes:",
+            erro
+        );
 
         const container =
             document.getElementById(
                 "detalhesCompra"
             );
 
-        container.innerHTML = "";
+        if (container) {
 
-        let total = 0;
-
-        data.forEach(item => {
-
-            total += Number(
-                item.subtotal || 0
-            );
-
-            container.innerHTML += `
-
-            <div class="item-detalhe">
-
-                <div class="item-nome">
-
-                    ${item.products?.nome || "Produto"}
-
-                </div>
-
-                <div class="item-info">
-
-                    Quantidade:
-                    ${item.quantidade}
-
-                </div>
-
-                <div class="item-info">
-
-                    Valor Unitário:
-                    ${Number(
-                        item.valor_unitario
-                    ).toLocaleString(
-                        "pt-BR",
-                        {
-                            style: "currency",
-                            currency: "BRL"
-                        }
-                    )}
-
-                </div>
-
-                <div class="item-info">
-
-                    Subtotal:
-                    ${Number(
-                        item.subtotal
-                    ).toLocaleString(
-                        "pt-BR",
-                        {
-                            style: "currency",
-                            currency: "BRL"
-                        }
-                    )}
-
-                </div>
-
-            </div>
-
-            `;
-        });
-
-        container.innerHTML += `
-
-        <div class="total-modal">
-
-            Total:
-            ${total.toLocaleString(
-                "pt-BR",
-                {
-                    style: "currency",
-                    currency: "BRL"
-                }
-            )}
-
-        </div>
-
-        `;
-
-        document
-            .getElementById(
-                "modalDetalhes"
-            )
-            .classList.add(
-                "ativo"
-            );
-
-    } catch (erro) {
-
-        console.error(
-            erro
-        );
+            container.innerHTML =
+                "Erro inesperado ao carregar detalhes.";
+        }
     }
 }
 
@@ -459,13 +548,17 @@ async function abrirDetalhes(
 
 function fecharModal() {
 
-    document
-        .getElementById(
+    const modal =
+        document.getElementById(
             "modalDetalhes"
-        )
-        .classList.remove(
+        );
+
+    if (modal) {
+
+        modal.classList.remove(
             "ativo"
         );
+    }
 }
 
 // ========================================
@@ -478,29 +571,31 @@ async function excluirCompra(
 
     const confirmar =
         confirm(
-            "Deseja realmente excluir esta compra?"
+            "Deseja realmente excluir esta compra? O estoque da dispensa será recalculado automaticamente."
         );
 
-    if (!confirmar) {
-
-        return;
-    }
+    if (!confirmar) return;
 
     try {
 
         const {
             error
         } = await supabaseClient
-            .from("purchases")
-            .delete()
-            .eq(
-                "id",
-                purchaseId
+            .rpc(
+                "delete_purchase_and_rebuild_stock",
+                {
+                    p_purchase_id:
+                        purchaseId,
+
+                    p_user_id:
+                        usuarioAtual.id
+                }
             );
 
         if (error) {
 
             console.error(
+                "Erro ao excluir compra:",
                 error
             );
 
@@ -511,27 +606,118 @@ async function excluirCompra(
             return;
         }
 
-        alert(
-            "Compra excluída com sucesso!"
-        );
+        compras =
+            compras.filter(
+                compra =>
+                    Number(compra.id) !==
+                    Number(purchaseId)
+            );
 
-        await carregarCompras();
+        filtrarCompras();
+
+        alert(
+            "Compra excluída com sucesso. A dispensa foi recalculada."
+        );
 
     } catch (erro) {
 
         console.error(
+            "Erro inesperado ao excluir compra:",
             erro
+        );
+
+        alert(
+            "Erro inesperado ao excluir compra."
         );
     }
 }
 
 // ========================================
-// FECHAR MODAL CLICANDO FORA
+// HELPERS
+// ========================================
+
+function calcularMediaPorItem(
+    compra
+) {
+
+    const total =
+        Number(compra.valor_total || 0);
+
+    const quantidade =
+        Number(compra.quantidade_total || 0);
+
+    if (!quantidade) {
+
+        return "R$ 0,00";
+    }
+
+    return formatarMoeda(
+        total / quantidade
+    );
+}
+
+function atualizarTexto(
+    id,
+    valor
+) {
+
+    const elemento =
+        document.getElementById(id);
+
+    if (elemento) {
+
+        elemento.innerText =
+            valor;
+    }
+}
+
+function formatarMoeda(valor) {
+
+    return Number(valor || 0)
+        .toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
+}
+
+function formatarData(data) {
+
+    if (!data) {
+
+        return "-";
+    }
+
+    return new Date(data)
+        .toLocaleDateString(
+            "pt-BR"
+        );
+}
+
+function formatarQuantidade(valor) {
+
+    const numero =
+        Number(valor || 0);
+
+    return numero.toLocaleString(
+        "pt-BR",
+        {
+            minimumFractionDigits:
+                numero % 1 === 0 ? 0 : 2,
+            maximumFractionDigits: 2
+        }
+    );
+}
+
+// ========================================
+// FECHAR MODAL AO CLICAR FORA
 // ========================================
 
 window.addEventListener(
     "click",
-    function(event) {
+    event => {
 
         const modal =
             document.getElementById(
@@ -539,6 +725,7 @@ window.addEventListener(
             );
 
         if (
+            modal &&
             event.target === modal
         ) {
 

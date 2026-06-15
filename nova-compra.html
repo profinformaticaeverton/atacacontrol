@@ -9,7 +9,13 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Nova Compra | AtacaControl</title>
+    <meta
+        name="description"
+        content="Registre uma nova compra no Minha Dispensa e acompanhe sua feira do mês com mais controle.">
+
+    <title>
+        Nova Compra | Minha Dispensa
+    </title>
 
     <link
         rel="stylesheet"
@@ -27,47 +33,89 @@
 
     <div class="app">
 
-        <!-- ========================= -->
-        <!-- CABEÇALHO -->
-        <!-- ========================= -->
-
         <header class="header">
 
-            <button
-                class="btn-voltar"
-                onclick="window.location.href='dashboard.html'">
+            <div class="header-actions">
 
-                ← Dashboard
+                <button
+                    class="btn-voltar"
+                    onclick="window.location.href='dashboard.html'">
 
-            </button>
+                    ← Dashboard
+
+                </button>
+
+                <button
+                    class="btn-dispensar"
+                    onclick="window.location.href='dispensa.html'">
+
+                    🫙 Minha Dispensa
+
+                </button>
+
+                <button
+                    class="btn-dispensar btn-lista"
+                    onclick="window.location.href='lista-compras.html'">
+
+                    📝 Lista de Compras
+
+                </button>
+
+                <button
+                    class="btn-dispensar btn-planejamento"
+                    onclick="window.location.href='planejamento-feira.html'">
+
+                    🎯 Planejamento
+
+                </button>
+
+            </div>
 
             <div class="header-info">
 
-                <h1>Nova Compra</h1>
+                <span class="page-label">
+                    Minha Dispensa
+                </span>
+
+                <h1>
+                    Nova Compra
+                </h1>
 
                 <p>
-                    Registre sua compra em tempo real
+                    Registre sua feira em tempo real e acompanhe o total antes de salvar.
                 </p>
 
             </div>
 
         </header>
 
-        <!-- ========================= -->
-        <!-- DADOS DA COMPRA -->
-        <!-- ========================= -->
-
         <section class="card">
 
-            <h2>
-                Informações da Compra
-            </h2>
+            <div class="card-title">
+
+                <div class="card-icon">
+                    🧾
+                </div>
+
+                <div>
+
+                    <h2>
+                        Informações da Compra
+                    </h2>
+
+                    <p>
+                        Informe a data, o mercado e observações importantes.
+                    </p>
+
+                </div>
+
+            </div>
 
             <div class="form-grid">
 
                 <div>
 
-                    <label>
+                    <label for="dataCompra">
                         Data da Compra
                     </label>
 
@@ -79,64 +127,62 @@
 
                 <div>
 
-                    <label>
+                    <label for="marketSelect">
                         Mercado
                     </label>
 
-                    <select
-                        id="marketSelect">
-
-                    </select>
+                    <select id="marketSelect"></select>
 
                 </div>
 
             </div>
 
-            <label>
+            <label for="observacoes">
                 Observações
             </label>
 
             <textarea
                 id="observacoes"
                 rows="4"
-                placeholder="Observações da compra..."></textarea>
+                placeholder="Ex.: compra do mês, promoção, feira semanal..."></textarea>
 
         </section>
 
-        <!-- ========================= -->
-        <!-- BUSCA -->
-        <!-- ========================= -->
+        <section class="card search-card">
 
-        <section class="card">
+            <label for="buscaProduto">
+                Buscar produto
+            </label>
 
             <div class="busca-container">
 
                 <input
                     type="text"
                     id="buscaProduto"
-                    placeholder="🔍 Buscar produto...">
+                    placeholder="🔍 Digite o nome do produto...">
 
             </div>
 
         </section>
 
-        <!-- ========================= -->
-        <!-- PRODUTOS -->
-        <!-- ========================= -->
-
         <section class="card">
 
             <div class="titulo-produtos">
 
-                <h2>
-                    Produtos
-                </h2>
+                <div>
 
-                <span
-                    id="contadorProdutos">
+                    <span class="page-label">
+                        Itens da feira
+                    </span>
 
+                    <h2>
+                        Produtos
+                    </h2>
+
+                </div>
+
+                <span id="contadorProdutos">
                     0 produtos
-
                 </span>
 
             </div>
@@ -151,10 +197,6 @@
 
     </div>
 
-    <!-- ========================= -->
-    <!-- RESUMO FIXO -->
-    <!-- ========================= -->
-
     <div class="resumo-fixo">
 
         <div class="resumo-info">
@@ -165,11 +207,8 @@
                     Quantidade Total
                 </small>
 
-                <strong
-                    id="qtdTotal">
-
+                <strong id="qtdTotal">
                     0
-
                 </strong>
 
             </div>
@@ -180,11 +219,8 @@
                     Valor Total
                 </small>
 
-                <strong
-                    id="valorTotal">
-
+                <strong id="valorTotal">
                     R$ 0,00
-
                 </strong>
 
             </div>
@@ -201,11 +237,6 @@
 
     </div>
 
-    <!-- ========================= -->
-    <!-- TEMPLATE UTILIZADO PELO JS
-         COMPARADOR DE PREÇOS
-    ========================== -->
-
     <template id="comparadorTemplate">
 
         <div class="comparador-preco">
@@ -213,15 +244,11 @@
             <div class="linha-preco">
 
                 <span class="label-preco">
-
                     Último preço
-
                 </span>
 
                 <strong class="ultimo-preco">
-
                     —
-
                 </strong>
 
             </div>
@@ -229,23 +256,17 @@
             <div class="linha-preco">
 
                 <span class="label-preco">
-
                     Preço atual
-
                 </span>
 
                 <strong class="preco-atual">
-
                     —
-
                 </strong>
 
             </div>
 
             <div class="variacao-preco">
-
                 Aguardando valor...
-
             </div>
 
         </div>

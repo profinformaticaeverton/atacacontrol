@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Planejamento de feira do Minha Dispensa: defina orçamento, acompanhe metas e controle os gastos do mês.">
+
+    <title>
+        Planejamento da Feira | Minha Dispensa
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="planejamento-feira.css">
+
+    <link
+        rel="icon"
+        href="favicon.svg">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header class="header">
+
+            <div class="header-actions">
+
+                <button
+                    class="btn-voltar"
+                    onclick="window.location.href='dashboard.html'">
+
+                    ← Dashboard
+
+                </button>
+
+                <button
+                    class="btn-secundario"
+                    onclick="window.location.href='lista-compras.html'">
+
+                    🧾 Lista de Compras
+
+                </button>
+
+                <button
+                    class="btn-secundario"
+                    onclick="window.location.href='nova-compra.html'">
+
+                    🛒 Nova Compra
+
+                </button>
+
+            </div>
+
+            <div class="header-info">
+
+                <span class="page-label">
+                    Minha Dispensa
+                </span>
+
+                <h1>
+                    Planejamento da Feira
+                </h1>
+
+                <p>
+                    Defina uma meta mensal, acompanhe o gasto atual e planeje
+                    sua próxima compra com mais segurança.
+                </p>
+
+            </div>
+
+        </header>
+
+        <section class="summary-grid">
+
+            <article class="summary-card">
+
+                <div class="summary-icon">
+                    💰
+                </div>
+
+                <div>
+
+                    <small>
+                        Orçamento do mês
+                    </small>
+
+                    <strong id="orcamentoMes">
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon warning">
+                    🧾
+                </div>
+
+                <div>
+
+                    <small>
+                        Gasto atual
+                    </small>
+
+                    <strong id="gastoAtual">
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon success">
+                    ✅
+                </div>
+
+                <div>
+
+                    <small>
+                        Saldo disponível
+                    </small>
+
+                    <strong id="saldoDisponivel">
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <section class="card planejamento-card">
+
+            <div class="card-title">
+
+                <div class="card-icon">
+                    🎯
+                </div>
+
+                <div>
+
+                    <h2>
+                        Meta da feira do mês
+                    </h2>
+
+                    <p>
+                        Informe quanto você pretende gastar neste mês.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label for="valorOrcamento">
+                        Orçamento mensal
+                    </label>
+
+                    <input
+                        type="number"
+                        id="valorOrcamento"
+                        min="0"
+                        step="0.01"
+                        placeholder="Ex.: 800.00">
+
+                </div>
+
+                <div>
+
+                    <label for="mesReferencia">
+                        Mês de referência
+                    </label>
+
+                    <input
+                        type="month"
+                        id="mesReferencia">
+
+                </div>
+
+            </div>
+
+            <button
+                class="btn-principal"
+                onclick="salvarPlanejamento()">
+
+                Salvar planejamento
+
+            </button>
+
+        </section>
+
+        <section class="card status-card">
+
+            <div>
+
+                <span class="page-label">
+                    Situação do mês
+                </span>
+
+                <h2 id="statusTitulo">
+                    Planejamento ainda não definido
+                </h2>
+
+                <p id="statusTexto">
+                    Cadastre um orçamento mensal para acompanhar melhor sua feira.
+                </p>
+
+            </div>
+
+            <div class="progress-area">
+
+                <div class="progress-label">
+
+                    <span>
+                        Uso do orçamento
+                    </span>
+
+                    <strong id="percentualUso">
+                        0%
+                    </strong>
+
+                </div>
+
+                <div class="progress-bar">
+
+                    <div
+                        id="barraUso"
+                        class="progress-fill">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="card">
+
+            <div class="lista-header">
+
+                <div>
+
+                    <span class="page-label">
+                        Inteligência da feira
+                    </span>
+
+                    <h2>
+                        Indicadores do planejamento
+                    </h2>
+
+                </div>
+
+                <button
+                    class="btn-atualizar"
+                    onclick="carregarPlanejamento()">
+
+                    Atualizar
+
+                </button>
+
+            </div>
+
+            <div class="indicadores-grid">
+
+                <article class="indicador-card">
+
+                    <small>
+                        Compras no mês
+                    </small>
+
+                    <strong id="comprasMes">
+                        0
+                    </strong>
+
+                </article>
+
+                <article class="indicador-card">
+
+                    <small>
+                        Maior compra
+                    </small>
+
+                    <strong id="maiorCompraMes">
+                        R$ 0,00
+                    </strong>
+
+                </article>
+
+                <article class="indicador-card">
+
+                    <small>
+                        Média por compra
+                    </small>
+
+                    <strong id="mediaCompra">
+                        R$ 0,00
+                    </strong>
+
+                </article>
+
+                <article class="indicador-card">
+
+                    <small>
+                        Itens para repor
+                    </small>
+
+                    <strong id="itensRepor">
+                        0
+                    </strong>
+
+                </article>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="config.js"></script>
+    <script src="planejamento-feira.js"></script>
+
+</body>
+
+</html>

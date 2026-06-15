@@ -1,5 +1,7 @@
 /* ========================================
-   RESET
+   MINHA DISPENSA
+   HISTÓRICO DE COMPRAS
+   MOBILE FIRST
 ======================================== */
 
 *{
@@ -13,31 +15,20 @@ html{
 }
 
 body{
-
-    background:#f4f7fb;
-
+    background:#F8F9FA;
     font-family:
         "Segoe UI",
         Tahoma,
         Geneva,
         Verdana,
         sans-serif;
-
-    color:#1e293b;
+    color:#4E342E;
 }
 
-/* ========================================
-   APP
-======================================== */
-
 .app{
-
     width:100%;
-
-    max-width:1400px;
-
+    max-width:1600px;
     margin:auto;
-
     padding:16px;
 }
 
@@ -46,204 +37,174 @@ body{
 ======================================== */
 
 .header{
-
     display:flex;
-
     flex-direction:column;
-
-    gap:16px;
-
+    gap:18px;
     margin-bottom:20px;
 }
 
-.header-info h1{
+.header-actions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
 
-    font-size:1.8rem;
-
-    font-weight:700;
-
+.page-label{
+    display:inline-block;
     margin-bottom:6px;
+    color:#F57C00;
+    font-size:.75rem;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+.header-info h1{
+    font-size:2rem;
+    color:#3E2723;
+    margin-bottom:8px;
 }
 
 .header-info p{
-
-    color:#64748b;
-
-    font-size:.95rem;
+    color:#6D6D6D;
+    line-height:1.5;
 }
 
 /* ========================================
    BOTÕES
 ======================================== */
 
-.btn-voltar{
-
+.btn-voltar,
+.btn-secundario,
+.btn-filtrar,
+.btn-nova-compra,
+.btn-detalhes,
+.btn-excluir{
     border:none;
-
-    background:#0f172a;
-
-    color:white;
-
-    border-radius:14px;
-
-    min-height:48px;
-
-    padding:12px 20px;
-
+    border-radius:18px;
+    min-height:52px;
+    padding:12px 18px;
     font-size:15px;
-
+    font-weight:800;
     cursor:pointer;
-
     transition:.25s;
 }
 
-.btn-voltar:hover{
+.btn-voltar{
+    background:#D7CCC8;
+    color:#4E342E;
+}
 
-    transform:translateY(-1px);
+.btn-secundario{
+    background:#F1ECE9;
+    color:#4E342E;
 }
 
 .btn-filtrar{
-
     width:100%;
-
-    min-height:52px;
-
-    border:none;
-
-    border-radius:14px;
-
-    background:#2563eb;
-
+    background:#2E7D32;
     color:white;
-
-    font-size:16px;
-
-    font-weight:600;
-
-    cursor:pointer;
-
-    transition:.25s;
+    margin-top:10px;
+    box-shadow:0 12px 24px rgba(46,125,50,.20);
 }
 
-.btn-filtrar:hover{
-
-    transform:translateY(-1px);
+.btn-nova-compra{
+    background:#2E7D32;
+    color:white;
+    box-shadow:0 12px 24px rgba(46,125,50,.20);
 }
 
 .btn-detalhes{
-
-    width:100%;
-
-    min-height:48px;
-
-    border:none;
-
-    border-radius:12px;
-
-    background:#2563eb;
-
+    background:#F57C00;
     color:white;
-
-    font-weight:600;
-
-    cursor:pointer;
 }
 
 .btn-excluir{
-
-    width:100%;
-
-    min-height:48px;
-
-    border:none;
-
-    border-radius:12px;
-
-    background:#dc2626;
-
+    background:#C62828;
     color:white;
+}
 
-    font-weight:600;
-
-    cursor:pointer;
+.btn-voltar:hover,
+.btn-secundario:hover,
+.btn-filtrar:hover,
+.btn-nova-compra:hover,
+.btn-detalhes:hover,
+.btn-excluir:hover{
+    transform:translateY(-2px);
 }
 
 /* ========================================
-   CARDS
+   CARD PADRÃO
 ======================================== */
 
 .card{
-
     background:white;
-
-    border-radius:20px;
-
+    border-radius:24px;
     padding:20px;
-
-    margin-bottom:16px;
-
-    box-shadow:
-        0 10px 30px
-        rgba(15,23,42,.08);
+    margin-bottom:18px;
+    border:1px solid rgba(109,109,109,.12);
+    box-shadow:0 12px 30px rgba(78,52,46,.08);
 }
 
-.card h2{
-
-    margin-bottom:16px;
+.card-title{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    margin-bottom:18px;
 }
 
-/* ========================================
-   FORM
-======================================== */
-
-label{
-
-    display:block;
-
-    margin-bottom:8px;
-
-    font-weight:600;
+.card-icon{
+    width:54px;
+    height:54px;
+    border-radius:18px;
+    background:#FFF8E1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    flex-shrink:0;
 }
 
-input{
-
-    width:100%;
-
-    min-height:52px;
-
-    border:1px solid #dbe3ee;
-
-    border-radius:14px;
-
-    padding:12px 14px;
-
-    font-size:16px;
-
-    margin-bottom:16px;
-
-    background:white;
-
-    outline:none;
+.card-title h2{
+    color:#3E2723;
+    margin-bottom:4px;
 }
 
-input:focus{
-
-    border-color:#2563eb;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(37,99,235,.12);
+.card-title p{
+    color:#6D6D6D;
+    line-height:1.45;
 }
 
 /* ========================================
    FILTROS
 ======================================== */
 
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:700;
+}
+
+input{
+    width:100%;
+    min-height:54px;
+    border:1px solid rgba(109,109,109,.20);
+    border-radius:16px;
+    padding:14px;
+    background:#F8F9FA;
+    font-size:16px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#2E7D32;
+    background:white;
+    box-shadow:0 0 0 4px rgba(46,125,50,.12);
+}
+
 .filtros-grid{
-
     display:grid;
-
-    gap:12px;
+    gap:14px;
 }
 
 /* ========================================
@@ -251,105 +212,99 @@ input:focus{
 ======================================== */
 
 .resumo-topo{
+    display:grid;
+    gap:14px;
+}
 
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:16px;
+.resumo-topo div{
+    background:#F8F9FA;
+    border-radius:18px;
+    padding:16px;
 }
 
 .resumo-topo small{
-
     display:block;
-
-    color:#64748b;
-
-    margin-bottom:4px;
+    color:#6D6D6D;
+    margin-bottom:6px;
 }
 
 .resumo-topo strong{
-
-    font-size:1.1rem;
+    font-size:1.35rem;
+    color:#2E7D32;
 }
 
 /* ========================================
-   LISTA DE COMPRAS
+   LISTA
 ======================================== */
 
+.lista-header{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    margin-bottom:18px;
+}
+
 .lista-compras{
-
     display:grid;
-
     gap:16px;
 }
 
-/* ========================================
-   CARD COMPRA
-======================================== */
-
 .compra-card{
-
     background:white;
-
-    border-radius:20px;
-
-    padding:20px;
-
-    box-shadow:
-        0 10px 30px
-        rgba(15,23,42,.08);
-
-    transition:.25s;
+    border-radius:24px;
+    padding:18px;
+    border:1px solid rgba(109,109,109,.12);
+    box-shadow:0 12px 28px rgba(78,52,46,.08);
 }
 
-.compra-card:hover{
-
-    transform:translateY(-2px);
+.compra-topo{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
 }
 
 .compra-data{
-
-    font-size:1rem;
-
-    font-weight:700;
-
-    margin-bottom:12px;
+    font-size:.85rem;
+    color:#6D6D6D;
 }
 
-.compra-info{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:8px;
-
-    margin-bottom:16px;
-}
-
-.compra-info div{
-
-    color:#334155;
+.compra-mercado{
+    font-size:1.05rem;
+    font-weight:900;
+    color:#3E2723;
 }
 
 .compra-total{
+    font-size:1.3rem;
+    font-weight:900;
+    color:#2E7D32;
+}
 
-    font-size:1.25rem;
-
-    font-weight:700;
-
-    color:#2563eb;
-
+.compra-info{
+    display:grid;
+    gap:10px;
     margin-bottom:16px;
 }
 
+.info-item{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 12px;
+    border-radius:14px;
+    background:#F8F9FA;
+}
+
+.info-item span{
+    color:#6D6D6D;
+}
+
+.info-item strong{
+    color:#3E2723;
+}
+
 .compra-acoes{
-
     display:grid;
-
     gap:10px;
 }
 
@@ -358,123 +313,86 @@ input:focus{
 ======================================== */
 
 .modal{
-
-    display:none;
-
     position:fixed;
-
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-
-    background:
-        rgba(15,23,42,.70);
-
-    padding:20px;
-
-    z-index:9999;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    z-index:5000;
 }
 
 .modal.ativo{
-
     display:flex;
-
-    justify-content:center;
-
-    align-items:center;
 }
 
 .modal-content{
-
     width:100%;
-
-    max-width:700px;
-
-    background:white;
-
-    border-radius:20px;
-
-    padding:24px;
-
-    max-height:85vh;
-
+    max-width:900px;
+    max-height:90vh;
     overflow:auto;
+    background:white;
+    border-radius:24px;
+    padding:22px;
 }
 
 .modal-header{
-
     display:flex;
-
     justify-content:space-between;
-
-    align-items:center;
-
+    gap:12px;
+    align-items:flex-start;
     margin-bottom:20px;
 }
 
 .btn-fechar{
-
+    width:44px;
+    height:44px;
     border:none;
-
-    background:#e2e8f0;
-
-    width:40px;
-
-    height:40px;
-
-    border-radius:50%;
-
+    border-radius:14px;
+    background:#C62828;
+    color:white;
     cursor:pointer;
-
     font-size:18px;
+    font-weight:900;
 }
 
 /* ========================================
-   DETALHES DA COMPRA
+   DETALHES COMPRA
 ======================================== */
 
-.item-detalhe{
-
-    border-bottom:
-        1px solid #e2e8f0;
-
-    padding:12px 0;
+.detalhes-grid{
+    display:grid;
+    gap:12px;
 }
 
-.item-detalhe:last-child{
-
-    border-bottom:none;
+.detalhe-card{
+    background:#F8F9FA;
+    border-radius:18px;
+    padding:14px;
 }
 
-.item-nome{
-
-    font-weight:600;
-
-    margin-bottom:6px;
+.detalhe-card small{
+    display:block;
+    color:#6D6D6D;
+    margin-bottom:4px;
 }
 
-.item-info{
-
-    color:#64748b;
-
-    font-size:.95rem;
+.detalhe-card strong{
+    color:#3E2723;
 }
 
-.total-modal{
+.produtos-lista{
+    margin-top:14px;
+    display:grid;
+    gap:10px;
+}
 
-    margin-top:20px;
-
-    padding-top:20px;
-
-    border-top:
-        2px solid #e2e8f0;
-
-    font-size:1.2rem;
-
-    font-weight:700;
-
-    color:#2563eb;
+.produto-item{
+    background:#FFF;
+    border:1px solid rgba(109,109,109,.12);
+    border-radius:14px;
+    padding:12px;
 }
 
 /* ========================================
@@ -484,38 +402,40 @@ input:focus{
 @media(min-width:768px){
 
     .app{
-
         padding:24px;
     }
 
     .header{
-
         flex-direction:row;
-
         justify-content:space-between;
+        align-items:flex-start;
+    }
 
-        align-items:center;
+    .header-actions{
+        flex-direction:row;
+        flex-wrap:wrap;
     }
 
     .filtros-grid{
+        grid-template-columns:2fr 1fr 1fr;
+    }
 
-        grid-template-columns:
-            1fr
-            1fr
-            1fr;
+    .resumo-topo{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .lista-header{
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:center;
     }
 
     .lista-compras{
-
-        grid-template-columns:
-            repeat(2,1fr);
+        grid-template-columns:repeat(2,1fr);
     }
 
     .compra-acoes{
-
-        grid-template-columns:
-            1fr
-            1fr;
+        grid-template-columns:1fr 1fr;
     }
 }
 
@@ -526,31 +446,25 @@ input:focus{
 @media(min-width:1200px){
 
     .app{
-
         padding:30px;
     }
 
     .header-info h1{
-
-        font-size:2rem;
+        font-size:2.4rem;
     }
 
     .lista-compras{
-
-        grid-template-columns:
-            repeat(3,1fr);
+        grid-template-columns:repeat(3,1fr);
     }
 }
 
 /* ========================================
-   DESKTOP GRANDE
+   TELAS GRANDES
 ======================================== */
 
 @media(min-width:1600px){
 
     .lista-compras{
-
-        grid-template-columns:
-            repeat(4,1fr);
+        grid-template-columns:repeat(4,1fr);
     }
 }
