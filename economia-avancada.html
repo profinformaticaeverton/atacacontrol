@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Economia Avançada do Minha Dispensa: acompanhe tendência de preços, inflação pessoal, economia acumulada e índice geral da sua feira.">
+
+    <title>
+        Economia Avançada | Minha Dispensa
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="economia-avancada.css">
+
+    <link
+        rel="icon"
+        href="favicon.svg">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header class="header">
+
+            <div class="header-actions">
+
+                <button
+                    class="btn-voltar"
+                    onclick="window.location.href='dashboard.html'">
+
+                    ← Dashboard
+
+                </button>
+
+                <button
+                    class="btn-secundario"
+                    onclick="window.location.href='economia.html'">
+
+                    ↕ Economia
+
+                </button>
+
+                <button
+                    class="btn-secundario"
+                    onclick="window.location.href='historico.html'">
+
+                    ▤ Histórico
+
+                </button>
+
+                <button
+                    class="btn-secundario"
+                    onclick="window.location.href='planejamento-feira.html'">
+
+                    ◎ Planejamento
+
+                </button>
+
+                <button
+                    class="btn-secundario"
+                    onclick="window.location.href='lista-compras.html'">
+
+                    ☑ Lista de Compras
+
+                </button>
+
+            </div>
+
+            <div class="header-info">
+
+                <span class="page-label">
+                    Minha Dispensa
+                </span>
+
+                <h1>
+                    Economia Avançada
+                </h1>
+
+                <p>
+                    Analise tendências, inflação pessoal, economia acumulada
+                    e o índice geral de saúde da sua feira.
+                </p>
+
+            </div>
+
+        </header>
+
+        <section class="hero-card">
+
+            <div>
+
+                <span class="page-label">
+                    Inteligência doméstica
+                </span>
+
+                <h2 id="tituloIndice">
+                    Calculando seu Índice Minha Dispensa
+                </h2>
+
+                <p id="textoIndice">
+                    O índice combina planejamento, estoque, economia e comportamento
+                    de compra para mostrar a saúde geral da sua feira.
+                </p>
+
+            </div>
+
+            <div class="indice-box">
+
+                <small>
+                    Índice Minha Dispensa
+                </small>
+
+                <strong id="indiceMinhaDispensa">
+                    0
+                </strong>
+
+                <span id="statusIndice">
+                    Aguardando dados
+                </span>
+
+            </div>
+
+        </section>
+
+        <section class="summary-grid">
+
+            <article class="summary-card">
+
+                <div class="summary-icon warning">
+                    ↗
+                </div>
+
+                <div>
+
+                    <small>
+                        Inflação pessoal
+                    </small>
+
+                    <strong id="inflacaoPessoal">
+                        0%
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon success">
+                    R$
+                </div>
+
+                <div>
+
+                    <small>
+                        Economia acumulada
+                    </small>
+
+                    <strong id="economiaAcumulada">
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon">
+                    ☑
+                </div>
+
+                <div>
+
+                    <small>
+                        Itens críticos
+                    </small>
+
+                    <strong id="itensCriticos">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon">
+                    ◎
+                </div>
+
+                <div>
+
+                    <small>
+                        Controle do orçamento
+                    </small>
+
+                    <strong id="controleOrcamento">
+                        0%
+                    </strong>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <section class="card filtros-card">
+
+            <div class="card-title">
+
+                <div class="card-icon">
+                    🔎
+                </div>
+
+                <div>
+
+                    <h2>
+                        Filtros da análise
+                    </h2>
+
+                    <p>
+                        Refine os indicadores por período e produto.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="filtros-grid">
+
+                <div>
+
+                    <label for="periodoAnalise">
+                        Período
+                    </label>
+
+                    <select id="periodoAnalise">
+
+                        <option value="90">
+                            Últimos 90 dias
+                        </option>
+
+                        <option value="180">
+                            Últimos 180 dias
+                        </option>
+
+                        <option value="365">
+                            Últimos 12 meses
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label for="buscaProduto">
+                        Produto
+                    </label>
+
+                    <input
+                        type="text"
+                        id="buscaProduto"
+                        placeholder="Digite o nome do produto">
+
+                </div>
+
+            </div>
+
+            <button
+                class="btn-principal"
+                onclick="carregarEconomiaAvancada()">
+
+                Atualizar análise
+
+            </button>
+
+        </section>
+
+        <section class="card">
+
+            <div class="lista-header">
+
+                <div>
+
+                    <span class="page-label">
+                        Tendência de preços
+                    </span>
+
+                    <h2>
+                        Produtos com maior variação
+                    </h2>
+
+                </div>
+
+                <button
+                    class="btn-atualizar"
+                    onclick="window.location.href='economia.html'">
+
+                    Ver economia simples
+
+                </button>
+
+            </div>
+
+            <div
+                id="listaTendencias"
+                class="tendencias-grid">
+
+                <div class="tendencia-card empty-card">
+
+                    Nenhuma tendência encontrada ainda.
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="card">
+
+            <div class="lista-header">
+
+                <div>
+
+                    <span class="page-label">
+                        Melhor momento de compra
+                    </span>
+
+                    <h2>
+                        Meses mais econômicos por produto
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div
+                id="listaMelhoresMeses"
+                class="meses-grid">
+
+                <div class="mes-card empty-card">
+
+                    Ainda não há histórico suficiente para identificar meses mais baratos.
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="card">
+
+            <div class="lista-header">
+
+                <div>
+
+                    <span class="page-label">
+                        Alertas inteligentes
+                    </span>
+
+                    <h2>
+                        Recomendações para sua próxima feira
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div
+                id="listaAlertas"
+                class="alertas-grid">
+
+                <div class="alerta-card empty-card">
+
+                    Nenhum alerta gerado ainda.
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="config.js"></script>
+    <script src="economia-avancada.js"></script>
+
+</body>
+
+</html>

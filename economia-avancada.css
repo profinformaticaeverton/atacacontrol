@@ -1,0 +1,514 @@
+/* ========================================
+   MINHA DISPENSA
+   ECONOMIA AVANÇADA
+   MOBILE FIRST
+======================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#F8F9FA;
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
+    color:#4E342E;
+}
+
+.app{
+    width:100%;
+    max-width:1600px;
+    margin:auto;
+    padding:16px;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.header{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    margin-bottom:20px;
+}
+
+.header-actions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.page-label{
+    display:inline-block;
+    margin-bottom:6px;
+    color:#F57C00;
+    font-size:.75rem;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+.header-info h1{
+    font-size:2rem;
+    color:#3E2723;
+    margin-bottom:8px;
+}
+
+.header-info p{
+    color:#6D6D6D;
+    line-height:1.5;
+}
+
+/* ========================================
+   BOTÕES
+======================================== */
+
+.btn-voltar,
+.btn-secundario,
+.btn-principal,
+.btn-atualizar{
+    border:none;
+    border-radius:18px;
+    min-height:52px;
+    padding:12px 18px;
+    font-size:15px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.btn-voltar{
+    background:#D7CCC8;
+    color:#4E342E;
+}
+
+.btn-secundario{
+    background:#F1ECE9;
+    color:#4E342E;
+}
+
+.btn-principal{
+    width:100%;
+    background:#2E7D32;
+    color:white;
+    box-shadow:0 12px 24px rgba(46,125,50,.22);
+}
+
+.btn-atualizar{
+    background:#F57C00;
+    color:white;
+    box-shadow:0 12px 24px rgba(245,124,0,.20);
+}
+
+.btn-voltar:hover,
+.btn-secundario:hover,
+.btn-principal:hover,
+.btn-atualizar:hover{
+    transform:translateY(-2px);
+}
+
+/* ========================================
+   HERO / ÍNDICE
+======================================== */
+
+.hero-card{
+    background:
+        radial-gradient(circle at top right, rgba(249,168,37,.24), transparent 34%),
+        linear-gradient(135deg, #FFFFFF 0%, #FFF8E1 100%);
+    border-radius:28px;
+    padding:22px;
+    margin-bottom:18px;
+    border:1px solid rgba(109,109,109,.12);
+    box-shadow:0 14px 34px rgba(78,52,46,.08);
+    display:grid;
+    gap:22px;
+}
+
+.hero-card h2{
+    color:#3E2723;
+    font-size:1.55rem;
+    margin-bottom:10px;
+}
+
+.hero-card p{
+    color:#6D6D6D;
+    line-height:1.55;
+}
+
+.indice-box{
+    background:white;
+    border-radius:24px;
+    padding:22px;
+    text-align:center;
+    border:1px solid rgba(109,109,109,.12);
+    box-shadow:0 12px 28px rgba(78,52,46,.08);
+}
+
+.indice-box small{
+    display:block;
+    color:#6D6D6D;
+    margin-bottom:8px;
+    font-weight:700;
+}
+
+.indice-box strong{
+    display:block;
+    font-size:3rem;
+    line-height:1;
+    color:#2E7D32;
+    margin-bottom:8px;
+    font-weight:900;
+}
+
+.indice-box span{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    padding:8px 12px;
+    border-radius:999px;
+    background:#E8F5E9;
+    color:#2E7D32;
+    font-size:.82rem;
+    font-weight:900;
+}
+
+/* ========================================
+   RESUMO
+======================================== */
+
+.summary-grid{
+    display:grid;
+    gap:14px;
+    margin-bottom:18px;
+}
+
+.summary-card{
+    background:white;
+    border-radius:24px;
+    padding:18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border:1px solid rgba(109,109,109,.12);
+    box-shadow:0 12px 28px rgba(78,52,46,.08);
+}
+
+.summary-icon{
+    width:56px;
+    height:56px;
+    border-radius:18px;
+    background:#F1ECE9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    font-weight:900;
+    flex-shrink:0;
+    color:#4E342E;
+}
+
+.summary-icon.warning{
+    background:#FFF8E1;
+    color:#7A4A00;
+}
+
+.summary-icon.success{
+    background:#E8F5E9;
+    color:#2E7D32;
+}
+
+.summary-card small{
+    display:block;
+    color:#6D6D6D;
+    margin-bottom:4px;
+}
+
+.summary-card strong{
+    font-size:1.35rem;
+    font-weight:900;
+    color:#3E2723;
+}
+
+/* ========================================
+   CARD PADRÃO
+======================================== */
+
+.card{
+    background:white;
+    border-radius:24px;
+    padding:20px;
+    margin-bottom:18px;
+    border:1px solid rgba(109,109,109,.12);
+    box-shadow:0 12px 30px rgba(78,52,46,.08);
+}
+
+.card-title{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    margin-bottom:18px;
+}
+
+.card-icon{
+    width:54px;
+    height:54px;
+    border-radius:18px;
+    background:#FFF8E1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    flex-shrink:0;
+}
+
+.card-title h2,
+.lista-header h2{
+    color:#3E2723;
+}
+
+.card-title p{
+    color:#6D6D6D;
+    line-height:1.45;
+}
+
+/* ========================================
+   FORMULÁRIOS
+======================================== */
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:700;
+    color:#4E342E;
+}
+
+input,
+select{
+    width:100%;
+    min-height:54px;
+    border:1px solid rgba(109,109,109,.20);
+    border-radius:16px;
+    padding:14px;
+    font-size:16px;
+    background:#F8F9FA;
+    color:#4E342E;
+    outline:none;
+    margin-bottom:14px;
+    transition:.25s;
+}
+
+input:focus,
+select:focus{
+    background:white;
+    border-color:#2E7D32;
+    box-shadow:0 0 0 4px rgba(46,125,50,.12);
+}
+
+.filtros-grid{
+    display:grid;
+    gap:14px;
+}
+
+/* ========================================
+   LISTAS
+======================================== */
+
+.lista-header{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    margin-bottom:18px;
+}
+
+.tendencias-grid,
+.meses-grid,
+.alertas-grid{
+    display:grid;
+    gap:16px;
+}
+
+.tendencia-card,
+.mes-card,
+.alerta-card{
+    background:#F8F9FA;
+    border-radius:22px;
+    padding:18px;
+    border:1px solid rgba(109,109,109,.12);
+}
+
+.empty-card{
+    text-align:center;
+    color:#6D6D6D;
+    font-weight:700;
+    padding:30px;
+}
+
+/* ========================================
+   TENDÊNCIAS
+======================================== */
+
+.tendencia-topo,
+.mes-topo,
+.alerta-topo{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.produto-nome,
+.mes-produto,
+.alerta-titulo{
+    font-size:1.05rem;
+    font-weight:900;
+    color:#3E2723;
+}
+
+.produto-info,
+.mes-info,
+.alerta-texto{
+    color:#6D6D6D;
+    font-size:.92rem;
+    line-height:1.45;
+}
+
+.tendencia-badge,
+.mes-badge,
+.alerta-badge{
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:.72rem;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.badge-alta,
+.alerta-alta{
+    background:#FFEBEE;
+    color:#C62828;
+}
+
+.badge-queda,
+.alerta-ok{
+    background:#E8F5E9;
+    color:#2E7D32;
+}
+
+.badge-estavel,
+.alerta-neutro{
+    background:#FFF8E1;
+    color:#7A4A00;
+}
+
+.tendencia-info,
+.mes-detalhes,
+.alerta-detalhes{
+    display:grid;
+    gap:10px;
+    margin-top:14px;
+}
+
+.info-item{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    padding:10px 12px;
+    background:white;
+    border-radius:14px;
+}
+
+.info-item span{
+    color:#6D6D6D;
+}
+
+.info-item strong{
+    color:#3E2723;
+}
+
+/* ========================================
+   RESPONSIVO
+======================================== */
+
+@media(min-width:768px){
+
+    .app{
+        padding:24px;
+    }
+
+    .header{
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:flex-start;
+    }
+
+    .header-actions{
+        flex-direction:row;
+        flex-wrap:wrap;
+    }
+
+    .hero-card{
+        grid-template-columns:1fr 260px;
+        align-items:center;
+    }
+
+    .summary-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .filtros-grid{
+        grid-template-columns:1fr 2fr;
+    }
+
+    .lista-header{
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:center;
+    }
+
+    .tendencias-grid,
+    .meses-grid,
+    .alertas-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(min-width:1200px){
+
+    .app{
+        padding:30px;
+    }
+
+    .header-info h1{
+        font-size:2.4rem;
+    }
+
+    .summary-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .tendencias-grid,
+    .meses-grid,
+    .alertas-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+
+@media(min-width:1600px){
+
+    .tendencias-grid,
+    .meses-grid,
+    .alertas-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+}

@@ -11,7 +11,7 @@
 
     <meta
         name="description"
-        content="Dashboard Minha Dispensa: acompanhe gastos, estoque, lista de compras, economia inteligente e planejamento da feira do mês.">
+        content="Dashboard Minha Dispensa: acompanhe gastos, estoque, lista de compras, economia inteligente, economia avançada e planejamento da feira do mês.">
 
     <title>
         Minha Dispensa | Dashboard
@@ -52,43 +52,11 @@
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg">
 
-                            <rect
-                                x="10"
-                                y="16"
-                                width="44"
-                                height="36"
-                                rx="6"
-                                fill="#D7CCC8"
-                                stroke="#4E342E"
-                                stroke-width="4" />
-
-                            <path
-                                d="M18 28H46"
-                                stroke="#4E342E"
-                                stroke-width="4"
-                                stroke-linecap="round" />
-
-                            <rect
-                                x="18"
-                                y="34"
-                                width="10"
-                                height="12"
-                                rx="2"
-                                fill="#2E7D32" />
-
-                            <rect
-                                x="36"
-                                y="34"
-                                width="10"
-                                height="12"
-                                rx="2"
-                                fill="#F9A825" />
-
-                            <path
-                                d="M24 12H40"
-                                stroke="#4E342E"
-                                stroke-width="4"
-                                stroke-linecap="round" />
+                            <rect x="10" y="16" width="44" height="36" rx="6" fill="#D7CCC8" stroke="#4E342E" stroke-width="4" />
+                            <path d="M18 28H46" stroke="#4E342E" stroke-width="4" stroke-linecap="round" />
+                            <rect x="18" y="34" width="10" height="12" rx="2" fill="#2E7D32" />
+                            <rect x="36" y="34" width="10" height="12" rx="2" fill="#F9A825" />
+                            <path d="M24 12H40" stroke="#4E342E" stroke-width="4" stroke-linecap="round" />
 
                         </svg>
 
@@ -155,6 +123,13 @@
                         onclick="window.location.href='economia.html'">
                         <span>↕</span>
                         Economia
+                    </button>
+
+                    <button
+                        class="menu-btn"
+                        onclick="window.location.href='economia-avancada.html'">
+                        <span>◈</span>
+                        Economia Avançada
                     </button>
 
                 </nav>
@@ -394,6 +369,11 @@
                     Economia
                 </button>
 
+                <button onclick="window.location.href='economia-avancada.html'">
+                    <span>◈</span>
+                    Economia Avançada
+                </button>
+
             </section>
 
             <section class="panel planejamento-panel">
@@ -474,6 +454,51 @@
                             Registre pelo menos duas compras com os mesmos produtos
                             para ativar a análise inteligente de preços.
                         </p>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+            <section class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <span class="page-label">
+                            Economia avançada
+                        </span>
+
+                        <h2>
+                            Índice Minha Dispensa
+                        </h2>
+                    </div>
+
+                    <button
+                        class="panel-link"
+                        onclick="window.location.href='economia-avancada.html'">
+                        Ver análise
+                    </button>
+
+                </div>
+
+                <div class="planejamento-resumo">
+
+                    <article class="planejamento-card-resumo">
+
+                        <div class="planejamento-status status-neutro">
+                            ◈ Inteligência doméstica
+                        </div>
+
+                        <p>
+                            Veja tendências, inflação pessoal, melhores meses de compra
+                            e recomendações avançadas para sua feira.
+                        </p>
+
+                        <button onclick="window.location.href='economia-avancada.html'">
+                            Abrir Economia Avançada
+                        </button>
 
                     </article>
 

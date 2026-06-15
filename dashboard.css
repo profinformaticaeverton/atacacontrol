@@ -56,10 +56,6 @@ body{
     min-height:100vh;
 }
 
-/* ========================================
-   SIDEBAR
-======================================== */
-
 .sidebar{
     position:fixed;
     top:0;
@@ -74,6 +70,7 @@ body{
     box-shadow:0 0 34px rgba(78,52,46,.16);
     transition:.3s;
     z-index:1000;
+    overflow-y:auto;
 }
 
 .sidebar.aberto{
@@ -176,11 +173,8 @@ nav{
     justify-content:center;
     gap:8px;
     box-shadow:0 12px 24px rgba(198,40,40,.20);
+    margin-top:20px;
 }
-
-/* ========================================
-   CONTEÚDO
-======================================== */
 
 .content{
     width:100%;
@@ -228,10 +222,6 @@ nav{
     font-weight:800;
 }
 
-/* ========================================
-   BANNER
-======================================== */
-
 .summary-banner{
     background:
         radial-gradient(circle at top right, rgba(249,168,37,.26), transparent 34%),
@@ -276,10 +266,6 @@ nav{
     cursor:pointer;
     box-shadow:0 12px 26px rgba(46,125,50,.22);
 }
-
-/* ========================================
-   CARDS
-======================================== */
 
 .cards{
     display:grid;
@@ -352,10 +338,6 @@ nav{
     word-break:break-word;
 }
 
-/* ========================================
-   AÇÕES
-======================================== */
-
 .acoes{
     display:grid;
     grid-template-columns:1fr;
@@ -406,9 +388,11 @@ nav{
     box-shadow:0 12px 26px rgba(78,52,46,.22);
 }
 
-/* ========================================
-   PAINÉIS
-======================================== */
+.acoes button:nth-child(6){
+    background:#7B1FA2;
+    color:white;
+    box-shadow:0 12px 26px rgba(123,31,162,.20);
+}
 
 .panel{
     background:white;
@@ -442,10 +426,6 @@ nav{
     cursor:pointer;
     white-space:nowrap;
 }
-
-/* ========================================
-   COMPRAS / DISPENSA
-======================================== */
 
 .compras-grid,
 .dispensa-grid{
@@ -534,10 +514,6 @@ nav{
 .dispensa-info strong{
     color:#3E2723;
 }
-
-/* ========================================
-   PLANEJAMENTO
-======================================== */
 
 .planejamento-resumo{
     display:grid;
@@ -646,10 +622,6 @@ nav{
     background:#D7CCC8;
 }
 
-/* ========================================
-   TABLET
-======================================== */
-
 @media(min-width:768px){
 
     .content{
@@ -696,10 +668,6 @@ nav{
     }
 }
 
-/* ========================================
-   DESKTOP
-======================================== */
-
 @media(min-width:1024px){
 
     .menu-mobile{
@@ -731,7 +699,7 @@ nav{
     }
 
     .acoes{
-        grid-template-columns:repeat(5,1fr);
+        grid-template-columns:repeat(3,1fr);
     }
 
     .compras-grid,
@@ -740,9 +708,12 @@ nav{
     }
 }
 
-/* ========================================
-   MONITORES GRANDES
-======================================== */
+@media(min-width:1400px){
+
+    .acoes{
+        grid-template-columns:repeat(6,1fr);
+    }
+}
 
 @media(min-width:1600px){
 
