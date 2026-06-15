@@ -1,13 +1,16 @@
 // ========================================
 // MINHA DISPENSA
 // ECONOMIA INTELIGENTE
-// ANÁLISE DE PREÇOS + RANKING DE MERCADOS
+// ANÁLISE SEGURA DE PREÇOS + RANKING DE MERCADOS
 // ========================================
 
 let usuarioAtual = null;
 let analiseEconomia = [];
 let analiseFiltrada = [];
 let rankingMercados = [];
+
+let produtosCache = [];
+let mercadosCache = [];
 
 // ========================================
 // INICIAR
@@ -123,24 +126,14 @@ async function carregarEconomia() {
 
         const [
             precosResposta,
+            produtosResposta,
+            mercadosResposta,
             comprasResposta
         ] = await Promise.all([
 
             supabaseClient
                 .from("product_prices")
-                .select(`
-                    id,
-                    product_id,
-                    market_id,
-                    price,
-                    created_at,
-                    products (
-                        nome
-                    ),
-                    markets (
-                        nome
-                    )
-                `)
+                .select("*")
                 .order(
                     "created_at",
                     {
@@ -149,17 +142,16 @@ async function carregarEconomia() {
                 ),
 
             supabaseClient
+                .from("products")
+                .select("*"),
+
+            supabaseClient
+                .from("markets")
+                .select("*"),
+
+            supabaseClient
                 .from("purchases")
-                .select(`
-                    id,
-                    user_id,
-                    market_id,
-                    valor_total,
-                    data_compra,
-                    markets (
-                        nome
-                    )
-                `)
+                .select("*")
                 .eq(
                     "user_id",
                     usuarioAtual.id
@@ -169,27 +161,51 @@ async function carregarEconomia() {
         if (precosResposta.error) {
 
             console.error(
-                "Erro ao carregar preços:",
+                "Erro ao carregar product_prices:",
                 precosResposta.error
             );
 
-            alert(
-                "Erro ao carregar histórico de preços."
+            limparTelaComErro(
+                "Não foi possível carregar o histórico de preços."
             );
 
             return;
         }
 
+        if (produtosResposta.error) {
+
+            console.error(
+                "Erro ao carregar products:",
+                produtosResposta.error
+            );
+        }
+
+        if (mercadosResposta.error) {
+
+            console.error(
+                "Erro ao carregar markets:",
+                mercadosResposta.error
+            );
+        }
+
         if (comprasResposta.error) {
 
             console.error(
-                "Erro ao carregar compras:",
+                "Erro ao carregar purchases:",
                 comprasResposta.error
             );
         }
 
+        produtosCache =
+            produtosResposta.data || [];
+
+        mercadosCache =
+            mercadosResposta.data || [];
+
         const precos =
-            precosResposta.data || [];
+            filtrarPrecosValidos(
+                precosResposta.data || []
+            );
 
         const compras =
             comprasResposta.data || [];
@@ -219,50 +235,65 @@ async function carregarEconomia() {
             erro
         );
 
-        alert(
+        limparTelaComErro(
             "Erro inesperado ao carregar economia."
         );
     }
 }
 
 // ========================================
+// FILTRAR PREÇOS VÁLIDOS
+// ========================================
+
+function filtrarPrecosValidos(precos) {
+
+    return precos.filter(registro => {
+
+        const temProduto =
+            registro.product_id !== null &&
+            registro.product_id !== undefined;
+
+        const temPreco =
+            registro.price !== null &&
+            registro.price !== undefined &&
+            !isNaN(Number(registro.price));
+
+        return temProduto && temPreco;
+    });
+}
+
+// ========================================
 // MONTAR ANÁLISE DE PREÇOS
 // ========================================
 
-function montarAnalisePrecos(
-    precos
-) {
+function montarAnalisePrecos(precos) {
 
-    const mapaProdutos =
-        {};
+    const mapaProdutos = {};
 
     precos.forEach(registro => {
 
         const productId =
-            registro.product_id;
+            Number(registro.product_id);
 
         if (!mapaProdutos[productId]) {
 
             mapaProdutos[productId] = [];
         }
 
-        mapaProdutos[productId].push(
-            registro
-        );
+        mapaProdutos[productId].push(registro);
     });
 
     const resultado = [];
 
-    Object
-        .keys(mapaProdutos)
+    Object.keys(mapaProdutos)
         .forEach(productId => {
 
             const historico =
                 mapaProdutos[productId]
                     .sort(
                         (a, b) =>
-                            new Date(a.created_at) -
-                            new Date(b.created_at)
+                            obterDataRegistro(a) -
+                            obterDataRegistro(b)
                     );
 
             if (historico.length < 2) {
@@ -289,26 +320,24 @@ function montarAnalisePrecos(
                 );
 
             const precoInicial =
-                Number(
-                    primeiro.price || 0
-                );
+                Number(primeiro.price || 0);
 
             const precoAtual =
-                Number(
-                    ultimo.price || 0
-                );
+                Number(ultimo.price || 0);
+
+            if (precoInicial <= 0) {
+
+                return;
+            }
 
             const diferenca =
-                precoAtual -
-                precoInicial;
+                precoAtual - precoInicial;
 
             const percentual =
-                precoInicial > 0
-                    ? (
-                        diferenca /
-                        precoInicial
-                    ) * 100
-                    : 0;
+                (
+                    diferenca /
+                    precoInicial
+                ) * 100;
 
             const tipoVariacao =
                 diferenca > 0
@@ -328,9 +357,7 @@ function montarAnalisePrecos(
                     Number(productId),
 
                 produto_nome:
-                    ultimo.products?.nome ||
-                    primeiro.products?.nome ||
-                    "Produto",
+                    obterNomeProduto(productId),
 
                 preco_inicial:
                     precoInicial,
@@ -339,17 +366,13 @@ function montarAnalisePrecos(
                     precoAtual,
 
                 preco_menor:
-                    Number(
-                        menor.price || 0
-                    ),
+                    Number(menor.price || 0),
 
                 mercado_atual:
-                    ultimo.markets?.nome ||
-                    "Mercado não informado",
+                    obterNomeMercado(ultimo.market_id),
 
                 mercado_menor:
-                    menor.markets?.nome ||
-                    "Mercado não informado",
+                    obterNomeMercado(menor.market_id),
 
                 diferenca:
                     diferenca,
@@ -379,12 +402,9 @@ function montarAnalisePrecos(
 // RANKING MERCADOS
 // ========================================
 
-function montarRankingMercados(
-    compras
-) {
+function montarRankingMercados(compras) {
 
-    const mapa =
-        {};
+    const mapa = {};
 
     compras.forEach(compra => {
 
@@ -400,8 +420,9 @@ function montarRankingMercados(
                     marketId,
 
                 nome:
-                    compra.markets?.nome ||
-                    "Mercado não informado",
+                    obterNomeMercado(
+                        compra.market_id
+                    ),
 
                 total_compras:
                     0,
@@ -783,9 +804,7 @@ function renderizarRankingMercados() {
 // TEXTOS E VARIAÇÕES
 // ========================================
 
-function obterVisualVariacao(
-    tipo
-) {
+function obterVisualVariacao(tipo) {
 
     if (tipo === "alta") {
 
@@ -812,9 +831,7 @@ function obterVisualVariacao(
     };
 }
 
-function gerarTextoVariacao(
-    item
-) {
+function gerarTextoVariacao(item) {
 
     const percentual =
         Math.abs(item.percentual)
@@ -838,10 +855,50 @@ function gerarTextoVariacao(
 // HELPERS
 // ========================================
 
-function atualizarTexto(
-    id,
-    valor
-) {
+function obterNomeProduto(productId) {
+
+    const produto =
+        produtosCache.find(
+            item =>
+                Number(item.id) ===
+                Number(productId)
+        );
+
+    return produto?.nome ||
+        `Produto #${productId}`;
+}
+
+function obterNomeMercado(marketId) {
+
+    if (!marketId) {
+
+        return "Mercado não informado";
+    }
+
+    const mercado =
+        mercadosCache.find(
+            item =>
+                Number(item.id) ===
+                Number(marketId)
+        );
+
+    return mercado?.nome ||
+        "Mercado não informado";
+}
+
+function obterDataRegistro(registro) {
+
+    const data =
+        registro.created_at ||
+        registro.updated_at ||
+        registro.data_registro ||
+        registro.data ||
+        new Date().toISOString();
+
+    return new Date(data);
+}
+
+function atualizarTexto(id, valor) {
 
     const elemento =
         document.getElementById(id);
@@ -853,9 +910,7 @@ function atualizarTexto(
     }
 }
 
-function formatarMoeda(
-    valor
-) {
+function formatarMoeda(valor) {
 
     return Number(valor || 0)
         .toLocaleString(
@@ -865,6 +920,82 @@ function formatarMoeda(
                 currency: "BRL"
             }
         );
+}
+
+function limparTelaComErro(mensagem) {
+
+    atualizarTexto(
+        "produtosQueda",
+        0
+    );
+
+    atualizarTexto(
+        "produtosAlta",
+        0
+    );
+
+    atualizarTexto(
+        "economiaPotencial",
+        "R$ 0,00"
+    );
+
+    const titulo =
+        document.getElementById(
+            "tituloEconomia"
+        );
+
+    const texto =
+        document.getElementById(
+            "textoEconomia"
+        );
+
+    if (titulo) {
+
+        titulo.innerText =
+            "Não foi possível analisar os preços";
+    }
+
+    if (texto) {
+
+        texto.innerText =
+            mensagem;
+    }
+
+    const lista =
+        document.getElementById(
+            "listaEconomia"
+        );
+
+    if (lista) {
+
+        lista.innerHTML = `
+
+            <div class="economia-card empty-card">
+
+                ${mensagem}
+
+            </div>
+
+        `;
+    }
+
+    const mercados =
+        document.getElementById(
+            "rankingMercados"
+        );
+
+    if (mercados) {
+
+        mercados.innerHTML = `
+
+            <div class="mercado-card empty-card">
+
+                Nenhum mercado analisado.
+
+            </div>
+
+        `;
+    }
 }
 
 // ========================================
