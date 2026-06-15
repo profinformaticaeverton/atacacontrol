@@ -1,0 +1,541 @@
+/* ========================================
+   MINHA DISPENSA
+   ECONOMIA INTELIGENTE
+   MOBILE FIRST
+======================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#F8F9FA;
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
+    color:#4E342E;
+}
+
+.app{
+    width:100%;
+    max-width:1600px;
+    margin:auto;
+    padding:16px;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.header{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    margin-bottom:20px;
+}
+
+.header-actions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.page-label{
+    display:inline-block;
+    margin-bottom:6px;
+    color:#F57C00;
+    font-size:.75rem;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+.header-info h1{
+    font-size:2rem;
+    color:#3E2723;
+    margin-bottom:8px;
+}
+
+.header-info p{
+    color:#6D6D6D;
+    line-height:1.5;
+}
+
+/* ========================================
+   BOTÕES
+======================================== */
+
+.btn-voltar,
+.btn-secundario,
+.btn-principal,
+.btn-atualizar{
+    border:none;
+    border-radius:18px;
+    min-height:52px;
+    padding:12px 18px;
+    font-size:15px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.btn-voltar{
+    background:#D7CCC8;
+    color:#4E342E;
+}
+
+.btn-secundario{
+    background:#F1ECE9;
+    color:#4E342E;
+}
+
+.btn-principal{
+    background:#2E7D32;
+    color:white;
+    box-shadow:0 12px 24px rgba(46,125,50,.22);
+}
+
+.btn-atualizar{
+    background:#F57C00;
+    color:white;
+    box-shadow:0 12px 24px rgba(245,124,0,.20);
+}
+
+.btn-voltar:hover,
+.btn-secundario:hover,
+.btn-principal:hover,
+.btn-atualizar:hover{
+    transform:translateY(-2px);
+}
+
+/* ========================================
+   RESUMO
+======================================== */
+
+.summary-grid{
+    display:grid;
+    gap:14px;
+    margin-bottom:18px;
+}
+
+.summary-card{
+    background:white;
+    border-radius:24px;
+    padding:18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border:1px solid rgba(109,109,109,.12);
+    box-shadow:0 12px 28px rgba(78,52,46,.08);
+}
+
+.summary-icon{
+    width:56px;
+    height:56px;
+    border-radius:18px;
+    background:#E8F5E9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    flex-shrink:0;
+}
+
+.summary-icon.warning{
+    background:#FFF8E1;
+}
+
+.summary-icon.success{
+    background:#E8F5E9;
+}
+
+.summary-card small{
+    display:block;
+    color:#6D6D6D;
+    margin-bottom:4px;
+}
+
+.summary-card strong{
+    font-size:1.35rem;
+    font-weight:900;
+    color:#3E2723;
+}
+
+/* ========================================
+   CARD PADRÃO
+======================================== */
+
+.card{
+    background:white;
+    border-radius:24px;
+    padding:20px;
+    margin-bottom:18px;
+    border:1px solid rgba(109,109,109,.12);
+    box-shadow:0 12px 30px rgba(78,52,46,.08);
+}
+
+.card-title{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    margin-bottom:18px;
+}
+
+.card-icon{
+    width:54px;
+    height:54px;
+    border-radius:18px;
+    background:#FFF8E1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    flex-shrink:0;
+}
+
+.card-title h2,
+.lista-header h2{
+    color:#3E2723;
+}
+
+.card-title p{
+    color:#6D6D6D;
+    line-height:1.45;
+}
+
+/* ========================================
+   DESTAQUE
+======================================== */
+
+.destaque-card{
+    display:grid;
+    gap:18px;
+}
+
+.destaque-card h2{
+    color:#3E2723;
+    margin-bottom:8px;
+}
+
+.destaque-card p{
+    color:#6D6D6D;
+    line-height:1.5;
+}
+
+/* ========================================
+   FILTROS
+======================================== */
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:700;
+    color:#4E342E;
+}
+
+input,
+select{
+    width:100%;
+    min-height:54px;
+    border:1px solid rgba(109,109,109,.20);
+    border-radius:16px;
+    padding:14px;
+    font-size:16px;
+    background:#F8F9FA;
+    color:#4E342E;
+    outline:none;
+}
+
+input:focus,
+select:focus{
+    background:white;
+    border-color:#2E7D32;
+    box-shadow:0 0 0 4px rgba(46,125,50,.12);
+}
+
+.filtros-grid{
+    display:grid;
+    gap:14px;
+}
+
+/* ========================================
+   LISTA HEADER
+======================================== */
+
+.lista-header{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    margin-bottom:18px;
+}
+
+/* ========================================
+   GRID ECONOMIA
+======================================== */
+
+.economia-grid{
+    display:grid;
+    gap:16px;
+}
+
+.economia-card{
+    background:#F8F9FA;
+    border-radius:22px;
+    padding:18px;
+    border:1px solid rgba(109,109,109,.12);
+}
+
+.economia-topo{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.produto-nome{
+    font-size:1.05rem;
+    font-weight:900;
+    color:#3E2723;
+}
+
+.produto-categoria{
+    color:#6D6D6D;
+    font-size:.82rem;
+    margin-top:4px;
+}
+
+.variacao-badge{
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:.72rem;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.badge-alta{
+    background:#FFEBEE;
+    color:#C62828;
+}
+
+.badge-queda{
+    background:#E8F5E9;
+    color:#2E7D32;
+}
+
+.badge-igual{
+    background:#FFF8E1;
+    color:#7A4A00;
+}
+
+.economia-info{
+    display:grid;
+    gap:10px;
+}
+
+.info-item{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 12px;
+    background:white;
+    border-radius:14px;
+}
+
+.info-item span{
+    color:#6D6D6D;
+}
+
+.info-item strong{
+    color:#3E2723;
+}
+
+.variacao-detalhe{
+    margin-top:14px;
+    padding:12px;
+    border-radius:14px;
+    font-weight:700;
+    text-align:center;
+}
+
+.variacao-detalhe.alta{
+    background:#FFEBEE;
+    color:#C62828;
+}
+
+.variacao-detalhe.queda{
+    background:#E8F5E9;
+    color:#2E7D32;
+}
+
+.variacao-detalhe.igual{
+    background:#FFF8E1;
+    color:#7A4A00;
+}
+
+/* ========================================
+   MERCADOS
+======================================== */
+
+.mercados-grid{
+    display:grid;
+    gap:16px;
+}
+
+.mercado-card{
+    background:#F8F9FA;
+    border-radius:22px;
+    padding:18px;
+    border:1px solid rgba(109,109,109,.12);
+}
+
+.mercado-topo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.mercado-nome{
+    font-size:1rem;
+    font-weight:900;
+    color:#3E2723;
+}
+
+.mercado-posicao{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#2E7D32;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+}
+
+.mercado-info{
+    display:grid;
+    gap:10px;
+}
+
+.mercado-item{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 12px;
+    border-radius:14px;
+    background:white;
+}
+
+.mercado-item span{
+    color:#6D6D6D;
+}
+
+.mercado-item strong{
+    color:#3E2723;
+}
+
+/* ========================================
+   EMPTY
+======================================== */
+
+.empty-card{
+    text-align:center;
+    color:#6D6D6D;
+    font-weight:700;
+    padding:30px;
+}
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media(min-width:768px){
+
+    .app{
+        padding:24px;
+    }
+
+    .header{
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:flex-start;
+    }
+
+    .header-actions{
+        flex-direction:row;
+        flex-wrap:wrap;
+    }
+
+    .summary-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .filtros-grid{
+        grid-template-columns:2fr 1fr;
+    }
+
+    .destaque-card{
+        grid-template-columns:1fr auto;
+        align-items:center;
+    }
+
+    .lista-header{
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:center;
+    }
+
+    .economia-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .mercados-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+/* ========================================
+   DESKTOP
+======================================== */
+
+@media(min-width:1200px){
+
+    .app{
+        padding:30px;
+    }
+
+    .header-info h1{
+        font-size:2.4rem;
+    }
+
+    .economia-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .mercados-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+
+/* ========================================
+   MONITORES GRANDES
+======================================== */
+
+@media(min-width:1600px){
+
+    .economia-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .mercados-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+}

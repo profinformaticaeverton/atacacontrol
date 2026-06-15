@@ -56,6 +56,10 @@ body{
     min-height:100vh;
 }
 
+/* ========================================
+   SIDEBAR
+======================================== */
+
 .sidebar{
     position:fixed;
     top:0;
@@ -92,8 +96,14 @@ body{
     border-radius:18px;
     background:#D7CCC8;
     color:#4E342E;
-    font-size:28px;
+    flex-shrink:0;
     box-shadow:0 10px 22px rgba(78,52,46,.12);
+}
+
+.logo-icon svg{
+    width:34px;
+    height:34px;
+    display:block;
 }
 
 .logo h2{
@@ -126,11 +136,18 @@ nav{
     cursor:pointer;
     text-align:left;
     font-size:15px;
-    font-weight:700;
+    font-weight:800;
     display:flex;
     align-items:center;
     gap:10px;
     transition:.25s;
+}
+
+.menu-btn span{
+    width:20px;
+    display:inline-flex;
+    justify-content:center;
+    font-weight:900;
 }
 
 .menu-btn:hover{
@@ -153,13 +170,17 @@ nav{
     color:white;
     cursor:pointer;
     font-size:15px;
-    font-weight:800;
+    font-weight:900;
     display:flex;
     align-items:center;
     justify-content:center;
     gap:8px;
     box-shadow:0 12px 24px rgba(198,40,40,.20);
 }
+
+/* ========================================
+   CONTEÚDO
+======================================== */
 
 .content{
     width:100%;
@@ -204,8 +225,12 @@ nav{
     word-break:break-word;
     color:#6D6D6D;
     font-size:.9rem;
-    font-weight:700;
+    font-weight:800;
 }
+
+/* ========================================
+   BANNER
+======================================== */
 
 .summary-banner{
     background:
@@ -252,6 +277,10 @@ nav{
     box-shadow:0 12px 26px rgba(46,125,50,.22);
 }
 
+/* ========================================
+   CARDS
+======================================== */
+
 .cards{
     display:grid;
     grid-template-columns:1fr;
@@ -268,6 +297,7 @@ nav{
     display:flex;
     align-items:center;
     gap:14px;
+    min-width:0;
 }
 
 .card-icon{
@@ -278,28 +308,35 @@ nav{
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:26px;
+    font-size:22px;
+    font-weight:900;
+    line-height:1;
 }
 
 .card-money{
     background:#FFF8E1;
+    color:#7A4A00;
 }
 
 .card-cart{
     background:#E8F5E9;
+    color:#2E7D32;
 }
 
 .card-products{
     background:#F1ECE9;
+    color:#4E342E;
 }
 
 .card-alert,
 .card-danger{
     background:#FFEBEE;
+    color:#C62828;
 }
 
 .card-warning{
     background:#FFF8E1;
+    color:#7A4A00;
 }
 
 .card h3{
@@ -315,8 +352,13 @@ nav{
     word-break:break-word;
 }
 
+/* ========================================
+   AÇÕES
+======================================== */
+
 .acoes{
     display:grid;
+    grid-template-columns:1fr;
     gap:12px;
     margin-bottom:18px;
 }
@@ -338,6 +380,10 @@ nav{
     box-shadow:0 12px 26px rgba(46,125,50,.20);
 }
 
+.acoes button span{
+    font-weight:900;
+}
+
 .acoes button:nth-child(2){
     background:#F57C00;
     box-shadow:0 12px 26px rgba(245,124,0,.20);
@@ -353,6 +399,16 @@ nav{
     color:#4E342E;
     box-shadow:0 12px 26px rgba(249,168,37,.22);
 }
+
+.acoes button:nth-child(5){
+    background:#4E342E;
+    color:white;
+    box-shadow:0 12px 26px rgba(78,52,46,.22);
+}
+
+/* ========================================
+   PAINÉIS
+======================================== */
 
 .panel{
     background:white;
@@ -387,6 +443,10 @@ nav{
     white-space:nowrap;
 }
 
+/* ========================================
+   COMPRAS / DISPENSA
+======================================== */
+
 .compras-grid,
 .dispensa-grid{
     display:grid;
@@ -403,7 +463,7 @@ nav{
 
 .empty-card{
     color:#6D6D6D;
-    font-weight:700;
+    font-weight:800;
 }
 
 .compra-data{
@@ -415,7 +475,7 @@ nav{
 .compra-mercado{
     margin-bottom:8px;
     color:#4E342E;
-    font-weight:700;
+    font-weight:800;
 }
 
 .compra-itens{
@@ -476,7 +536,7 @@ nav{
 }
 
 /* ========================================
-   PLANEJAMENTO NO DASHBOARD
+   PLANEJAMENTO
 ======================================== */
 
 .planejamento-resumo{
@@ -603,7 +663,7 @@ nav{
     }
 
     .header-text{
-        max-width:620px;
+        max-width:680px;
     }
 
     .usuario{
@@ -668,6 +728,10 @@ nav{
     .card{
         flex-direction:column;
         align-items:flex-start;
+    }
+
+    .acoes{
+        grid-template-columns:repeat(5,1fr);
     }
 
     .compras-grid,

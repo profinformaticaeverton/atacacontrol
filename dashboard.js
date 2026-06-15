@@ -1,7 +1,7 @@
 // ========================================
 // MINHA DISPENSA
 // DASHBOARD
-// COMPRAS + ESTOQUE + PLANEJAMENTO DA FEIRA
+// COMPRAS + ESTOQUE + PLANEJAMENTO + ECONOMIA
 // ========================================
 
 async function verificarSessao() {
@@ -13,9 +13,7 @@ async function verificarSessao() {
         } = await supabaseClient.auth.getSession();
 
         if (!session) {
-
             window.location.href = "/";
-
             return;
         }
 
@@ -25,18 +23,14 @@ async function verificarSessao() {
             document.getElementById("userEmail");
 
         if (userEmail) {
-
-            userEmail.innerText =
-                user.email;
+            userEmail.innerText = user.email;
         }
 
         await verificarPerfil(user);
-
         await carregarDashboard(user);
-
         await carregarDispensa(user);
-
         await carregarPlanejamentoDashboard(user);
+        await carregarEconomiaDashboard(user);
 
         iniciarMenuMobile();
 
@@ -80,7 +74,6 @@ async function verificarPerfil(user) {
                 });
 
             if (error) {
-
                 console.error(
                     "Erro ao criar perfil:",
                     error
@@ -89,13 +82,12 @@ async function verificarPerfil(user) {
         }
 
     } catch (erro) {
-
         console.error(erro);
     }
 }
 
 // ========================================
-// CARREGAR DASHBOARD
+// CARREGAR COMPRAS
 // ========================================
 
 async function carregarDashboard(user) {
@@ -135,9 +127,7 @@ async function carregarDashboard(user) {
         if (error) {
 
             console.error(error);
-
             renderizarUltimasCompras([]);
-
             return;
         }
 
@@ -169,7 +159,6 @@ async function carregarDashboard(user) {
                 Number(compra.valor_total || 0);
 
             if (valor > maiorCompra) {
-
                 maiorCompra = valor;
             }
         });
@@ -188,7 +177,6 @@ async function carregarDashboard(user) {
             .eq("purchases.user_id", user.id);
 
         if (itensError) {
-
             console.error(itensError);
         }
 
@@ -265,22 +253,15 @@ async function carregarDispensa(user) {
             );
 
             atualizarResumoDispensa([]);
-
             renderizarDispensa([]);
-
             return;
         }
 
         const estoque =
             data || [];
 
-        atualizarResumoDispensa(
-            estoque
-        );
-
-        renderizarDispensa(
-            estoque
-        );
+        atualizarResumoDispensa(estoque);
+        renderizarDispensa(estoque);
 
     } catch (erro) {
 
@@ -290,7 +271,6 @@ async function carregarDispensa(user) {
         );
 
         atualizarResumoDispensa([]);
-
         renderizarDispensa([]);
     }
 }
@@ -351,8 +331,7 @@ async function carregarPlanejamentoDashboard(user) {
 
     try {
 
-        const hoje =
-            new Date();
+        const hoje = new Date();
 
         const mesReferencia =
             `${hoje.getFullYear()}-${String(
@@ -377,12 +356,16 @@ async function carregarPlanejamentoDashboard(user) {
             );
 
             renderizarPlanejamentoVazio();
-
             return;
         }
 
         const itensLista =
             await obterTotalItensListaCompras(user);
+
+        atualizarCard(
+            "listaInteligenteDashboard",
+            itensLista
+        );
 
         if (!planejamento) {
 
@@ -472,7 +455,6 @@ async function obterTotalItensListaCompras(user) {
     } catch (erro) {
 
         console.error(erro);
-
         return 0;
     }
 }
@@ -481,25 +463,11 @@ function renderizarPlanejamentoVazio(
     itensLista = 0
 ) {
 
-    atualizarCard(
-        "orcamentoDashboard",
-        "R$ 0,00"
-    );
-
-    atualizarCard(
-        "gastoDashboard",
-        "R$ 0,00"
-    );
-
-    atualizarCard(
-        "saldoDashboard",
-        "R$ 0,00"
-    );
-
-    atualizarCard(
-        "statusDashboard",
-        "Sem meta"
-    );
+    atualizarCard("orcamentoDashboard", "R$ 0,00");
+    atualizarCard("gastoDashboard", "R$ 0,00");
+    atualizarCard("saldoDashboard", "R$ 0,00");
+    atualizarCard("statusDashboard", "Sem meta");
+    atualizarCard("listaInteligenteDashboard", itensLista);
 
     const container =
         document.getElementById(
@@ -514,7 +482,7 @@ function renderizarPlanejamentoVazio(
 
             <div class="planejamento-status status-neutro">
 
-                🎯 Planejamento não definido
+                ◎ Planejamento não definido
 
             </div>
 
@@ -620,17 +588,14 @@ function renderizarBlocoPlanejamento(
 function traduzirStatusPlanejamento(status) {
 
     if (status === "estourado") {
-
         return "Estourado";
     }
 
     if (status === "alerta") {
-
         return "Atenção";
     }
 
     if (status === "ok") {
-
         return "Dentro da meta";
     }
 
@@ -640,21 +605,342 @@ function traduzirStatusPlanejamento(status) {
 function obterClassePlanejamento(status) {
 
     if (status === "estourado") {
-
         return "status-estourado";
     }
 
     if (status === "alerta") {
-
         return "status-alerta";
     }
 
     if (status === "ok") {
-
         return "status-ok-planejamento";
     }
 
     return "status-neutro";
+}
+
+// ========================================
+// ECONOMIA NO DASHBOARD
+// ========================================
+
+async function carregarEconomiaDashboard(user) {
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("product_prices")
+            .select(`
+                id,
+                product_id,
+                market_id,
+                price,
+                created_at,
+                products (
+                    nome
+                ),
+                markets (
+                    nome
+                )
+            `)
+            .order("created_at", {
+                ascending: true
+            });
+
+        if (error) {
+
+            console.error(
+                "Erro ao carregar economia:",
+                error
+            );
+
+            renderizarResumoEconomiaDashboard(
+                [],
+                0,
+                0,
+                0
+            );
+
+            return;
+        }
+
+        const analise =
+            montarAnaliseEconomiaDashboard(
+                data || []
+            );
+
+        const produtosAlta =
+            analise.filter(
+                item =>
+                    item.tipo_variacao === "alta"
+            ).length;
+
+        const produtosQueda =
+            analise.filter(
+                item =>
+                    item.tipo_variacao === "queda"
+            ).length;
+
+        const economiaPotencial =
+            analise.reduce(
+                (total, item) =>
+                    total +
+                    Number(
+                        item.economia_possivel || 0
+                    ),
+                0
+            );
+
+        atualizarCard(
+            "economiaAltaDashboard",
+            produtosAlta
+        );
+
+        atualizarCard(
+            "economiaQuedaDashboard",
+            produtosQueda
+        );
+
+        atualizarCard(
+            "economiaPotencialDashboard",
+            formatarMoeda(
+                economiaPotencial
+            )
+        );
+
+        renderizarResumoEconomiaDashboard(
+            analise,
+            produtosAlta,
+            produtosQueda,
+            economiaPotencial
+        );
+
+    } catch (erro) {
+
+        console.error(
+            "Erro inesperado na economia do dashboard:",
+            erro
+        );
+
+        renderizarResumoEconomiaDashboard(
+            [],
+            0,
+            0,
+            0
+        );
+    }
+}
+
+function montarAnaliseEconomiaDashboard(precos) {
+
+    const mapaProdutos = {};
+
+    precos.forEach(registro => {
+
+        const productId =
+            registro.product_id;
+
+        if (!mapaProdutos[productId]) {
+
+            mapaProdutos[productId] = [];
+        }
+
+        mapaProdutos[productId].push(
+            registro
+        );
+    });
+
+    const resultado = [];
+
+    Object
+        .keys(mapaProdutos)
+        .forEach(productId => {
+
+            const historico =
+                mapaProdutos[productId]
+                    .sort(
+                        (a, b) =>
+                            new Date(a.created_at) -
+                            new Date(b.created_at)
+                    );
+
+            if (historico.length < 2) {
+                return;
+            }
+
+            const primeiro =
+                historico[0];
+
+            const ultimo =
+                historico[
+                    historico.length - 1
+                ];
+
+            const menor =
+                historico.reduce(
+                    (menorAtual, item) =>
+                        Number(item.price) <
+                        Number(menorAtual.price)
+                            ? item
+                            : menorAtual,
+                    historico[0]
+                );
+
+            const precoInicial =
+                Number(primeiro.price || 0);
+
+            const precoAtual =
+                Number(ultimo.price || 0);
+
+            const diferenca =
+                precoAtual - precoInicial;
+
+            const tipoVariacao =
+                diferenca > 0
+                    ? "alta"
+                    : diferenca < 0
+                        ? "queda"
+                        : "igual";
+
+            const economiaPossivel =
+                precoAtual > Number(menor.price)
+                    ? precoAtual - Number(menor.price)
+                    : 0;
+
+            resultado.push({
+
+                product_id:
+                    Number(productId),
+
+                produto_nome:
+                    ultimo.products?.nome ||
+                    primeiro.products?.nome ||
+                    "Produto",
+
+                preco_inicial:
+                    precoInicial,
+
+                preco_atual:
+                    precoAtual,
+
+                preco_menor:
+                    Number(menor.price || 0),
+
+                mercado_menor:
+                    menor.markets?.nome ||
+                    "Mercado não informado",
+
+                tipo_variacao:
+                    tipoVariacao,
+
+                economia_possivel:
+                    economiaPossivel
+            });
+        });
+
+    return resultado;
+}
+
+function renderizarResumoEconomiaDashboard(
+    analise,
+    produtosAlta,
+    produtosQueda,
+    economiaPotencial
+) {
+
+    const container =
+        document.getElementById(
+            "economiaResumo"
+        );
+
+    if (!container) return;
+
+    if (!analise.length) {
+
+        container.innerHTML = `
+
+            <article class="planejamento-card-resumo">
+
+                <div class="planejamento-status status-neutro">
+
+                    ↕ Economia ainda sem dados
+
+                </div>
+
+                <p>
+                    Registre pelo menos duas compras com os mesmos produtos
+                    para ativar a análise inteligente de preços.
+                </p>
+
+                <button
+                    onclick="window.location.href='nova-compra.html'">
+
+                    Registrar compra
+
+                </button>
+
+            </article>
+
+        `;
+
+        return;
+    }
+
+    let titulo =
+        "Preços em equilíbrio";
+
+    let classe =
+        "status-neutro";
+
+    if (produtosAlta > produtosQueda) {
+
+        titulo =
+            "Atenção: mais produtos subiram";
+
+        classe =
+            "status-alerta";
+    }
+
+    if (produtosQueda > produtosAlta) {
+
+        titulo =
+            "Boa notícia: mais produtos caíram";
+
+        classe =
+            "status-ok-planejamento";
+    }
+
+    container.innerHTML = `
+
+        <article class="planejamento-card-resumo">
+
+            <div class="planejamento-status ${classe}">
+
+                ↕ ${titulo}
+
+            </div>
+
+            <p>
+                Produtos em alta:
+                <strong>${produtosAlta}</strong>.
+                Produtos em queda:
+                <strong>${produtosQueda}</strong>.
+                Economia potencial:
+                <strong>${formatarMoeda(economiaPotencial)}</strong>.
+            </p>
+
+            <button
+                onclick="window.location.href='economia.html'">
+
+                Ver economia
+
+            </button>
+
+        </article>
+
+    `;
 }
 
 // ========================================
@@ -858,7 +1144,6 @@ function iniciarMenuMobile() {
         document.getElementById("overlay");
 
     if (!menu || !sidebar || !overlay) {
-
         return;
     }
 
@@ -867,7 +1152,6 @@ function iniciarMenuMobile() {
         () => {
 
             sidebar.classList.toggle("aberto");
-
             overlay.classList.toggle("ativo");
         }
     );
@@ -877,7 +1161,6 @@ function iniciarMenuMobile() {
         () => {
 
             sidebar.classList.remove("aberto");
-
             overlay.classList.remove("ativo");
         }
     );
@@ -893,9 +1176,7 @@ function atualizarCard(id, valor) {
         document.getElementById(id);
 
     if (elemento) {
-
-        elemento.innerText =
-            valor;
+        elemento.innerText = valor;
     }
 }
 
@@ -914,7 +1195,6 @@ function formatarMoeda(valor) {
 function formatarData(data) {
 
     if (!data) {
-
         return "Data não informada";
     }
 
