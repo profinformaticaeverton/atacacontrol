@@ -11,7 +11,7 @@
 
     <meta
         name="description"
-        content="Registre uma nova compra no Minha Dispensa e acompanhe sua feira do mês com mais controle.">
+        content="Registre uma nova compra no Minha Dispensa com produtos do catálogo, marcas conhecidas e sugestão de novos itens.">
 
     <title>
         Nova Compra | Minha Dispensa
@@ -49,7 +49,7 @@
                     class="btn-dispensar"
                     onclick="window.location.href='dispensa.html'">
 
-                    🫙 Minha Dispensa
+                    ▥ Minha Dispensa
 
                 </button>
 
@@ -57,7 +57,7 @@
                     class="btn-dispensar btn-lista"
                     onclick="window.location.href='lista-compras.html'">
 
-                    📝 Lista de Compras
+                    ☑ Lista de Compras
 
                 </button>
 
@@ -65,7 +65,7 @@
                     class="btn-dispensar btn-planejamento"
                     onclick="window.location.href='planejamento-feira.html'">
 
-                    🎯 Planejamento
+                    ◎ Planejamento
 
                 </button>
 
@@ -82,7 +82,8 @@
                 </h1>
 
                 <p>
-                    Registre sua feira em tempo real e acompanhe o total antes de salvar.
+                    Registre sua feira escolhendo produtos do catálogo, informe
+                    quantidade e preço para alimentar sua dispensa automaticamente.
                 </p>
 
             </div>
@@ -94,13 +95,13 @@
             <div class="card-title">
 
                 <div class="card-icon">
-                    🧾
+                    ▤
                 </div>
 
                 <div>
 
                     <h2>
-                        Informações da Compra
+                        Informações da compra
                     </h2>
 
                     <p>
@@ -116,7 +117,7 @@
                 <div>
 
                     <label for="dataCompra">
-                        Data da Compra
+                        Data da compra
                     </label>
 
                     <input
@@ -150,16 +151,36 @@
 
         <section class="card search-card">
 
-            <label for="buscaProduto">
-                Buscar produto
-            </label>
+            <div class="search-header">
+
+                <div>
+
+                    <label for="buscaProduto">
+                        Buscar produto
+                    </label>
+
+                    <p>
+                        Pesquise por nome, marca, tamanho ou categoria.
+                    </p>
+
+                </div>
+
+                <button
+                    class="btn-nao-encontrei"
+                    onclick="abrirModalSugestao()">
+
+                    ＋ Não encontrei o produto
+
+                </button>
+
+            </div>
 
             <div class="busca-container">
 
                 <input
                     type="text"
                     id="buscaProduto"
-                    placeholder="🔍 Digite o nome do produto...">
+                    placeholder="🔎 Ex.: Arroz Tio Jorge 5kg, Café Pilão 500g...">
 
             </div>
 
@@ -172,12 +193,16 @@
                 <div>
 
                     <span class="page-label">
-                        Itens da feira
+                        Catálogo da feira
                     </span>
 
                     <h2>
                         Produtos
                     </h2>
+
+                    <p>
+                        Selecione os itens comprados e preencha quantidade e valor.
+                    </p>
 
                 </div>
 
@@ -190,6 +215,10 @@
             <div
                 id="listaProdutos"
                 class="lista-produtos">
+
+                <div class="produto-card empty-card">
+                    Carregando catálogo de produtos...
+                </div>
 
             </div>
 
@@ -204,7 +233,7 @@
             <div>
 
                 <small>
-                    Quantidade Total
+                    Quantidade total
                 </small>
 
                 <strong id="qtdTotal">
@@ -216,7 +245,7 @@
             <div>
 
                 <small>
-                    Valor Total
+                    Valor total
                 </small>
 
                 <strong id="valorTotal">
@@ -231,9 +260,135 @@
             class="btn-salvar"
             onclick="salvarCompra()">
 
-            💾 Salvar Compra
+            ▣ Salvar compra
 
         </button>
+
+    </div>
+
+    <div
+        id="modalSugestaoProduto"
+        class="modal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <span class="page-label">
+                        Produto não encontrado
+                    </span>
+
+                    <h2>
+                        Sugerir novo produto
+                    </h2>
+
+                    <p>
+                        Envie o item para análise. Após aprovação, ele poderá
+                        entrar no catálogo geral do Minha Dispensa.
+                    </p>
+
+                </div>
+
+                <button
+                    class="btn-fechar"
+                    onclick="fecharModalSugestao()"
+                    aria-label="Fechar sugestão de produto">
+
+                    ×
+
+                </button>
+
+            </div>
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label for="sugestaoNome">
+                        Nome do produto
+                    </label>
+
+                    <input
+                        type="text"
+                        id="sugestaoNome"
+                        placeholder="Ex.: Arroz Tio Jorge 5kg">
+
+                </div>
+
+                <div>
+
+                    <label for="sugestaoMarca">
+                        Marca
+                    </label>
+
+                    <input
+                        type="text"
+                        id="sugestaoMarca"
+                        placeholder="Ex.: Tio Jorge">
+
+                </div>
+
+                <div>
+
+                    <label for="sugestaoCategoria">
+                        Categoria
+                    </label>
+
+                    <input
+                        type="text"
+                        id="sugestaoCategoria"
+                        placeholder="Ex.: Arroz, Feijão, Limpeza">
+
+                </div>
+
+                <div>
+
+                    <label for="sugestaoTamanho">
+                        Tamanho / embalagem
+                    </label>
+
+                    <input
+                        type="text"
+                        id="sugestaoTamanho"
+                        placeholder="Ex.: 5kg, 900ml, 12 rolos">
+
+                </div>
+
+                <div>
+
+                    <label for="sugestaoUnidade">
+                        Unidade
+                    </label>
+
+                    <input
+                        type="text"
+                        id="sugestaoUnidade"
+                        placeholder="Ex.: kg, g, ml, L, un">
+
+                </div>
+
+            </div>
+
+            <label for="sugestaoObservacao">
+                Observação
+            </label>
+
+            <textarea
+                id="sugestaoObservacao"
+                rows="4"
+                placeholder="Ex.: produto comum em atacados da minha região..."></textarea>
+
+            <button
+                class="btn-enviar-sugestao"
+                onclick="enviarSugestaoProduto()">
+
+                Enviar para aprovação
+
+            </button>
+
+        </div>
 
     </div>
 

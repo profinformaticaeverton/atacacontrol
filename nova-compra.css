@@ -1,6 +1,7 @@
 /* ========================================
    MINHA DISPENSA
    NOVA COMPRA
+   CATÁLOGO EM CARDS INDIVIDUAIS
    MOBILE FIRST
 ======================================== */
 
@@ -23,7 +24,7 @@ body{
         Verdana,
         sans-serif;
     color:#4E342E;
-    padding-bottom:140px;
+    padding-bottom:150px;
 }
 
 .app{
@@ -76,13 +77,15 @@ body{
 ======================================== */
 
 .btn-voltar,
-.btn-dispensar{
+.btn-dispensar,
+.btn-nao-encontrei,
+.btn-enviar-sugestao{
     min-height:52px;
     border:none;
     border-radius:18px;
     padding:12px 18px;
     font-size:15px;
-    font-weight:800;
+    font-weight:900;
     cursor:pointer;
     transition:.25s;
 }
@@ -107,8 +110,25 @@ body{
     color:#4E342E;
 }
 
+.btn-nao-encontrei{
+    width:100%;
+    background:#F57C00;
+    color:white;
+    box-shadow:0 12px 24px rgba(245,124,0,.20);
+}
+
+.btn-enviar-sugestao{
+    width:100%;
+    background:#2E7D32;
+    color:white;
+    margin-top:16px;
+    box-shadow:0 12px 24px rgba(46,125,50,.22);
+}
+
 .btn-voltar:hover,
-.btn-dispensar:hover{
+.btn-dispensar:hover,
+.btn-nao-encontrei:hover,
+.btn-enviar-sugestao:hover{
     transform:translateY(-2px);
 }
 
@@ -140,8 +160,10 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:28px;
+    font-size:26px;
+    font-weight:900;
     flex-shrink:0;
+    color:#7A4A00;
 }
 
 .card-title h2{
@@ -161,7 +183,7 @@ body{
 label{
     display:block;
     margin-bottom:8px;
-    font-weight:700;
+    font-weight:800;
     color:#4E342E;
 }
 
@@ -213,6 +235,18 @@ textarea:focus{
     z-index:20;
 }
 
+.search-header{
+    display:grid;
+    gap:14px;
+    margin-bottom:16px;
+}
+
+.search-header p{
+    color:#6D6D6D;
+    font-size:.92rem;
+    line-height:1.45;
+}
+
 .busca-container{
     position:relative;
 }
@@ -224,48 +258,176 @@ textarea:focus{
 .titulo-produtos{
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    align-items:flex-start;
     gap:12px;
     margin-bottom:18px;
 }
 
 .titulo-produtos h2{
     color:#3E2723;
+    margin-bottom:4px;
+}
+
+.titulo-produtos p{
+    color:#6D6D6D;
+    line-height:1.45;
+    font-size:.92rem;
 }
 
 #contadorProdutos{
     color:#6D6D6D;
     font-size:.85rem;
-    font-weight:700;
+    font-weight:800;
+    white-space:nowrap;
+    background:#F1ECE9;
+    padding:8px 12px;
+    border-radius:999px;
 }
+
+/* ========================================
+   GRID DE CARDS INDIVIDUAIS
+======================================== */
 
 .lista-produtos{
     display:grid;
+    grid-template-columns:1fr;
     gap:16px;
 }
 
 .produto-card{
+    position:relative;
     background:#F8F9FA;
-    border-radius:22px;
+    border-radius:24px;
     padding:18px;
-    border:1px solid rgba(109,109,109,.12);
+    border:2px solid transparent;
+    box-shadow:0 10px 24px rgba(78,52,46,.06);
+    transition:.25s;
+    overflow:hidden;
 }
 
+.produto-card:hover{
+    border-color:#D7CCC8;
+    transform:translateY(-2px);
+}
+
+.produto-card.selecionado{
+    background:#F3FBF4;
+    border-color:#2E7D32;
+    box-shadow:0 14px 28px rgba(46,125,50,.12);
+}
+
+.produto-card.empty-card{
+    text-align:center;
+    color:#6D6D6D;
+    font-weight:800;
+    padding:30px;
+}
+
+/* ========================================
+   CABEÇALHO DO PRODUTO
+======================================== */
+
 .produto-topo{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    gap:12px;
+    align-items:flex-start;
     margin-bottom:14px;
 }
 
+.produto-icone{
+    width:58px;
+    height:58px;
+    border-radius:20px;
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    font-weight:900;
+    color:#4E342E;
+    border:1px solid rgba(109,109,109,.12);
+    flex-shrink:0;
+    overflow:hidden;
+}
+
+.produto-icone img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.produto-info-topo{
+    min-width:0;
+}
+
 .produto-nome{
-    font-size:1rem;
+    font-size:1.02rem;
     font-weight:900;
     color:#3E2723;
+    line-height:1.25;
+    margin-bottom:5px;
+}
+
+.produto-marca{
+    color:#6D6D6D;
+    font-size:.85rem;
+    font-weight:700;
 }
 
 .produto-categoria{
-    color:#6D6D6D;
-    font-size:.82rem;
-    margin-top:4px;
+    display:inline-flex;
+    margin-top:8px;
+    padding:5px 9px;
+    border-radius:999px;
+    background:#FFF8E1;
+    color:#7A4A00;
+    font-size:.72rem;
+    font-weight:900;
 }
+
+.produto-check{
+    width:28px;
+    height:28px;
+    accent-color:#2E7D32;
+    cursor:pointer;
+}
+
+/* ========================================
+   DADOS DO PRODUTO
+======================================== */
+
+.produto-meta{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:14px;
+}
+
+.meta-item{
+    background:white;
+    border-radius:14px;
+    padding:10px;
+    border:1px solid rgba(109,109,109,.10);
+}
+
+.meta-item small{
+    display:block;
+    color:#6D6D6D;
+    font-size:.75rem;
+    margin-bottom:4px;
+    font-weight:700;
+}
+
+.meta-item strong{
+    color:#3E2723;
+    font-size:.9rem;
+    font-weight:900;
+}
+
+/* ========================================
+   CAMPOS DO CARD
+======================================== */
 
 .produto-grid{
     display:grid;
@@ -274,26 +436,45 @@ textarea:focus{
 }
 
 .produto-grid input{
-    text-align:center;
+    text-align:left;
+    background:white;
 }
+
+.campo-produto{
+    display:grid;
+    gap:6px;
+}
+
+.campo-produto label{
+    margin-bottom:0;
+    font-size:.86rem;
+}
+
+/* ========================================
+   SUBTOTAL
+======================================== */
 
 .subtotal-card{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    gap:12px;
     background:white;
     border-radius:16px;
     padding:12px;
     margin-top:10px;
+    border:1px solid rgba(109,109,109,.10);
 }
 
 .subtotal-card span{
     color:#6D6D6D;
+    font-weight:700;
 }
 
 .subtotal-card strong{
     color:#2E7D32;
     font-size:1.05rem;
+    font-weight:900;
 }
 
 /* ========================================
@@ -318,6 +499,7 @@ textarea:focus{
 .label-preco{
     color:#6D6D6D;
     font-size:.85rem;
+    font-weight:700;
 }
 
 .ultimo-preco,
@@ -331,15 +513,17 @@ textarea:focus{
     padding:10px;
     border-radius:12px;
     font-size:.85rem;
-    font-weight:700;
+    font-weight:800;
 }
 
-.variacao-subiu{
+.variacao-subiu,
+.variacao-alta{
     background:#FFEBEE;
     color:#C62828;
 }
 
-.variacao-caiu{
+.variacao-caiu,
+.variacao-baixa{
     background:#E8F5E9;
     color:#2E7D32;
 }
@@ -376,11 +560,13 @@ textarea:focus{
     display:block;
     color:#6D6D6D;
     margin-bottom:4px;
+    font-weight:700;
 }
 
 .resumo-info strong{
     color:#2E7D32;
     font-size:1.15rem;
+    font-weight:900;
 }
 
 .btn-salvar{
@@ -397,8 +583,76 @@ textarea:focus{
 }
 
 /* ========================================
-   TABLET
+   MODAL SUGESTÃO
 ======================================== */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(62,39,35,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    z-index:5000;
+}
+
+.modal.ativo{
+    display:flex;
+}
+
+.modal-content{
+    width:100%;
+    max-width:820px;
+    max-height:90vh;
+    overflow:auto;
+    background:white;
+    border-radius:26px;
+    padding:22px;
+    box-shadow:0 24px 60px rgba(0,0,0,.18);
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    gap:14px;
+    align-items:flex-start;
+    margin-bottom:20px;
+}
+
+.modal-header h2{
+    color:#3E2723;
+    margin-bottom:6px;
+}
+
+.modal-header p{
+    color:#6D6D6D;
+    line-height:1.45;
+}
+
+.btn-fechar{
+    width:44px;
+    height:44px;
+    border:none;
+    border-radius:14px;
+    background:#C62828;
+    color:white;
+    cursor:pointer;
+    font-size:22px;
+    font-weight:900;
+    flex-shrink:0;
+}
+
+/* ========================================
+   RESPONSIVO
+======================================== */
+
+@media(min-width:640px){
+
+    .lista-produtos{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
 
 @media(min-width:768px){
 
@@ -421,12 +675,18 @@ textarea:focus{
         grid-template-columns:1fr 1fr;
     }
 
-    .produto-grid{
-        grid-template-columns:1fr 1fr;
+    .search-header{
+        grid-template-columns:1fr auto;
+        align-items:center;
     }
 
-    .lista-produtos{
-        grid-template-columns:repeat(2,1fr);
+    .btn-nao-encontrei{
+        width:auto;
+        white-space:nowrap;
+    }
+
+    .produto-grid{
+        grid-template-columns:1fr 1fr;
     }
 
     .resumo-fixo{
@@ -434,9 +694,12 @@ textarea:focus{
     }
 }
 
-/* ========================================
-   DESKTOP
-======================================== */
+@media(min-width:1024px){
+
+    .lista-produtos{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
 
 @media(min-width:1200px){
 
@@ -447,17 +710,9 @@ textarea:focus{
     .header-info h1{
         font-size:2.4rem;
     }
-
-    .lista-produtos{
-        grid-template-columns:repeat(3,1fr);
-    }
 }
 
-/* ========================================
-   TELAS GRANDES
-======================================== */
-
-@media(min-width:1600px){
+@media(min-width:1500px){
 
     .lista-produtos{
         grid-template-columns:repeat(4,1fr);
