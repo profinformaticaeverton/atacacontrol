@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Admin Minha Dispensa: aprove, edite ou rejeite produtos sugeridos pelos usuários para o catálogo geral.">
+
+    <title>
+        Admin Produtos | Minha Dispensa
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="admin-produtos.css">
+
+    <link
+        rel="icon"
+        href="favicon.svg">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header class="header">
+
+            <div class="header-actions">
+
+                <button
+                    class="btn-voltar"
+                    onclick="window.location.href='dashboard.html'">
+
+                    ← Dashboard
+
+                </button>
+
+                <button
+                    class="btn-secundario"
+                    onclick="window.location.href='nova-compra.html'">
+
+                    ＋ Nova Compra
+
+                </button>
+
+                <button
+                    class="btn-secundario"
+                    onclick="window.location.href='economia.html'">
+
+                    ↕ Economia
+
+                </button>
+
+            </div>
+
+            <div class="header-info">
+
+                <span class="page-label">
+                    Administração
+                </span>
+
+                <h1>
+                    Produtos sugeridos
+                </h1>
+
+                <p>
+                    Aprove, edite ou rejeite produtos enviados pelos usuários
+                    antes de adicioná-los ao catálogo geral.
+                </p>
+
+            </div>
+
+        </header>
+
+        <section class="summary-grid">
+
+            <article class="summary-card">
+
+                <div class="summary-icon warning">
+                    !
+                </div>
+
+                <div>
+
+                    <small>
+                        Pendentes
+                    </small>
+
+                    <strong id="totalPendentes">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon success">
+                    ✓
+                </div>
+
+                <div>
+
+                    <small>
+                        Aprovados
+                    </small>
+
+                    <strong id="totalAprovados">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="summary-card">
+
+                <div class="summary-icon danger">
+                    ×
+                </div>
+
+                <div>
+
+                    <small>
+                        Rejeitados
+                    </small>
+
+                    <strong id="totalRejeitados">
+                        0
+                    </strong>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <section class="card filtros-card">
+
+            <div class="card-title">
+
+                <div class="card-icon">
+                    🔎
+                </div>
+
+                <div>
+
+                    <h2>
+                        Filtros
+                    </h2>
+
+                    <p>
+                        Busque por produto, marca, categoria ou status.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="filtros-grid">
+
+                <div>
+
+                    <label for="buscaProduto">
+                        Buscar
+                    </label>
+
+                    <input
+                        type="text"
+                        id="buscaProduto"
+                        placeholder="Digite nome, marca ou categoria">
+
+                </div>
+
+                <div>
+
+                    <label for="filtroStatus">
+                        Status
+                    </label>
+
+                    <select id="filtroStatus">
+
+                        <option value="pendente">
+                            Pendentes
+                        </option>
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        <option value="aprovado">
+                            Aprovados
+                        </option>
+
+                        <option value="rejeitado">
+                            Rejeitados
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <button
+                class="btn-atualizar"
+                onclick="carregarSugestoes()">
+
+                Atualizar lista
+
+            </button>
+
+        </section>
+
+        <section class="card">
+
+            <div class="lista-header">
+
+                <div>
+
+                    <span class="page-label">
+                        Curadoria do catálogo
+                    </span>
+
+                    <h2>
+                        Sugestões recebidas
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div
+                id="listaSugestoes"
+                class="sugestoes-grid">
+
+                <div class="sugestao-card empty-card">
+
+                    Carregando sugestões...
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <div
+        id="modalAnalise"
+        class="modal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <span class="page-label">
+                        Analisar sugestão
+                    </span>
+
+                    <h2>
+                        Revisar produto
+                    </h2>
+
+                    <p>
+                        Edite os dados antes de aprovar o produto para o catálogo.
+                    </p>
+
+                </div>
+
+                <button
+                    class="btn-fechar"
+                    onclick="fecharModalAnalise()"
+                    aria-label="Fechar análise">
+
+                    ×
+
+                </button>
+
+            </div>
+
+            <input
+                type="hidden"
+                id="analiseId">
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label for="analiseNome">
+                        Nome do produto
+                    </label>
+
+                    <input
+                        type="text"
+                        id="analiseNome">
+
+                </div>
+
+                <div>
+
+                    <label for="analiseMarca">
+                        Marca
+                    </label>
+
+                    <input
+                        type="text"
+                        id="analiseMarca">
+
+                </div>
+
+                <div>
+
+                    <label for="analiseCategoria">
+                        Categoria
+                    </label>
+
+                    <input
+                        type="text"
+                        id="analiseCategoria">
+
+                </div>
+
+                <div>
+
+                    <label for="analiseTamanho">
+                        Tamanho
+                    </label>
+
+                    <input
+                        type="text"
+                        id="analiseTamanho">
+
+                </div>
+
+                <div>
+
+                    <label for="analiseUnidade">
+                        Unidade
+                    </label>
+
+                    <input
+                        type="text"
+                        id="analiseUnidade">
+
+                </div>
+
+                <div>
+
+                    <label for="analiseIcone">
+                        Ícone
+                    </label>
+
+                    <input
+                        type="text"
+                        id="analiseIcone"
+                        placeholder="Ex.: 🍚">
+
+                </div>
+
+            </div>
+
+            <label for="analiseObservacaoAdmin">
+                Observação do admin
+            </label>
+
+            <textarea
+                id="analiseObservacaoAdmin"
+                rows="4"
+                placeholder="Ex.: aprovado após ajuste de marca/categoria..."></textarea>
+
+            <div class="modal-actions">
+
+                <button
+                    class="btn-aprovar"
+                    onclick="aprovarSugestaoEditada()">
+
+                    ✓ Aprovar produto
+
+                </button>
+
+                <button
+                    class="btn-rejeitar"
+                    onclick="rejeitarSugestaoAtual()">
+
+                    × Rejeitar sugestão
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="config.js"></script>
+    <script src="admin-produtos.js"></script>
+
+</body>
+
+</html>

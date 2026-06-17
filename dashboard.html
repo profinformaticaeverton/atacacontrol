@@ -11,7 +11,7 @@
 
     <meta
         name="description"
-        content="Dashboard Minha Dispensa: acompanhe gastos, estoque, lista de compras, economia inteligente, economia avançada e planejamento da feira do mês.">
+        content="Dashboard Minha Dispensa: acompanhe gastos, estoque, lista de compras, economia inteligente, economia avançada, administração de produtos e planejamento da feira do mês.">
 
     <title>
         Minha Dispensa | Dashboard
@@ -130,6 +130,15 @@
                         onclick="window.location.href='economia-avancada.html'">
                         <span>◈</span>
                         Economia Avançada
+                    </button>
+
+                    <button
+                        class="menu-btn admin-only"
+                        id="adminProdutosMenu"
+                        style="display:none;"
+                        onclick="window.location.href='admin-produtos.html'">
+                        <span>⚙</span>
+                        Admin Produtos
                     </button>
 
                 </nav>
@@ -373,6 +382,63 @@
                     <span>◈</span>
                     Economia Avançada
                 </button>
+
+                <button
+                    class="admin-only"
+                    id="adminProdutosAcao"
+                    style="display:none;"
+                    onclick="window.location.href='admin-produtos.html'">
+                    <span>⚙</span>
+                    Admin Produtos
+                </button>
+
+            </section>
+
+            <section
+                class="panel admin-only"
+                id="adminProdutosPanel"
+                style="display:none;">
+
+                <div class="panel-header">
+
+                    <div>
+                        <span class="page-label">
+                            Administração SaaS
+                        </span>
+
+                        <h2>
+                            Curadoria de Produtos
+                        </h2>
+                    </div>
+
+                    <button
+                        class="panel-link"
+                        onclick="window.location.href='admin-produtos.html'">
+                        Abrir admin
+                    </button>
+
+                </div>
+
+                <div class="planejamento-resumo">
+
+                    <article class="planejamento-card-resumo">
+
+                        <div class="planejamento-status status-neutro">
+                            ⚙ Produtos sugeridos
+                        </div>
+
+                        <p>
+                            Aprove produtos enviados pelos usuários antes de liberar
+                            no catálogo geral do Minha Dispensa.
+                        </p>
+
+                        <button onclick="window.location.href='admin-produtos.html'">
+                            Gerenciar Produtos
+                        </button>
+
+                    </article>
+
+                </div>
 
             </section>
 
