@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Administração de usuários do Minha Dispensa.">
+    <title>Admin Usuários | Minha Dispensa</title>
+    <link rel="icon" href="favicon.svg">
+    <link rel="stylesheet" href="admin-saas.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <button class="menu-mobile" id="menuMobile" aria-label="Abrir menu">☰</button>
+    <div class="overlay" id="overlay"></div>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <div class="logo">
+                    <div class="logo-icon">▦</div>
+                    <div>
+                        <h2>Minha Dispensa</h2>
+                        <p>Admin SaaS</p>
+                    </div>
+                </div>
+                <nav>
+                    <button class="menu-btn" data-page="dashboard-saas" onclick="window.location.href='dashboard-saas.html'"><span>▣</span>Dashboard SaaS</button>
+<button class="menu-btn" data-page="estatisticas" onclick="window.location.href='estatisticas-gerais.html'"><span>▥</span>Estatísticas Gerais</button>
+<button class="menu-btn" data-page="usuarios" onclick="window.location.href='admin-usuarios.html'"><span>👤</span>Admin Usuários</button>
+<button class="menu-btn" data-page="compras" onclick="window.location.href='admin-compras.html'"><span>▤</span>Admin Compras</button>
+<button class="menu-btn" data-page="mercados" onclick="window.location.href='admin-mercados.html'"><span>🏪</span>Admin Mercados</button>
+<button class="menu-btn" data-page="produtos" onclick="window.location.href='admin-produtos.html'"><span>⚙</span>Admin Produtos</button>
+<button class="menu-btn" data-page="app" onclick="window.location.href='dashboard.html'"><span>↩</span>Voltar ao App</button>
+                </nav>
+            </div>
+            <button class="logout-btn" onclick="logout()"><span>⇥</span>Sair</button>
+        </aside>
+        <main class="content">
+            <header class="header">
+                <div class="header-text">
+                    <span class="page-label">Administração SaaS</span>
+                    <h1>Admin Usuários</h1>
+                    <p>Gerencie perfis, permissões e atividade dos usuários cadastrados.</p>
+                </div>
+                <div class="usuario" id="userEmail"></div>
+            </header>
+            <section class="hero-admin">
+                <div>
+                    <span class="page-label">Centro administrativo</span>
+                    <h2>Gestão de usuários e permissões</h2>
+                    <p>Transforme usuários em admin, acompanhe atividade e identifique contas sem uso.</p>
+                </div>
+                <div class="hero-actions">
+                    <button class='btn-primary' onclick='carregarUsuarios()'>Atualizar usuários</button>
+<button class='btn-neutral' onclick="window.location.href='dashboard-saas.html'">Dashboard SaaS</button>
+                </div>
+            </section>
+            
+<section class="cards">
+    <article class="card"><div class="card-icon card-green">👤</div><div><h3>Total</h3><span id="usuariosTotal">0</span></div></article>
+    <article class="card"><div class="card-icon card-yellow">⚙</div><div><h3>Admins</h3><span id="usuariosAdmin">0</span></div></article>
+    <article class="card"><div class="card-icon card-brown">☑</div><div><h3>Usuários</h3><span id="usuariosComuns">0</span></div></article>
+    <article class="card"><div class="card-icon card-red">!</div><div><h3>Sem compras</h3><span id="usuariosSemCompras">0</span></div></article>
+</section>
+<section class="panel">
+    <div class="panel-header"><div><span class="page-label">Filtros</span><h2>Buscar usuários</h2></div></div>
+    <div class="filters">
+        <div><label for="buscaUsuario">Buscar</label><input id="buscaUsuario" type="text" placeholder="Nome, e-mail ou função"></div>
+        <div><label for="filtroRole">Perfil</label><select id="filtroRole"><option value="">Todos</option><option value="admin">Admin</option><option value="user">User</option></select></div>
+        <div><label>&nbsp;</label><button class="btn-primary" onclick="carregarUsuarios()">Atualizar</button></div>
+    </div>
+    <div id="listaUsuarios" class="grid-list"></div>
+</section>
+<div class="modal" id="modalUsuario"><div class="modal-content"><div class="modal-header"><div><span class="page-label">Usuário</span><h2>Editar perfil</h2><p>Altere o nível de acesso do usuário.</p></div><button class="btn-fechar" onclick="fecharModalUsuario()">×</button></div><input type="hidden" id="editUsuarioId"><div class="form-grid"><div><label>Email</label><input id="editUsuarioEmail" disabled></div><div><label>Role</label><select id="editUsuarioRole"><option value="user">user</option><option value="admin">admin</option></select></div></div><button class="btn-primary" onclick="salvarUsuario()">Salvar alterações</button></div></div>
+
+        </main>
+    </div>
+    <script src="config.js"></script>
+    <script src="admin-saas-common.js"></script>
+    <script src="admin-usuarios.js"></script>
+</body>
+</html>

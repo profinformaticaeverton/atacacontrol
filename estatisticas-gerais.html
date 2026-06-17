@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Estatísticas gerais do SaaS Minha Dispensa.">
+    <title>Estatísticas Gerais | Minha Dispensa</title>
+    <link rel="icon" href="favicon.svg">
+    <link rel="stylesheet" href="admin-saas.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <button class="menu-mobile" id="menuMobile" aria-label="Abrir menu">☰</button>
+    <div class="overlay" id="overlay"></div>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <div class="logo">
+                    <div class="logo-icon">▦</div>
+                    <div>
+                        <h2>Minha Dispensa</h2>
+                        <p>Admin SaaS</p>
+                    </div>
+                </div>
+                <nav>
+                    <button class="menu-btn" data-page="dashboard-saas" onclick="window.location.href='dashboard-saas.html'"><span>▣</span>Dashboard SaaS</button>
+<button class="menu-btn" data-page="estatisticas" onclick="window.location.href='estatisticas-gerais.html'"><span>▥</span>Estatísticas Gerais</button>
+<button class="menu-btn" data-page="usuarios" onclick="window.location.href='admin-usuarios.html'"><span>👤</span>Admin Usuários</button>
+<button class="menu-btn" data-page="compras" onclick="window.location.href='admin-compras.html'"><span>▤</span>Admin Compras</button>
+<button class="menu-btn" data-page="mercados" onclick="window.location.href='admin-mercados.html'"><span>🏪</span>Admin Mercados</button>
+<button class="menu-btn" data-page="produtos" onclick="window.location.href='admin-produtos.html'"><span>⚙</span>Admin Produtos</button>
+<button class="menu-btn" data-page="app" onclick="window.location.href='dashboard.html'"><span>↩</span>Voltar ao App</button>
+                </nav>
+            </div>
+            <button class="logout-btn" onclick="logout()"><span>⇥</span>Sair</button>
+        </aside>
+        <main class="content">
+            <header class="header">
+                <div class="header-text">
+                    <span class="page-label">Administração SaaS</span>
+                    <h1>Estatísticas Gerais</h1>
+                    <p>Indicadores consolidados do SaaS, uso da plataforma, compras, mercados, produtos e preços.</p>
+                </div>
+                <div class="usuario" id="userEmail"></div>
+            </header>
+            <section class="hero-admin">
+                <div>
+                    <span class="page-label">Centro administrativo</span>
+                    <h2>Inteligência geral do SaaS</h2>
+                    <p>Acompanhe indicadores executivos para orientar crescimento, produto e operação.</p>
+                </div>
+                <div class="hero-actions">
+                    <button class='btn-primary' onclick='carregarEstatisticas()'>Atualizar estatísticas</button>
+<button class='btn-neutral' onclick="window.location.href='dashboard-saas.html'">Dashboard SaaS</button>
+                </div>
+            </section>
+            
+<section class="cards">
+    <article class="card"><div class="card-icon card-green">R$</div><div><h3>GMV</h3><span id="statGmv">R$ 0,00</span></div></article>
+    <article class="card"><div class="card-icon card-yellow">👤</div><div><h3>Usuários ativos</h3><span id="statUsuariosAtivos">0</span></div></article>
+    <article class="card"><div class="card-icon card-brown">📦</div><div><h3>Itens registrados</h3><span id="statItens">0</span></div></article>
+    <article class="card"><div class="card-icon card-red">↕</div><div><h3>Preços analisados</h3><span id="statPrecos">0</span></div></article>
+</section>
+<section class="panel"><div class="panel-header"><div><span class="page-label">Módulos</span><h2>Distribuição operacional</h2></div><button class="btn-neutral" onclick="carregarEstatisticas()">Atualizar</button></div><div id="barrasModulos" class="chart-placeholder"></div></section>
+<section class="panel"><div class="panel-header"><div><span class="page-label">Categorias</span><h2>Produtos por categoria</h2></div></div><div id="barrasCategorias" class="chart-placeholder"></div></section>
+<section class="panel"><div class="panel-header"><div><span class="page-label">Mercados</span><h2>Top mercados por compras</h2></div></div><div id="barrasMercados" class="chart-placeholder"></div></section>
+<section class="panel"><div class="panel-header"><div><span class="page-label">Tabela executiva</span><h2>Indicadores consolidados</h2></div></div><div class="table-wrap"><table><thead><tr><th>Indicador</th><th>Valor</th><th>Observação</th></tr></thead><tbody id="tabelaIndicadores"></tbody></table></div></section>
+
+        </main>
+    </div>
+    <script src="config.js"></script>
+    <script src="admin-saas-common.js"></script>
+    <script src="estatisticas-gerais.js"></script>
+</body>
+</html>

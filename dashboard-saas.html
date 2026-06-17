@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard administrativo SaaS do Minha Dispensa.">
+    <title>Dashboard SaaS | Minha Dispensa</title>
+    <link rel="icon" href="favicon.svg">
+    <link rel="stylesheet" href="admin-saas.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <button class="menu-mobile" id="menuMobile" aria-label="Abrir menu">☰</button>
+    <div class="overlay" id="overlay"></div>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <div class="logo">
+                    <div class="logo-icon">▦</div>
+                    <div>
+                        <h2>Minha Dispensa</h2>
+                        <p>Admin SaaS</p>
+                    </div>
+                </div>
+                <nav>
+                    <button class="menu-btn" data-page="dashboard-saas" onclick="window.location.href='dashboard-saas.html'"><span>▣</span>Dashboard SaaS</button>
+<button class="menu-btn" data-page="estatisticas" onclick="window.location.href='estatisticas-gerais.html'"><span>▥</span>Estatísticas Gerais</button>
+<button class="menu-btn" data-page="usuarios" onclick="window.location.href='admin-usuarios.html'"><span>👤</span>Admin Usuários</button>
+<button class="menu-btn" data-page="compras" onclick="window.location.href='admin-compras.html'"><span>▤</span>Admin Compras</button>
+<button class="menu-btn" data-page="mercados" onclick="window.location.href='admin-mercados.html'"><span>🏪</span>Admin Mercados</button>
+<button class="menu-btn" data-page="produtos" onclick="window.location.href='admin-produtos.html'"><span>⚙</span>Admin Produtos</button>
+<button class="menu-btn" data-page="app" onclick="window.location.href='dashboard.html'"><span>↩</span>Voltar ao App</button>
+                </nav>
+            </div>
+            <button class="logout-btn" onclick="logout()"><span>⇥</span>Sair</button>
+        </aside>
+        <main class="content">
+            <header class="header">
+                <div class="header-text">
+                    <span class="page-label">Administração SaaS</span>
+                    <h1>Dashboard SaaS</h1>
+                    <p>Controle geral da operação, usuários, compras, mercados, produtos e métricas do aplicativo.</p>
+                </div>
+                <div class="usuario" id="userEmail"></div>
+            </header>
+            <section class="hero-admin">
+                <div>
+                    <span class="page-label">Centro administrativo</span>
+                    <h2>Visão executiva da plataforma</h2>
+                    <p>Acompanhe a saúde do SaaS, volume de uso, pendências administrativas e indicadores de crescimento.</p>
+                </div>
+                <div class="hero-actions">
+                    <button class='btn-primary' onclick="window.location.href='admin-usuarios.html'">Admin Usuários</button>
+<button class='btn-secondary' onclick="window.location.href='admin-produtos.html'">Produtos Pendentes</button>
+                </div>
+            </section>
+            
+<section class="cards">
+    <article class="card"><div class="card-icon card-green">👤</div><div><h3>Usuários</h3><span id="totalUsuarios">0</span></div></article>
+    <article class="card"><div class="card-icon card-yellow">▤</div><div><h3>Compras</h3><span id="totalCompras">0</span></div></article>
+    <article class="card"><div class="card-icon card-brown">R$</div><div><h3>GMV Total</h3><span id="gmvTotal">R$ 0,00</span></div></article>
+    <article class="card"><div class="card-icon card-red">!</div><div><h3>Sugestões Pendentes</h3><span id="sugestoesPendentes">0</span></div></article>
+</section>
+<section class="cards">
+    <article class="card"><div class="card-icon card-green">🏪</div><div><h3>Mercados</h3><span id="totalMercados">0</span></div></article>
+    <article class="card"><div class="card-icon card-yellow">🛒</div><div><h3>Produtos</h3><span id="totalProdutos">0</span></div></article>
+    <article class="card"><div class="card-icon card-brown">📦</div><div><h3>Itens Comprados</h3><span id="totalItens">0</span></div></article>
+    <article class="card"><div class="card-icon card-green">◎</div><div><h3>Planejamentos</h3><span id="totalPlanejamentos">0</span></div></article>
+</section>
+<section class="panel">
+    <div class="panel-header"><div><span class="page-label">Operação</span><h2>Resumo por módulo</h2></div><button class="btn-neutral" onclick="carregarDashboardSaas()">Atualizar</button></div>
+    <div class="grid-list" id="resumoModulos"></div>
+</section>
+<section class="panel">
+    <div class="panel-header"><div><span class="page-label">Ranking</span><h2>Mercados com maior volume</h2></div></div>
+    <div class="chart-placeholder" id="rankingMercados"></div>
+</section>
+
+        </main>
+    </div>
+    <script src="config.js"></script>
+    <script src="admin-saas-common.js"></script>
+    <script src="dashboard-saas.js"></script>
+</body>
+</html>
