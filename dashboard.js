@@ -53,13 +53,27 @@ async function verificarPerfil(user) {
 
     try {
 
-        const { data: profile } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("profiles")
             .select("*")
             .eq("id", user.id)
             .maybeSingle();
 
-        if (!profile) {
+        if (error) {
+
+            console.error("Erro ao buscar profile:", error);
+
+            return {
+                id: user.id,
+                email: user.email,
+                role: "user"
+            };
+        }
+
+        if (!data) {
 
             const novoPerfil = {
                 id: user.id,
@@ -67,22 +81,24 @@ async function verificarPerfil(user) {
                 role: "user"
             };
 
-            const { error } = await supabaseClient
+            const {
+                error: insertError
+            } = await supabaseClient
                 .from("profiles")
                 .insert(novoPerfil);
 
-            if (error) {
-                console.error("Erro ao criar perfil:", error);
+            if (insertError) {
+                console.error("Erro ao criar profile:", insertError);
             }
 
             return novoPerfil;
         }
 
-        return profile;
+        return data;
 
     } catch (erro) {
 
-        console.error("Erro ao verificar perfil:", erro);
+        console.error("Erro inesperado ao verificar profile:", erro);
 
         return {
             id: user.id,
@@ -98,8 +114,16 @@ async function verificarPerfil(user) {
 
 function configurarAcessoAdmin(perfil) {
 
+    const role =
+        String(perfil?.role || "")
+            .toLowerCase()
+            .trim();
+
     const isAdmin =
-        perfil?.role === "admin";
+        role === "admin" ||
+        role === "administrador" ||
+        role === "owner" ||
+        role === "superadmin";
 
     const elementosAdmin =
         document.querySelectorAll(".admin-only");
@@ -109,6 +133,90 @@ function configurarAcessoAdmin(perfil) {
         elemento.style.display =
             isAdmin ? "" : "none";
     });
+
+    if (isAdmin) {
+
+        garantirMenuAdminProdutos();
+        garantirBotaoAdminProdutos();
+    }
+}
+
+function garantirMenuAdminProdutos() {
+
+    const nav =
+        document.querySelector(".sidebar nav");
+
+    if (!nav) return;
+
+    const existente =
+        document.getElementById("adminProdutosMenu");
+
+    if (existente) {
+
+        existente.style.display = "";
+        return;
+    }
+
+    const botao =
+        document.createElement("button");
+
+    botao.className =
+        "menu-btn admin-only";
+
+    botao.id =
+        "adminProdutosMenu";
+
+    botao.onclick =
+        () => {
+            window.location.href =
+                "admin-produtos.html";
+        };
+
+    botao.innerHTML = `
+        <span>⚙</span>
+        Admin Produtos
+    `;
+
+    nav.appendChild(botao);
+}
+
+function garantirBotaoAdminProdutos() {
+
+    const acoes =
+        document.querySelector(".acoes");
+
+    if (!acoes) return;
+
+    const existente =
+        document.getElementById("adminProdutosAcao");
+
+    if (existente) {
+
+        existente.style.display = "";
+        return;
+    }
+
+    const botao =
+        document.createElement("button");
+
+    botao.className =
+        "admin-only";
+
+    botao.id =
+        "adminProdutosAcao";
+
+    botao.onclick =
+        () => {
+            window.location.href =
+                "admin-produtos.html";
+        };
+
+    botao.innerHTML = `
+        <span>⚙</span>
+        Admin Produtos
+    `;
+
+    acoes.appendChild(botao);
 }
 
 // ========================================
@@ -133,7 +241,10 @@ async function carregarDashboard(user) {
                 .toISOString()
                 .split("T")[0];
 
-        const { data: compras, error } = await supabaseClient
+        const {
+            data: compras,
+            error
+        } = await supabaseClient
             .from("purchases")
             .select(`
                 *,
@@ -147,7 +258,8 @@ async function carregarDashboard(user) {
             });
 
         if (error) {
-            console.error(error);
+
+            console.error("Erro ao carregar compras:", error);
             renderizarUltimasCompras([]);
             return;
         }
@@ -164,7 +276,8 @@ async function carregarDashboard(user) {
         const totalMes =
             comprasMes.reduce(
                 (total, compra) =>
-                    total + Number(compra.valor_total || 0),
+                    total +
+                    Number(compra.valor_total || 0),
                 0
             );
 
@@ -183,7 +296,10 @@ async function carregarDashboard(user) {
             }
         });
 
-        const { data: itens, error: itensError } = await supabaseClient
+        const {
+            data: itens,
+            error: itensError
+        } = await supabaseClient
             .from("purchase_items")
             .select(`
                 quantidade,
@@ -194,14 +310,15 @@ async function carregarDashboard(user) {
             .eq("purchases.user_id", user.id);
 
         if (itensError) {
-            console.error(itensError);
+            console.error("Erro ao carregar itens:", itensError);
         }
 
         const qtdProdutos =
             itens
                 ? itens.reduce(
                     (total, item) =>
-                        total + Number(item.quantidade || 0),
+                        total +
+                        Number(item.quantidade || 0),
                     0
                 )
                 : 0;
@@ -217,7 +334,7 @@ async function carregarDashboard(user) {
 
     } catch (erro) {
 
-        console.error("Erro ao carregar dashboard:", erro);
+        console.error("Erro inesperado ao carregar dashboard:", erro);
         renderizarUltimasCompras([]);
     }
 }
@@ -230,7 +347,10 @@ async function carregarDispensa(user) {
 
     try {
 
-        const { data, error } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("v_pantry_stock")
             .select("*")
             .eq("user_id", user.id)
@@ -312,7 +432,10 @@ async function carregarPlanejamentoDashboard(user) {
                 hoje.getMonth() + 1
             ).padStart(2, "0")}`;
 
-        const { data: planejamento, error } = await supabaseClient
+        const {
+            data: planejamento,
+            error
+        } = await supabaseClient
             .from("v_monthly_planning_summary")
             .select("*")
             .eq("user_id", user.id)
@@ -324,7 +447,6 @@ async function carregarPlanejamentoDashboard(user) {
             console.error("Erro ao carregar planejamento:", error);
 
             renderizarPlanejamentoVazio();
-
             return;
         }
 
@@ -336,7 +458,6 @@ async function carregarPlanejamentoDashboard(user) {
         if (!planejamento) {
 
             renderizarPlanejamentoVazio(itensLista);
-
             return;
         }
 
@@ -377,7 +498,10 @@ async function obterTotalItensListaCompras(user) {
 
     try {
 
-        const { data, error } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("v_pantry_stock")
             .select("id")
             .eq("user_id", user.id)
@@ -393,7 +517,6 @@ async function obterTotalItensListaCompras(user) {
         if (error) {
 
             console.error("Erro ao carregar lista inteligente:", error);
-
             return 0;
         }
 
@@ -401,8 +524,7 @@ async function obterTotalItensListaCompras(user) {
 
     } catch (erro) {
 
-        console.error(erro);
-
+        console.error("Erro inesperado na lista inteligente:", erro);
         return 0;
     }
 }
@@ -553,7 +675,10 @@ async function carregarEconomiaDashboard(user) {
 
     try {
 
-        const { data, error } = await supabaseClient
+        const {
+            data,
+            error
+        } = await supabaseClient
             .from("product_prices")
             .select("*")
             .order("created_at", {
@@ -565,7 +690,6 @@ async function carregarEconomiaDashboard(user) {
             console.error("Erro ao carregar economia:", error);
 
             renderizarResumoEconomiaDashboard([], 0, 0, 0);
-
             return;
         }
 
@@ -589,7 +713,8 @@ async function carregarEconomiaDashboard(user) {
         const economiaPotencial =
             analise.reduce(
                 (total, item) =>
-                    total + Number(item.economia_possivel || 0),
+                    total +
+                    Number(item.economia_possivel || 0),
                 0
             );
 
