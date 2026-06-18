@@ -1,1181 +1,493 @@
-// ========================================
-// MINHA DISPENSA
-// DASHBOARD
-// COMPRAS + ESTOQUE + PLANEJAMENTO + ECONOMIA + ADMIN
-// ========================================
+// dashboard.js
+
+const ADMIN_EMAILS = [
+    "vetao_8@yahoo.com.br",
+    "eroscupido.ia@gmail.com"
+];
 
 async function verificarSessao() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
 
-    try {
-
-        const {
-            data: { session }
-        } = await supabaseClient.auth.getSession();
-
-        if (!session) {
-            window.location.href = "/";
-            return;
-        }
-
-        const user = session.user;
-
-        const userEmail =
-            document.getElementById("userEmail");
-
-        if (userEmail) {
-            userEmail.innerText = user.email;
-        }
-
-        const perfil =
-            await verificarPerfil(user);
-
-        configurarAcessoAdmin(perfil);
-
-        await carregarDashboard(user);
-        await carregarDispensa(user);
-        await carregarPlanejamentoDashboard(user);
-        await carregarEconomiaDashboard(user);
-
-        iniciarMenuMobile();
-
-    } catch (erro) {
-
-        console.error("Erro ao verificar sessão:", erro);
-        window.location.href = "/";
+    if (!session) {
+        window.location.href = "index.html";
+        return;
     }
-}
 
-// ========================================
-// PERFIL
-// ========================================
+    const user = session.user;
+
+    const userEmail = document.getElementById("userEmail");
+    if (userEmail) userEmail.innerText = user.email;
+
+    const perfil = await verificarPerfil(user);
+    configurarAcessoAdmin(user, perfil);
+
+    await carregarDashboard(user);
+    await carregarDispensa(user);
+    await carregarPlanejamentoDashboard(user);
+    await carregarEconomiaDashboard(user);
+
+    iniciarMenuMobile();
+}
 
 async function verificarPerfil(user) {
+    const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle();
 
-    try {
+    if (error) {
+        console.error("Erro ao verificar perfil:", error);
+        return null;
+    }
 
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("profiles")
-            .select("*")
-            .eq("id", user.id)
-            .maybeSingle();
-
-        if (error) {
-
-            console.error("Erro ao buscar profile:", error);
-
-            return {
-                id: user.id,
-                email: user.email,
-                role: "user"
-            };
-        }
-
-        if (!data) {
-
-            const novoPerfil = {
-                id: user.id,
-                email: user.email,
-                role: "user"
-            };
-
-            const {
-                error: insertError
-            } = await supabaseClient
-                .from("profiles")
-                .insert(novoPerfil);
-
-            if (insertError) {
-                console.error("Erro ao criar profile:", insertError);
-            }
-
-            return novoPerfil;
-        }
-
-        return data;
-
-    } catch (erro) {
-
-        console.error("Erro inesperado ao verificar profile:", erro);
-
-        return {
+    if (!data) {
+        const novoPerfil = {
             id: user.id,
             email: user.email,
-            role: "user"
+            role: ADMIN_EMAILS.includes(user.email) ? "admin" : "user"
         };
+
+        await supabaseClient
+            .from("profiles")
+            .insert(novoPerfil);
+
+        return novoPerfil;
     }
+
+    return data;
 }
 
-// ========================================
-// ACESSO ADMIN
-// ========================================
-
-function configurarAcessoAdmin(perfil) {
-
-    const role =
-        String(perfil?.role || "")
-            .toLowerCase()
-            .trim();
+function configurarAcessoAdmin(user, perfil) {
+    const role = String(perfil?.role || "").toLowerCase().trim();
+    const email = String(user?.email || "").toLowerCase().trim();
 
     const isAdmin =
         role === "admin" ||
         role === "administrador" ||
         role === "owner" ||
-        role === "superadmin";
+        role === "superadmin" ||
+        ADMIN_EMAILS.includes(email);
 
-    const elementosAdmin =
-        document.querySelectorAll(".admin-only");
+    console.log("Admin check:", { email, role, isAdmin });
 
-    elementosAdmin.forEach(elemento => {
+    if (!isAdmin) return;
 
-        elemento.style.display =
-            isAdmin ? "" : "none";
-    });
-
-    if (isAdmin) {
-
-        garantirMenuAdminProdutos();
-        garantirBotaoAdminProdutos();
-    }
+    garantirMenuAdminProdutos();
+    garantirBotaoAdminProdutos();
+    garantirPainelAdminProdutos();
 }
 
 function garantirMenuAdminProdutos() {
-
-    const nav =
-        document.querySelector(".sidebar nav");
-
+    const nav = document.querySelector(".sidebar nav");
     if (!nav) return;
 
-    const existente =
-        document.getElementById("adminProdutosMenu");
-
-    if (existente) {
-
-        existente.style.display = "";
+    if (document.getElementById("adminProdutosMenu")) {
+        document.getElementById("adminProdutosMenu").style.display = "";
         return;
     }
 
-    const botao =
-        document.createElement("button");
-
-    botao.className =
-        "menu-btn admin-only";
-
-    botao.id =
-        "adminProdutosMenu";
-
-    botao.onclick =
-        () => {
-            window.location.href =
-                "admin-produtos.html";
-        };
-
-    botao.innerHTML = `
-        <span>⚙</span>
-        Admin Produtos
-    `;
-
-    nav.appendChild(botao);
+    const btn = document.createElement("button");
+    btn.className = "menu-btn";
+    btn.id = "adminProdutosMenu";
+    btn.onclick = () => window.location.href = "admin-produtos.html";
+    btn.innerHTML = "<span>⚙</span> Admin Produtos";
+    nav.appendChild(btn);
 }
 
 function garantirBotaoAdminProdutos() {
-
-    const acoes =
-        document.querySelector(".acoes");
-
+    const acoes = document.querySelector(".acoes");
     if (!acoes) return;
 
-    const existente =
-        document.getElementById("adminProdutosAcao");
-
-    if (existente) {
-
-        existente.style.display = "";
+    if (document.getElementById("adminProdutosAcao")) {
+        document.getElementById("adminProdutosAcao").style.display = "";
         return;
     }
 
-    const botao =
-        document.createElement("button");
+    const btn = document.createElement("button");
+    btn.id = "adminProdutosAcao";
+    btn.onclick = () => window.location.href = "admin-produtos.html";
+    btn.innerHTML = "<span>⚙</span> Admin Produtos";
+    acoes.appendChild(btn);
+}
 
-    botao.className =
-        "admin-only";
+function garantirPainelAdminProdutos() {
+    const content = document.querySelector(".content");
+    if (!content || document.getElementById("adminProdutosPanel")) return;
 
-    botao.id =
-        "adminProdutosAcao";
+    const panel = document.createElement("section");
+    panel.className = "panel";
+    panel.id = "adminProdutosPanel";
 
-    botao.onclick =
-        () => {
-            window.location.href =
-                "admin-produtos.html";
-        };
+    panel.innerHTML = `
+        <div class="panel-header">
+            <div>
+                <span class="page-label">Administração SaaS</span>
+                <h2>Curadoria de Produtos</h2>
+            </div>
 
-    botao.innerHTML = `
-        <span>⚙</span>
-        Admin Produtos
+            <button class="panel-link" onclick="window.location.href='admin-produtos.html'">
+                Abrir admin
+            </button>
+        </div>
+
+        <div class="planejamento-resumo">
+            <article class="planejamento-card-resumo">
+                <div class="planejamento-status status-neutro">
+                    ⚙ Produtos sugeridos
+                </div>
+
+                <p>
+                    Aprove, edite ou rejeite produtos enviados pelos usuários
+                    antes de liberar no catálogo geral.
+                </p>
+
+                <button onclick="window.location.href='admin-produtos.html'">
+                    Gerenciar Produtos
+                </button>
+            </article>
+        </div>
     `;
 
-    acoes.appendChild(botao);
+    const primeiroPanel = document.querySelector(".panel");
+    if (primeiroPanel) {
+        content.insertBefore(panel, primeiroPanel);
+    } else {
+        content.appendChild(panel);
+    }
 }
-
-// ========================================
-// CARREGAR COMPRAS
-// ========================================
 
 async function carregarDashboard(user) {
+    const hoje = new Date();
+    const dataInicio = new Date(hoje.getFullYear(), hoje.getMonth(), 1)
+        .toISOString()
+        .split("T")[0];
 
-    try {
+    const { data: compras, error } = await supabaseClient
+        .from("purchases")
+        .select("*, markets(nome)")
+        .eq("user_id", user.id)
+        .order("data_compra", { ascending: false });
 
-        const hoje = new Date();
-
-        const primeiroDiaMes =
-            new Date(
-                hoje.getFullYear(),
-                hoje.getMonth(),
-                1
-            );
-
-        const dataInicio =
-            primeiroDiaMes
-                .toISOString()
-                .split("T")[0];
-
-        const {
-            data: compras,
-            error
-        } = await supabaseClient
-            .from("purchases")
-            .select(`
-                *,
-                markets (
-                    nome
-                )
-            `)
-            .eq("user_id", user.id)
-            .order("data_compra", {
-                ascending: false
-            });
-
-        if (error) {
-
-            console.error("Erro ao carregar compras:", error);
-            renderizarUltimasCompras([]);
-            return;
-        }
-
-        const listaCompras =
-            compras || [];
-
-        const comprasMes =
-            listaCompras.filter(
-                compra =>
-                    compra.data_compra >= dataInicio
-            );
-
-        const totalMes =
-            comprasMes.reduce(
-                (total, compra) =>
-                    total +
-                    Number(compra.valor_total || 0),
-                0
-            );
-
-        const qtdCompras =
-            listaCompras.length;
-
-        let maiorCompra = 0;
-
-        listaCompras.forEach(compra => {
-
-            const valor =
-                Number(compra.valor_total || 0);
-
-            if (valor > maiorCompra) {
-                maiorCompra = valor;
-            }
-        });
-
-        const {
-            data: itens,
-            error: itensError
-        } = await supabaseClient
-            .from("purchase_items")
-            .select(`
-                quantidade,
-                purchases!inner (
-                    user_id
-                )
-            `)
-            .eq("purchases.user_id", user.id);
-
-        if (itensError) {
-            console.error("Erro ao carregar itens:", itensError);
-        }
-
-        const qtdProdutos =
-            itens
-                ? itens.reduce(
-                    (total, item) =>
-                        total +
-                        Number(item.quantidade || 0),
-                    0
-                )
-                : 0;
-
-        atualizarCard("totalMes", formatarMoeda(totalMes));
-        atualizarCard("qtdCompras", qtdCompras);
-        atualizarCard("qtdProdutos", formatarQuantidade(qtdProdutos));
-        atualizarCard("maiorCompra", formatarMoeda(maiorCompra));
-
-        renderizarUltimasCompras(
-            listaCompras.slice(0, 10)
-        );
-
-    } catch (erro) {
-
-        console.error("Erro inesperado ao carregar dashboard:", erro);
+    if (error) {
+        console.error(error);
         renderizarUltimasCompras([]);
+        return;
     }
-}
 
-// ========================================
-// CARREGAR DISPENSA
-// ========================================
+    const lista = compras || [];
+    const comprasMes = lista.filter(c => c.data_compra >= dataInicio);
+
+    const totalMes = comprasMes.reduce((t, c) => t + Number(c.valor_total || 0), 0);
+    const maiorCompra = lista.reduce((m, c) => Math.max(m, Number(c.valor_total || 0)), 0);
+
+    const { data: itens } = await supabaseClient
+        .from("purchase_items")
+        .select("quantidade, purchases!inner(user_id)")
+        .eq("purchases.user_id", user.id);
+
+    const qtdProdutos = (itens || []).reduce((t, i) => t + Number(i.quantidade || 0), 0);
+
+    atualizarCard("totalMes", formatarMoeda(totalMes));
+    atualizarCard("qtdCompras", lista.length);
+    atualizarCard("qtdProdutos", formatarQuantidade(qtdProdutos));
+    atualizarCard("maiorCompra", formatarMoeda(maiorCompra));
+
+    renderizarUltimasCompras(lista.slice(0, 10));
+}
 
 async function carregarDispensa(user) {
+    const { data, error } = await supabaseClient
+        .from("v_pantry_stock")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("ativo", true)
+        .order("produto_nome", { ascending: true });
 
-    try {
-
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("v_pantry_stock")
-            .select("*")
-            .eq("user_id", user.id)
-            .eq("ativo", true)
-            .order("produto_nome", {
-                ascending: true
-            });
-
-        if (error) {
-
-            console.error("Erro ao carregar dispensa:", error);
-
-            atualizarResumoDispensa([]);
-            renderizarDispensa([]);
-
-            return;
-        }
-
-        const estoque =
-            data || [];
-
-        atualizarResumoDispensa(estoque);
-        renderizarDispensa(estoque);
-
-    } catch (erro) {
-
-        console.error("Erro inesperado ao carregar dispensa:", erro);
-
+    if (error) {
+        console.error(error);
         atualizarResumoDispensa([]);
         renderizarDispensa([]);
+        return;
     }
-}
 
-// ========================================
-// RESUMO DA DISPENSA
-// ========================================
+    atualizarResumoDispensa(data || []);
+    renderizarDispensa(data || []);
+}
 
 function atualizarResumoDispensa(estoque) {
-
-    const itensDispensa =
-        estoque.length;
-
-    const itensRepor =
-        estoque.filter(
-            item =>
-                item.status_estoque === "repor"
-        ).length;
-
-    const itensSemEstoque =
-        estoque.filter(
-            item =>
-                item.status_estoque === "sem_estoque"
-        ).length;
-
-    const itensEstoqueOk =
-        estoque.filter(
-            item =>
-                item.status_estoque === "ok"
-        ).length;
-
-    atualizarCard("itensDispensa", itensDispensa);
-    atualizarCard("itensRepor", itensRepor);
-    atualizarCard("itensSemEstoque", itensSemEstoque);
-    atualizarCard("itensEstoqueOk", itensEstoqueOk);
+    atualizarCard("itensDispensa", estoque.length);
+    atualizarCard("itensRepor", estoque.filter(i => i.status_estoque === "repor").length);
+    atualizarCard("itensSemEstoque", estoque.filter(i => i.status_estoque === "sem_estoque").length);
+    atualizarCard("itensEstoqueOk", estoque.filter(i => i.status_estoque === "ok").length);
 }
 
-// ========================================
-// PLANEJAMENTO NO DASHBOARD
-// ========================================
-
 async function carregarPlanejamentoDashboard(user) {
+    const hoje = new Date();
+    const mesReferencia = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, "0")}`;
 
-    try {
+    const itensLista = await obterTotalItensListaCompras(user);
+    atualizarCard("listaInteligenteDashboard", itensLista);
 
-        const hoje = new Date();
+    const { data } = await supabaseClient
+        .from("v_monthly_planning_summary")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("mes_referencia", mesReferencia)
+        .maybeSingle();
 
-        const mesReferencia =
-            `${hoje.getFullYear()}-${String(
-                hoje.getMonth() + 1
-            ).padStart(2, "0")}`;
-
-        const {
-            data: planejamento,
-            error
-        } = await supabaseClient
-            .from("v_monthly_planning_summary")
-            .select("*")
-            .eq("user_id", user.id)
-            .eq("mes_referencia", mesReferencia)
-            .maybeSingle();
-
-        if (error) {
-
-            console.error("Erro ao carregar planejamento:", error);
-
-            renderizarPlanejamentoVazio();
-            return;
-        }
-
-        const itensLista =
-            await obterTotalItensListaCompras(user);
-
-        atualizarCard("listaInteligenteDashboard", itensLista);
-
-        if (!planejamento) {
-
-            renderizarPlanejamentoVazio(itensLista);
-            return;
-        }
-
-        atualizarCard(
-            "orcamentoDashboard",
-            formatarMoeda(planejamento.orcamento_mensal)
-        );
-
-        atualizarCard(
-            "gastoDashboard",
-            formatarMoeda(planejamento.gasto_atual)
-        );
-
-        atualizarCard(
-            "saldoDashboard",
-            formatarMoeda(planejamento.saldo_disponivel)
-        );
-
-        atualizarCard(
-            "statusDashboard",
-            traduzirStatusPlanejamento(planejamento.status_planejamento)
-        );
-
-        renderizarBlocoPlanejamento(
-            planejamento,
-            itensLista
-        );
-
-    } catch (erro) {
-
-        console.error("Erro inesperado no planejamento:", erro);
-
-        renderizarPlanejamentoVazio();
+    if (!data) {
+        renderizarPlanejamentoVazio(itensLista);
+        return;
     }
+
+    atualizarCard("orcamentoDashboard", formatarMoeda(data.orcamento_mensal));
+    atualizarCard("gastoDashboard", formatarMoeda(data.gasto_atual));
+    atualizarCard("saldoDashboard", formatarMoeda(data.saldo_disponivel));
+    atualizarCard("statusDashboard", traduzirStatusPlanejamento(data.status_planejamento));
+
+    renderizarBlocoPlanejamento(data, itensLista);
 }
 
 async function obterTotalItensListaCompras(user) {
+    const { data } = await supabaseClient
+        .from("v_pantry_stock")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("ativo", true)
+        .in("status_estoque", ["repor", "sem_estoque"]);
 
-    try {
-
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("v_pantry_stock")
-            .select("id")
-            .eq("user_id", user.id)
-            .eq("ativo", true)
-            .in(
-                "status_estoque",
-                [
-                    "repor",
-                    "sem_estoque"
-                ]
-            );
-
-        if (error) {
-
-            console.error("Erro ao carregar lista inteligente:", error);
-            return 0;
-        }
-
-        return (data || []).length;
-
-    } catch (erro) {
-
-        console.error("Erro inesperado na lista inteligente:", erro);
-        return 0;
-    }
+    return (data || []).length;
 }
 
 function renderizarPlanejamentoVazio(itensLista = 0) {
-
     atualizarCard("orcamentoDashboard", "R$ 0,00");
     atualizarCard("gastoDashboard", "R$ 0,00");
     atualizarCard("saldoDashboard", "R$ 0,00");
     atualizarCard("statusDashboard", "Sem meta");
-    atualizarCard("listaInteligenteDashboard", itensLista);
 
-    const container =
-        document.getElementById("planejamentoResumo");
+    const c = document.getElementById("planejamentoResumo");
+    if (!c) return;
 
-    if (!container) return;
-
-    container.innerHTML = `
-
+    c.innerHTML = `
         <article class="planejamento-card-resumo">
-
-            <div class="planejamento-status status-neutro">
-                ◎ Planejamento não definido
-            </div>
-
-            <p>
-                Cadastre uma meta mensal para acompanhar melhor sua feira.
-                Hoje existem <strong>${itensLista}</strong> itens sugeridos
-                para reposição.
-            </p>
-
-            <button onclick="window.location.href='planejamento-feira.html'">
-                Criar planejamento
-            </button>
-
+            <div class="planejamento-status status-neutro">◎ Planejamento não definido</div>
+            <p>Cadastre uma meta mensal. Hoje existem <strong>${itensLista}</strong> itens para reposição.</p>
+            <button onclick="window.location.href='planejamento-feira.html'">Criar planejamento</button>
         </article>
-
     `;
 }
 
-function renderizarBlocoPlanejamento(planejamento, itensLista) {
+function renderizarBlocoPlanejamento(p, itensLista) {
+    const c = document.getElementById("planejamentoResumo");
+    if (!c) return;
 
-    const container =
-        document.getElementById("planejamentoResumo");
+    const classe = obterClassePlanejamento(p.status_planejamento);
+    const percentual = Number(p.percentual_uso || 0);
 
-    if (!container) return;
-
-    const statusTexto =
-        traduzirStatusPlanejamento(
-            planejamento.status_planejamento
-        );
-
-    const classe =
-        obterClassePlanejamento(
-            planejamento.status_planejamento
-        );
-
-    const percentual =
-        Number(planejamento.percentual_uso || 0);
-
-    container.innerHTML = `
-
+    c.innerHTML = `
         <article class="planejamento-card-resumo">
-
             <div class="planejamento-status ${classe}">
-                ${statusTexto}
+                ${traduzirStatusPlanejamento(p.status_planejamento)}
             </div>
 
             <div class="planejamento-progress">
-
                 <div class="planejamento-progress-topo">
-
-                    <span>
-                        Uso do orçamento
-                    </span>
-
-                    <strong>
-                        ${percentual}%
-                    </strong>
-
+                    <span>Uso do orçamento</span>
+                    <strong>${percentual}%</strong>
                 </div>
-
                 <div class="planejamento-barra">
-
-                    <div
-                        class="planejamento-barra-fill ${classe}"
-                        style="width:${Math.min(percentual, 100)}%">
-                    </div>
-
+                    <div class="planejamento-barra-fill ${classe}" style="width:${Math.min(percentual, 100)}%"></div>
                 </div>
-
             </div>
 
-            <p>
-                Você possui <strong>${itensLista}</strong> itens para repor.
-                Seu saldo disponível é
-                <strong>${formatarMoeda(planejamento.saldo_disponivel)}</strong>.
-            </p>
-
-            <button onclick="window.location.href='planejamento-feira.html'">
-                Ver planejamento
-            </button>
-
+            <p>Você possui <strong>${itensLista}</strong> itens para repor. Saldo: <strong>${formatarMoeda(p.saldo_disponivel)}</strong>.</p>
+            <button onclick="window.location.href='planejamento-feira.html'">Ver planejamento</button>
         </article>
-
     `;
 }
 
+async function carregarEconomiaDashboard() {
+    const { data } = await supabaseClient
+        .from("product_prices")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+    const analise = montarAnaliseEconomiaDashboard(data || []);
+    const alta = analise.filter(i => i.tipo_variacao === "alta").length;
+    const queda = analise.filter(i => i.tipo_variacao === "queda").length;
+    const economia = analise.reduce((t, i) => t + Number(i.economia_possivel || 0), 0);
+
+    atualizarCard("economiaAltaDashboard", alta);
+    atualizarCard("economiaQuedaDashboard", queda);
+    atualizarCard("economiaPotencialDashboard", formatarMoeda(economia));
+
+    renderizarResumoEconomiaDashboard(analise, alta, queda, economia);
+}
+
+function montarAnaliseEconomiaDashboard(precos) {
+    const mapa = {};
+
+    precos.forEach(p => {
+        if (!p.product_id || isNaN(Number(p.price))) return;
+        if (!mapa[p.product_id]) mapa[p.product_id] = [];
+        mapa[p.product_id].push(p);
+    });
+
+    return Object.keys(mapa).map(id => {
+        const h = mapa[id].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        if (h.length < 2) return null;
+
+        const primeiro = h[0];
+        const ultimo = h[h.length - 1];
+        const menor = h.reduce((m, i) => Number(i.price) < Number(m.price) ? i : m, h[0]);
+
+        const inicial = Number(primeiro.price);
+        const atual = Number(ultimo.price);
+        const dif = atual - inicial;
+
+        return {
+            tipo_variacao: dif > 0 ? "alta" : dif < 0 ? "queda" : "igual",
+            economia_possivel: atual > Number(menor.price) ? atual - Number(menor.price) : 0
+        };
+    }).filter(Boolean);
+}
+
+function renderizarResumoEconomiaDashboard(analise, alta, queda, economia) {
+    const c = document.getElementById("economiaResumo");
+    if (!c) return;
+
+    if (!analise.length) {
+        c.innerHTML = `
+            <article class="planejamento-card-resumo">
+                <div class="planejamento-status status-neutro">↕ Economia ainda sem dados</div>
+                <p>Registre pelo menos duas compras com os mesmos produtos.</p>
+                <button onclick="window.location.href='nova-compra.html'">Registrar compra</button>
+            </article>
+        `;
+        return;
+    }
+
+    c.innerHTML = `
+        <article class="planejamento-card-resumo">
+            <div class="planejamento-status status-neutro">↕ Resumo de preços</div>
+            <p>Alta: <strong>${alta}</strong>. Queda: <strong>${queda}</strong>. Economia potencial: <strong>${formatarMoeda(economia)}</strong>.</p>
+            <button onclick="window.location.href='economia.html'">Ver economia</button>
+        </article>
+    `;
+}
+
+function renderizarDispensa(estoque) {
+    const c = document.getElementById("listaDispensa");
+    if (!c) return;
+
+    if (!estoque.length) {
+        c.innerHTML = `<div class="dispensa-card empty-card">Nenhum item na dispensa ainda.</div>`;
+        return;
+    }
+
+    c.innerHTML = estoque.slice(0, 8).map(item => {
+        const s = obterStatusDispensa(item.status_estoque);
+        return `
+            <article class="dispensa-card">
+                <div class="dispensa-topo">
+                    <div class="dispensa-produto">${item.produto_nome || "Produto"}</div>
+                    <span class="dispensa-status ${s.classe}">${s.texto}</span>
+                </div>
+                <div class="dispensa-info">
+                    <div>Quantidade atual: <strong>${formatarQuantidade(item.quantidade_atual)} ${item.unidade || "un"}</strong></div>
+                    <div>Quantidade mínima: <strong>${formatarQuantidade(item.quantidade_minima)} ${item.unidade || "un"}</strong></div>
+                </div>
+            </article>
+        `;
+    }).join("");
+}
+
+function renderizarUltimasCompras(compras) {
+    const c = document.getElementById("ultimasCompras");
+    if (!c) return;
+
+    if (!compras.length) {
+        c.innerHTML = `<div class="compra-card empty-card">Nenhuma compra encontrada.</div>`;
+        return;
+    }
+
+    c.innerHTML = compras.map(compra => `
+        <article class="compra-card">
+            <div class="compra-data">📅 ${formatarData(compra.data_compra)}</div>
+            <div class="compra-mercado">🏪 ${compra.markets?.nome || "Mercado não informado"}</div>
+            <div class="compra-itens">🛒 ${formatarQuantidade(compra.quantidade_total || 0)} itens registrados</div>
+            <div class="compra-total">${formatarMoeda(compra.valor_total || 0)}</div>
+        </article>
+    `).join("");
+}
+
+function iniciarMenuMobile() {
+    const menu = document.getElementById("menuMobile");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    if (!menu || !sidebar || !overlay) return;
+
+    menu.onclick = () => {
+        sidebar.classList.toggle("aberto");
+        overlay.classList.toggle("ativo");
+    };
+
+    overlay.onclick = () => {
+        sidebar.classList.remove("aberto");
+        overlay.classList.remove("ativo");
+    };
+}
+
+function obterStatusDispensa(status) {
+    if (status === "sem_estoque") return { texto: "Sem estoque", classe: "status-sem-estoque" };
+    if (status === "repor") return { texto: "Repor", classe: "status-repor" };
+    return { texto: "OK", classe: "status-ok" };
+}
+
 function traduzirStatusPlanejamento(status) {
-
-    if (status === "estourado") {
-        return "Estourado";
-    }
-
-    if (status === "alerta") {
-        return "Atenção";
-    }
-
-    if (status === "ok") {
-        return "Dentro da meta";
-    }
-
+    if (status === "estourado") return "Estourado";
+    if (status === "alerta") return "Atenção";
+    if (status === "ok") return "Dentro da meta";
     return "Sem meta";
 }
 
 function obterClassePlanejamento(status) {
-
-    if (status === "estourado") {
-        return "status-estourado";
-    }
-
-    if (status === "alerta") {
-        return "status-alerta";
-    }
-
-    if (status === "ok") {
-        return "status-ok-planejamento";
-    }
-
+    if (status === "estourado") return "status-estourado";
+    if (status === "alerta") return "status-alerta";
+    if (status === "ok") return "status-ok-planejamento";
     return "status-neutro";
 }
 
-// ========================================
-// ECONOMIA NO DASHBOARD
-// ========================================
-
-async function carregarEconomiaDashboard(user) {
-
-    try {
-
-        const {
-            data,
-            error
-        } = await supabaseClient
-            .from("product_prices")
-            .select("*")
-            .order("created_at", {
-                ascending: true
-            });
-
-        if (error) {
-
-            console.error("Erro ao carregar economia:", error);
-
-            renderizarResumoEconomiaDashboard([], 0, 0, 0);
-            return;
-        }
-
-        const analise =
-            montarAnaliseEconomiaDashboard(
-                data || []
-            );
-
-        const produtosAlta =
-            analise.filter(
-                item =>
-                    item.tipo_variacao === "alta"
-            ).length;
-
-        const produtosQueda =
-            analise.filter(
-                item =>
-                    item.tipo_variacao === "queda"
-            ).length;
-
-        const economiaPotencial =
-            analise.reduce(
-                (total, item) =>
-                    total +
-                    Number(item.economia_possivel || 0),
-                0
-            );
-
-        atualizarCard("economiaAltaDashboard", produtosAlta);
-        atualizarCard("economiaQuedaDashboard", produtosQueda);
-        atualizarCard("economiaPotencialDashboard", formatarMoeda(economiaPotencial));
-
-        renderizarResumoEconomiaDashboard(
-            analise,
-            produtosAlta,
-            produtosQueda,
-            economiaPotencial
-        );
-
-    } catch (erro) {
-
-        console.error("Erro inesperado na economia do dashboard:", erro);
-
-        renderizarResumoEconomiaDashboard([], 0, 0, 0);
-    }
-}
-
-function montarAnaliseEconomiaDashboard(precos) {
-
-    const mapaProdutos = {};
-
-    precos.forEach(registro => {
-
-        const productId =
-            registro.product_id;
-
-        if (!productId) return;
-
-        if (!mapaProdutos[productId]) {
-            mapaProdutos[productId] = [];
-        }
-
-        mapaProdutos[productId].push(registro);
-    });
-
-    const resultado = [];
-
-    Object.keys(mapaProdutos)
-        .forEach(productId => {
-
-            const historico =
-                mapaProdutos[productId]
-                    .filter(item => !isNaN(Number(item.price)))
-                    .sort(
-                        (a, b) =>
-                            new Date(a.created_at) -
-                            new Date(b.created_at)
-                    );
-
-            if (historico.length < 2) {
-                return;
-            }
-
-            const primeiro =
-                historico[0];
-
-            const ultimo =
-                historico[
-                    historico.length - 1
-                ];
-
-            const menor =
-                historico.reduce(
-                    (menorAtual, item) =>
-                        Number(item.price) <
-                        Number(menorAtual.price)
-                            ? item
-                            : menorAtual,
-                    historico[0]
-                );
-
-            const precoInicial =
-                Number(primeiro.price || 0);
-
-            const precoAtual =
-                Number(ultimo.price || 0);
-
-            const diferenca =
-                precoAtual - precoInicial;
-
-            const tipoVariacao =
-                diferenca > 0
-                    ? "alta"
-                    : diferenca < 0
-                        ? "queda"
-                        : "igual";
-
-            const economiaPossivel =
-                precoAtual > Number(menor.price)
-                    ? precoAtual - Number(menor.price)
-                    : 0;
-
-            resultado.push({
-
-                product_id:
-                    Number(productId),
-
-                preco_inicial:
-                    precoInicial,
-
-                preco_atual:
-                    precoAtual,
-
-                preco_menor:
-                    Number(menor.price || 0),
-
-                tipo_variacao:
-                    tipoVariacao,
-
-                economia_possivel:
-                    economiaPossivel
-            });
-        });
-
-    return resultado;
-}
-
-function renderizarResumoEconomiaDashboard(
-    analise,
-    produtosAlta,
-    produtosQueda,
-    economiaPotencial
-) {
-
-    const container =
-        document.getElementById("economiaResumo");
-
-    if (!container) return;
-
-    if (!analise.length) {
-
-        container.innerHTML = `
-
-            <article class="planejamento-card-resumo">
-
-                <div class="planejamento-status status-neutro">
-                    ↕ Economia ainda sem dados
-                </div>
-
-                <p>
-                    Registre pelo menos duas compras com os mesmos produtos
-                    para ativar a análise inteligente de preços.
-                </p>
-
-                <button onclick="window.location.href='nova-compra.html'">
-                    Registrar compra
-                </button>
-
-            </article>
-
-        `;
-
-        return;
-    }
-
-    let titulo =
-        "Preços em equilíbrio";
-
-    let classe =
-        "status-neutro";
-
-    if (produtosAlta > produtosQueda) {
-
-        titulo =
-            "Atenção: mais produtos subiram";
-
-        classe =
-            "status-alerta";
-    }
-
-    if (produtosQueda > produtosAlta) {
-
-        titulo =
-            "Boa notícia: mais produtos caíram";
-
-        classe =
-            "status-ok-planejamento";
-    }
-
-    container.innerHTML = `
-
-        <article class="planejamento-card-resumo">
-
-            <div class="planejamento-status ${classe}">
-                ↕ ${titulo}
-            </div>
-
-            <p>
-                Produtos em alta:
-                <strong>${produtosAlta}</strong>.
-                Produtos em queda:
-                <strong>${produtosQueda}</strong>.
-                Economia potencial:
-                <strong>${formatarMoeda(economiaPotencial)}</strong>.
-            </p>
-
-            <button onclick="window.location.href='economia.html'">
-                Ver economia
-            </button>
-
-        </article>
-
-    `;
-}
-
-// ========================================
-// RENDERIZAR DISPENSA
-// ========================================
-
-function renderizarDispensa(estoque) {
-
-    const container =
-        document.getElementById("listaDispensa");
-
-    if (!container) return;
-
-    if (!estoque.length) {
-
-        container.innerHTML = `
-
-            <div class="dispensa-card empty-card">
-                Nenhum item na dispensa ainda.
-            </div>
-
-        `;
-
-        return;
-    }
-
-    container.innerHTML = "";
-
-    estoque.slice(0, 8).forEach(item => {
-
-        const status =
-            obterStatusDispensa(item.status_estoque);
-
-        container.innerHTML += `
-
-            <article class="dispensa-card">
-
-                <div class="dispensa-topo">
-
-                    <div class="dispensa-produto">
-                        ${item.produto_nome || "Produto"}
-                    </div>
-
-                    <span class="dispensa-status ${status.classe}">
-                        ${status.texto}
-                    </span>
-
-                </div>
-
-                <div class="dispensa-info">
-
-                    <div>
-                        Quantidade atual:
-                        <strong>
-                            ${formatarQuantidade(item.quantidade_atual)}
-                            ${item.unidade || "un"}
-                        </strong>
-                    </div>
-
-                    <div>
-                        Quantidade mínima:
-                        <strong>
-                            ${formatarQuantidade(item.quantidade_minima)}
-                            ${item.unidade || "un"}
-                        </strong>
-                    </div>
-
-                </div>
-
-            </article>
-
-        `;
-    });
-}
-
-// ========================================
-// STATUS DA DISPENSA
-// ========================================
-
-function obterStatusDispensa(status) {
-
-    if (status === "sem_estoque") {
-        return {
-            texto: "Sem estoque",
-            classe: "status-sem-estoque"
-        };
-    }
-
-    if (status === "repor") {
-        return {
-            texto: "Repor",
-            classe: "status-repor"
-        };
-    }
-
-    return {
-        texto: "OK",
-        classe: "status-ok"
-    };
-}
-
-// ========================================
-// ÚLTIMAS COMPRAS
-// ========================================
-
-function renderizarUltimasCompras(compras) {
-
-    const container =
-        document.getElementById("ultimasCompras");
-
-    if (!container) return;
-
-    if (!compras.length) {
-
-        container.innerHTML = `
-
-            <div class="compra-card empty-card">
-                Nenhuma compra encontrada.
-            </div>
-
-        `;
-
-        return;
-    }
-
-    container.innerHTML = "";
-
-    compras.forEach(compra => {
-
-        container.innerHTML += `
-
-            <article class="compra-card">
-
-                <div class="compra-data">
-                    📅 ${formatarData(compra.data_compra)}
-                </div>
-
-                <div class="compra-mercado">
-                    🏪 ${compra.markets?.nome || "Mercado não informado"}
-                </div>
-
-                <div class="compra-itens">
-                    🛒 ${formatarQuantidade(compra.quantidade_total || 0)} itens registrados
-                </div>
-
-                <div class="compra-total">
-                    ${formatarMoeda(compra.valor_total || 0)}
-                </div>
-
-            </article>
-
-        `;
-    });
-}
-
-// ========================================
-// MENU MOBILE
-// ========================================
-
-function iniciarMenuMobile() {
-
-    const menu =
-        document.getElementById("menuMobile");
-
-    const sidebar =
-        document.getElementById("sidebar");
-
-    const overlay =
-        document.getElementById("overlay");
-
-    if (!menu || !sidebar || !overlay) {
-        return;
-    }
-
-    menu.addEventListener("click", () => {
-
-        sidebar.classList.toggle("aberto");
-        overlay.classList.toggle("ativo");
-    });
-
-    overlay.addEventListener("click", () => {
-
-        sidebar.classList.remove("aberto");
-        overlay.classList.remove("ativo");
-    });
-}
-
-// ========================================
-// HELPERS
-// ========================================
-
 function atualizarCard(id, valor) {
-
-    const elemento =
-        document.getElementById(id);
-
-    if (elemento) {
-        elemento.innerText = valor;
-    }
+    const e = document.getElementById(id);
+    if (e) e.innerText = valor;
 }
 
 function formatarMoeda(valor) {
-
-    return Number(valor || 0)
-        .toLocaleString(
-            "pt-BR",
-            {
-                style: "currency",
-                currency: "BRL"
-            }
-        );
-}
-
-function formatarData(data) {
-
-    if (!data) {
-        return "Data não informada";
-    }
-
-    return new Date(data)
-        .toLocaleDateString("pt-BR");
+    return Number(valor || 0).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
 }
 
 function formatarQuantidade(valor) {
-
-    const numero =
-        Number(valor || 0);
-
-    return numero.toLocaleString(
-        "pt-BR",
-        {
-            minimumFractionDigits:
-                numero % 1 === 0 ? 0 : 2,
-            maximumFractionDigits: 2
-        }
-    );
+    const n = Number(valor || 0);
+    return n.toLocaleString("pt-BR", {
+        minimumFractionDigits: n % 1 === 0 ? 0 : 2,
+        maximumFractionDigits: 2
+    });
 }
 
-// ========================================
-// LOGOUT
-// ========================================
+function formatarData(data) {
+    if (!data) return "Data não informada";
+    return new Date(data).toLocaleDateString("pt-BR");
+}
 
 async function logout() {
-
-    await supabaseClient
-        .auth
-        .signOut();
-
-    window.location.href = "/";
+    await supabaseClient.auth.signOut();
+    window.location.href = "index.html";
 }
-
-// ========================================
-// START
-// ========================================
 
 verificarSessao();
